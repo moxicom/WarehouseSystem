@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:WarehouseSystem"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="MainWindow"
+    Title="Вход в систему"
     Width="450"
     Height="390"
     ResizeMode="NoResize"
@@ -88,7 +88,7 @@
         </Style>
 
     </Window.Resources>
-    <Grid Background="AliceBlue">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
         </Grid.RowDefinitions>
@@ -106,6 +106,7 @@
             Margin="0,134,0,0"
             HorizontalAlignment="Center"
             VerticalAlignment="Top"
+            Background="LightGray"
             BorderBrush="{x:Null}"
             FontSize="20"
             Foreground="Black"

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WarehouseSystem.Models
@@ -10,24 +11,32 @@ namespace WarehouseSystem.Models
     public class APIService
     {
         private RestClient _client;
-        
+
         public APIService(string baseURL)
         {
-            _client = new RestClient(baseURL);
+            _client = new RestClient(new RestClientOptions { BaseUrl = new Uri(baseURL), MaxTimeout = 10000 });
         }
 
         public async Task<string> GetAsync(string endpoint)
         {
             var request = new RestRequest(endpoint, Method.Get);
             var response = await _client.GetAsync(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            try
             {
-                return response.Content;
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    return response.Content;
+                }
+                else
+                {
+                    return "Ошибка подключения к серверу";
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return null;
+                return ex.Message;
             }
+
         }
     }
 }

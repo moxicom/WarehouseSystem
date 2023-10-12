@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using WarehouseSystem.Models;
 
 namespace WarehouseSystem.ViewModels
 {
@@ -15,12 +16,14 @@ namespace WarehouseSystem.ViewModels
     {
         private string _errorTextBlockValue = "";
         private string _password;
+        private APIService _service;
 
         public ICommand LoggingButtonPressed {  get; set; }
         
         public LoginViewModel()
         {
             LoggingButtonPressed = new RelayCommand(ExecuteLogin);
+            _service = new APIService("http://localhost:8080");
         }
 
         public string ErrorTextBlockValue
@@ -54,10 +57,11 @@ namespace WarehouseSystem.ViewModels
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
 
-        public void ExecuteLogin()
+        public async void ExecuteLogin()
         {
-            ErrorTextBlockValue = Password;
-
+            //ErrorTextBlockValue = Password;
+            string result = await _service.GetAsync("/login");
+            ErrorTextBlockValue = result;
         }
     }
 }
