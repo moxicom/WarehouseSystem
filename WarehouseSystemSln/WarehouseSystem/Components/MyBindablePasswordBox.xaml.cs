@@ -15,12 +15,11 @@ using System.Windows.Shapes;
 
 namespace WarehouseSystem.Components
 {
-    /// <summary>
-    /// Логика взаимодействия для MyBindablePasswordBox.xaml
-    /// </summary>
     public partial class MyBindablePasswordBox : UserControl
     {
-
+        public static readonly DependencyProperty PasswordProperty =
+            DependencyProperty.Register("Password", typeof(string), typeof(MyBindablePasswordBox),
+                new PropertyMetadata(string.Empty));
 
         public string Password
         {
@@ -28,15 +27,14 @@ namespace WarehouseSystem.Components
             set { SetValue(PasswordProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for PasswordProperty.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty PasswordProperty =
-            DependencyProperty.Register("Password", typeof(string), typeof(MyBindablePasswordBox),
-                new PropertyMetadata(string.Empty));
-
-
         public MyBindablePasswordBox()
         {
             InitializeComponent();
+        }
+
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            Password = passwordBox.Password;
         }
     }
 }

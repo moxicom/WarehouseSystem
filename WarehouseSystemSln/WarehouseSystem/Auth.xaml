@@ -109,11 +109,19 @@
             BorderBrush="{x:Null}"
             FontSize="20"
             Foreground="Black"
-            Text="Username"
             TextAlignment="Left"
             TextWrapping="Wrap" />
+        <components:MyBindablePasswordBox
+            Width="274"
+            Height="31"
+            Margin="0,187,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            BorderBrush="{x:Null}"
+            FontSize="20"
+            Foreground="Black"
+            Password="{Binding Password, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
 
-        <!--  Password="{Binding Password, UpdateSourceTrigger=PropertyChanged}"  -->
         <Button
             Width="100"
             Height="35"
@@ -135,16 +143,5 @@
             VerticalAlignment="Top"
             Text="{Binding ErrorTextBlockValue}"
             TextWrapping="Wrap" />
-        <components:MyBindablePasswordBox
-            Width="274"
-            Height="31"
-            Margin="0,187,0,0"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Top"
-            BorderBrush="{x:Null}"
-            FontSize="20"
-            Foreground="Black" />
-
-
     </Grid>
 </Window>

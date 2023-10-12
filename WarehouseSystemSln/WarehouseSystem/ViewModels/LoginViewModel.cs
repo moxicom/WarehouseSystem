@@ -23,19 +23,6 @@ namespace WarehouseSystem.ViewModels
             LoggingButtonPressed = new RelayCommand(ExecuteLogin);
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }
-
-        public void ExecuteLogin()
-        {
-            ErrorTextBlockValue = "Кнопка нажата";
-        }
-
         public string ErrorTextBlockValue
         {
             get { return _errorTextBlockValue; }
@@ -45,6 +32,7 @@ namespace WarehouseSystem.ViewModels
                 OnPropertyChanged(nameof(ErrorTextBlockValue));
             }
         }
+
         public string Password
         {
             get { return _password; }
@@ -56,6 +44,20 @@ namespace WarehouseSystem.ViewModels
                     OnPropertyChanged(nameof(Password)); // Уведомляем View об изменении свойства
                 }
             }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        }
+
+        public void ExecuteLogin()
+        {
+            ErrorTextBlockValue = Password;
+
         }
     }
 }
