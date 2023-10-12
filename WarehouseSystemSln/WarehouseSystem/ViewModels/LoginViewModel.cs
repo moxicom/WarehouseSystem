@@ -14,6 +14,8 @@ namespace WarehouseSystem.ViewModels
     class LoginViewModel : INotifyPropertyChanged
     {
         private string _errorTextBlockValue = "";
+        private string _password;
+
         public ICommand LoggingButtonPressed {  get; set; }
         
         public LoginViewModel()
@@ -41,6 +43,18 @@ namespace WarehouseSystem.ViewModels
             {
                 _errorTextBlockValue = value;
                 OnPropertyChanged(nameof(ErrorTextBlockValue));
+            }
+        }
+        public string Password
+        {
+            get { return _password; }
+            set
+            {
+                if (_password != value)
+                {
+                    _password = value;
+                    OnPropertyChanged(nameof(Password)); // Уведомляем View об изменении свойства
+                }
             }
         }
     }
