@@ -18,11 +18,12 @@ namespace WarehouseSystem.ViewModels
         private string _password;
         private APIService _service;
 
+        public string Username { get; set; }
         public ICommand LoggingButtonPressed {  get; set; }
         
         public LoginViewModel()
         {
-            LoggingButtonPressed = new RelayCommand(ExecuteLogin);
+            LoggingButtonPressed = new RelayCommand(ExecuteLoginRequest);
             _service = new APIService("http://localhost:8080");
         }
 
@@ -57,10 +58,10 @@ namespace WarehouseSystem.ViewModels
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
 
-        public async void ExecuteLogin()
+        public async void ExecuteLoginRequest()
         {
             //ErrorTextBlockValue = Password;
-            string result = await _service.GetAsync("/login");
+            string result = await _service.VerifyUserRequest(Username, Password);
             ErrorTextBlockValue = result;
         }
     }

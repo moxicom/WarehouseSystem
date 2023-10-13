@@ -110,6 +110,7 @@
             BorderBrush="{x:Null}"
             FontSize="20"
             Foreground="Black"
+            Text="{Binding Username}"
             TextAlignment="Left"
             TextWrapping="Wrap" />
         <components:MyBindablePasswordBox

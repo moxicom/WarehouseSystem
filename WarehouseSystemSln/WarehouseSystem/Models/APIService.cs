@@ -1,10 +1,13 @@
-﻿using RestSharp;
+﻿using Newtonsoft.Json.Linq;
+using RestSharp;
+using RestSharp.Authenticators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace WarehouseSystem.Models
 {
@@ -17,15 +20,23 @@ namespace WarehouseSystem.Models
             _client = new RestClient(new RestClientOptions { BaseUrl = new Uri(baseURL), MaxTimeout = 10000 });
         }
 
-        public async Task<string> GetAsync(string endpoint)
+        public async Task<string> VerifyUserRequest(string username, string password)
         {
-            var request = new RestRequest(endpoint, Method.Get);
-            var response = await _client.GetAsync(request);
             try
             {
+                var request = new RestRequest("/login", Method.Get)
+                {
+                    RequestFormat = RestSharp.DataFormat.Json
+                };
+                // should add hash in the future without real password
+                request.AddJsonBody(new {username =  username, password = password});
+                var response = await _client.GetAsync(request);
+            
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    return response.Content;
+                    JObject jsonResponse = JObject.Parse(response.Content);
+                    string token = jsonResponse["token"].ToString();
+                    return token;
                 }
                 else
                 {
@@ -34,7 +45,7 @@ namespace WarehouseSystem.Models
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                return "Превышен лимит ожидания ответа от сервера";
             }
 
         }
