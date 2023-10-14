@@ -8,23 +8,24 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using WarehouseSystem.Models;
+using WarehouseSystem.Services;
 
 namespace WarehouseSystem.ViewModels
 {
     class LoginViewModel : INotifyPropertyChanged
     {
-        private string _errorTextBlockValue = "";
+        private string _errorTextBlockValue;
         private string _password;
-        private APIService _service;
+        private Auth _service;
 
         public string Username { get; set; }
         public ICommand LoggingButtonPressed {  get; set; }
         
         public LoginViewModel()
         {
+            ErrorTextBlockValue = "";
             LoggingButtonPressed = new RelayCommand(ExecuteLoginRequest);
-            _service = new APIService("http://localhost:8080");
+            _service = new Auth("http://localhost:8080");
         }
 
         public string ErrorTextBlockValue
@@ -45,14 +46,14 @@ namespace WarehouseSystem.ViewModels
                 if (_password != value)
                 {
                     _password = value;
-                    OnPropertyChanged(nameof(Password)); // Уведомляем View об изменении свойства
+                    OnPropertyChanged(nameof(Password));
                 }
             }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        private void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
@@ -60,7 +61,8 @@ namespace WarehouseSystem.ViewModels
 
         public async void ExecuteLoginRequest()
         {
-            //ErrorTextBlockValue = Password;
+            ErrorTextBlockValue = "Ожидайте";
+            int i = 0;
             string result = await _service.VerifyUserRequest(Username, Password);
             ErrorTextBlockValue = result;
         }

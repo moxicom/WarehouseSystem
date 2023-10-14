@@ -139,7 +139,7 @@
             Style="{DynamicResource RoundedAuthButton}" />
         <TextBlock
             Width="274"
-            Height="17"
+            Height="52"
             Margin="0,232,0,0"
             HorizontalAlignment="Center"
             VerticalAlignment="Top"

@@ -9,16 +9,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace WarehouseSystem.Models
+namespace WarehouseSystem.Services
 {
-    public class APIService
+    internal class Auth : BaseRestClient
     {
-        private RestClient _client;
-
-        public APIService(string baseURL)
-        {
-            _client = new RestClient(new RestClientOptions { BaseUrl = new Uri(baseURL), MaxTimeout = 10000 });
-        }
+        public Auth(string baseURL) : base(baseURL) { }
 
         public async Task<string> VerifyUserRequest(string username, string password)
         {
@@ -28,10 +23,10 @@ namespace WarehouseSystem.Models
                 {
                     RequestFormat = RestSharp.DataFormat.Json
                 };
-                // should add hash in the future without real password
-                request.AddJsonBody(new {username =  username, password = password});
-                var response = await _client.GetAsync(request);
-            
+
+                request.AddJsonBody(new { username, password });
+                var response = await Client.GetAsync(request);
+
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     JObject jsonResponse = JObject.Parse(response.Content);
@@ -40,12 +35,12 @@ namespace WarehouseSystem.Models
                 }
                 else
                 {
-                    return "Ошибка подключения к серверу";
+                    return "<There should be a handler for various errors>";
                 }
             }
             catch (Exception ex)
             {
-                return "Превышен лимит ожидания ответа от сервера";
+                return ex.Message;
             }
 
         }
