@@ -21,7 +21,7 @@ namespace WarehouseSystem
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new LoginViewModel();
+            DataContext = new LoginViewModel("http://localhost:8080");
         }
 
     }

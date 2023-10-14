@@ -1,10 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -12,20 +9,18 @@ using WarehouseSystem.Services;
 
 namespace WarehouseSystem.ViewModels
 {
-    class LoginViewModel : INotifyPropertyChanged
+    internal class LoginViewModel : BaseViewModel
     {
-        private string _errorTextBlockValue;
-        private string _password;
-        private Auth _service;
+        private string? _errorTextBlockValue;
+        private string? _password;
+        public string? Username { get; set; }
+        public ICommand? LoggingButtonPressed { get; set; }
+        public Auth AuthService { get; private set; }
 
-        public string Username { get; set; }
-        public ICommand LoggingButtonPressed {  get; set; }
-        
-        public LoginViewModel()
+        public LoginViewModel(string baseURL)
         {
-            ErrorTextBlockValue = "";
+            AuthService =  new Auth(baseURL);
             LoggingButtonPressed = new RelayCommand(ExecuteLoginRequest);
-            _service = new Auth("http://localhost:8080");
         }
 
         public string ErrorTextBlockValue
@@ -51,19 +46,10 @@ namespace WarehouseSystem.ViewModels
             }
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        private void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }
-
         public async void ExecuteLoginRequest()
         {
             ErrorTextBlockValue = "Ожидайте";
-            int i = 0;
-            string result = await _service.VerifyUserRequest(Username, Password);
+            string result = await AuthService.VerifyUserRequest(Username, Password);
             ErrorTextBlockValue = result;
         }
     }
