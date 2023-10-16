@@ -2,10 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using WarehouseSystem.Services;
+using WarehouseSystem.Utilities;
+using WarehouseSystem.Views;
 
 namespace WarehouseSystem.ViewModels
 {
@@ -16,6 +20,9 @@ namespace WarehouseSystem.ViewModels
         public string? Username { get; set; }
         public ICommand? LoggingButtonPressed { get; set; }
         public Auth AuthService { get; private set; }
+
+        public delegate void CloseWindowDelegate();
+        public event CloseWindowDelegate RequestClose;
 
         public LoginViewModel(string baseURL)
         {
@@ -51,6 +58,22 @@ namespace WarehouseSystem.ViewModels
             ErrorTextBlockValue = "Ожидайте";
             string result = await AuthService.VerifyUserRequest(Username, Password);
             ErrorTextBlockValue = result;
+            //
+            // Created this to test open new window function with parameters
+            //
+            if (true)
+            {
+                LoginViewModel newViewModel = new LoginViewModel(AuthService.BaseURL);
+                TestNewWindow newWindow = new TestNewWindow();
+                newWindow.DataContext = newViewModel;
+                newWindow.Show();
+                CloseWindow();
+            }
+        }
+
+        public void CloseWindow()
+        {
+            RequestClose.Invoke();
         }
     }
 }

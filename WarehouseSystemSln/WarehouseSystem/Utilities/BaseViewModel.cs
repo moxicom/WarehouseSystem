@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WarehouseSystem.Services;
 
-namespace WarehouseSystem.ViewModels
+namespace WarehouseSystem.Utilities
 {
     internal class BaseViewModel : INotifyPropertyChanged
     {
@@ -21,3 +21,4 @@ namespace WarehouseSystem.ViewModels
         }
     }
 }
+ 

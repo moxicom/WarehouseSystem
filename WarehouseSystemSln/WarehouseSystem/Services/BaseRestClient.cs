@@ -19,7 +19,7 @@ namespace WarehouseSystem.Services
 
         public void ChangeClientUrl(string baseURL)
         {
-            BaseURL = BaseURL;
+            BaseURL = baseURL;
             Client = new RestClient(new RestClientOptions { BaseUrl = new Uri(baseURL), MaxTimeout = 20000 });
         }
     }

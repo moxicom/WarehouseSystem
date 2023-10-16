@@ -21,8 +21,15 @@ namespace WarehouseSystem
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new LoginViewModel("http://localhost:8080");
+            LoginViewModel loginViewModel = new LoginViewModel("http://localhost:8080");
+            loginViewModel.RequestClose += CloseWindow;
+            DataContext = loginViewModel;
+                
         }
 
+        private void CloseWindow()
+        {
+            this.Close();
+        }
     }
 }
