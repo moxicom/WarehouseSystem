@@ -12,17 +12,24 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WarehouseSystem.ViewModels;
 
 namespace WarehouseSystem
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
+            LoginViewModel loginViewModel = new LoginViewModel("http://localhost:8080");
+            loginViewModel.RequestClose += CloseWindow;
+            DataContext = loginViewModel;
+                
+        }
+
+        private void CloseWindow()
+        {
+            this.Close();
         }
     }
 }
