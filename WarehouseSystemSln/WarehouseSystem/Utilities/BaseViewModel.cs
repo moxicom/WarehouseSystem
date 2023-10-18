@@ -1,4 +1,5 @@
-﻿using System;
+using GalaSoft.MvvmLight;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -9,9 +10,8 @@ using WarehouseSystem.Services;
 
 namespace WarehouseSystem.Utilities
 {
-    internal class BaseViewModel : INotifyPropertyChanged
+    public class BaseViewModel : ViewModelBase, INotifyPropertyChanged
     {
-
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public void OnPropertyChanged([CallerMemberName] string prop = "")

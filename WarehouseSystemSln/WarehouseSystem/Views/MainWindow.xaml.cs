@@ -11,17 +11,20 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WarehouseSystem.ViewModels;
 
 namespace WarehouseSystem.Views
 {
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
-    public partial class TestNewWindow : Window
+    
+    public partial class AppMainWindow : Window
     {
-        public TestNewWindow()
+        public AppMainWindow()
         {
             InitializeComponent();
+            DataContext = new MainViewModel();
         }
     }
 }

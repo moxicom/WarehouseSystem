@@ -12,24 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WarehouseSystem.ViewModels;
 
-namespace WarehouseSystem
+namespace WarehouseSystem.Views
 {
-    public partial class MainWindow : Window
+    /// <summary>
+    /// Логика взаимодействия для CategoriesView.xaml
+    /// </summary>
+    public partial class CategoriesView : UserControl
     {
-        public MainWindow()
+        public CategoriesView()
         {
             InitializeComponent();
-            LoginVM loginViewModel = new LoginVM("http://localhost:8080");
-            loginViewModel.RequestClose += CloseWindow;
-            DataContext = loginViewModel;
-                
-        }
-
-        private void CloseWindow()
-        {
-            this.Close();
         }
     }
 }
