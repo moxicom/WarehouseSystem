@@ -16,21 +16,20 @@ using WarehouseSystem.ViewModels;
 
 namespace WarehouseSystem
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-<<<<<<< Updated upstream:WarehouseSystemSln/WarehouseSystem/MainWindow.xaml.cs
     public partial class MainWindow : Window
     {
         public MainWindow()
-=======
-    public partial class AppMainWindow : Window
-    {
-        public AppMainWindow()
->>>>>>> Stashed changes:WarehouseSystemSln/WarehouseSystem/Views/MainWindow.xaml.cs
         {
             InitializeComponent();
-            DataContext = new MainViewModel();
+            LoginVM loginViewModel = new LoginVM("http://localhost:8080");
+            loginViewModel.RequestClose += CloseWindow;
+            DataContext = loginViewModel;
+                
+        }
+
+        private void CloseWindow()
+        {
+            this.Close();
         }
     }
 }

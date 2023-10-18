@@ -12,25 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WarehouseSystem.ViewModels;
 
-namespace WarehouseSystem
+namespace WarehouseSystem.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Логика взаимодействия для CategoriesView.xaml
     /// </summary>
-<<<<<<< Updated upstream:WarehouseSystemSln/WarehouseSystem/MainWindow.xaml.cs
-    public partial class MainWindow : Window
+    public partial class CategoriesView : UserControl
     {
-        public MainWindow()
-=======
-    public partial class AppMainWindow : Window
-    {
-        public AppMainWindow()
->>>>>>> Stashed changes:WarehouseSystemSln/WarehouseSystem/Views/MainWindow.xaml.cs
+        public CategoriesView()
         {
             InitializeComponent();
-            DataContext = new MainViewModel();
         }
     }
 }
