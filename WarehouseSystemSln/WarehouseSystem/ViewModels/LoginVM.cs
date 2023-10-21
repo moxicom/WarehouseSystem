@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using WarehouseSystem.Models;
 using WarehouseSystem.Services;
 using WarehouseSystem.Utilities;
 using WarehouseSystem.Views;
@@ -56,19 +57,17 @@ namespace WarehouseSystem.ViewModels
         public async void ExecuteLoginRequest()
         {
             ErrorTextBlockValue = "Ожидайте";
-            string result = await AuthService.VerifyUserRequest(Username, Password);
-            ErrorTextBlockValue = result;
-            //
-            // Created this to test how new window opens by function with parameters
-            //
-            if (true)
+            ApiResponse<User> response = await AuthService.VerifyUserRequest(Username, Password);
+            ErrorTextBlockValue = response.ErrorMessage;
+            
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 MainViewModel newViewModel = new MainViewModel();
                 AppMainWindow newWindow = new AppMainWindow();
                 newWindow.DataContext = newViewModel;
                 newWindow.Show();
                 CloseWindow();
-            }
+            } 
         }
 
         public void CloseWindow()
