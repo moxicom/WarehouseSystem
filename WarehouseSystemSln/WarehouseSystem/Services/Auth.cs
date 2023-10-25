@@ -4,6 +4,7 @@ using RestSharp.Authenticators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,12 +17,29 @@ namespace WarehouseSystem.Services
     {
         public Auth(string baseURL) : base(baseURL) { }
 
+        public String Sha256Hash(string value)
+        {
+            StringBuilder sb = new StringBuilder();
+            using (var hash = SHA256.Create())
+            {
+                byte[] result = hash.ComputeHash(Encoding.UTF8.GetBytes(value));
+                
+                foreach(byte b in result)
+                {
+                    sb.Append(b.ToString("x2"));
+                }
+            }
+            return sb.ToString();
+        }
+
         public async Task<ApiResponse<User>> VerifyUserRequest(string username, string password)
         {
             try
             {
+                string passwordHash = Sha256Hash(password);
+
                 var request = new RestRequest("/auth", Method.Get) { RequestFormat = RestSharp.DataFormat.Json };
-                request.AddJsonBody(new { username, password });
+                request.AddJsonBody(new { username = username, password = passwordHash });
 
                 var response = await Client.ExecuteAsync(request);
 
@@ -69,7 +87,6 @@ namespace WarehouseSystem.Services
             }
             catch (Exception ex)
             {
-                //return ex.Message;
                 return new ApiResponse<User>
                 {
                     Data = null,
