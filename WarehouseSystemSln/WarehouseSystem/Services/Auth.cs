@@ -39,7 +39,7 @@ namespace WarehouseSystem.Services
                 string passwordHash = Sha256Hash(password);
 
                 var request = new RestRequest("/auth", Method.Get) { RequestFormat = RestSharp.DataFormat.Json };
-                request.AddJsonBody(new { username = username, password = passwordHash });
+                request.AddJsonBody(new { username, password = passwordHash });
 
                 var response = await Client.ExecuteAsync(request);
 
@@ -80,7 +80,7 @@ namespace WarehouseSystem.Services
                     return new ApiResponse<User>
                     {
                         Data = null,
-                        ErrorMessage = "Bad status",
+                        ErrorMessage = response.StatusDescription,
                         StatusCode = response.StatusCode
                     };
                 }

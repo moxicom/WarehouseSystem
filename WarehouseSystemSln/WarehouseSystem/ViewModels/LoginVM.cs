@@ -29,6 +29,9 @@ namespace WarehouseSystem.ViewModels
         {
             AuthService =  new Auth(baseURL);
             LoggingButtonPressed = new RelayCommand(ExecuteLoginRequest);
+
+            Username = "";
+            Password = "";
         }
 
         public string ErrorTextBlockValue
@@ -56,6 +59,9 @@ namespace WarehouseSystem.ViewModels
 
         public async void ExecuteLoginRequest()
         {
+            if (Password == "" || Username == "")
+                return;
+
             ErrorTextBlockValue = "Ожидайте";
             ApiResponse<User> response = await AuthService.VerifyUserRequest(Username, Password);
             ErrorTextBlockValue = response.ErrorMessage;
