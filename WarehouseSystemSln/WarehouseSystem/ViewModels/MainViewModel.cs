@@ -15,17 +15,19 @@ namespace WarehouseSystem.ViewModels
     public class MainViewModel : BaseViewModel
     {
         private BaseViewModel _currentViewModel;
+        private string _baseURL;
 
         public ICommand HomeBtnClick { get; }
         public ICommand CategoriesBtnClick { get; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public MainViewModel()
+        public MainViewModel(string baseURL)
         {
             CurrentViewModel = new HomeVM();
             HomeBtnClick = new RelayCommand(OpenHomeView);
             CategoriesBtnClick = new RelayCommand(OpenCategoriesView);
+            _baseURL = baseURL;
         }
 
         public BaseViewModel CurrentViewModel
@@ -42,6 +44,6 @@ namespace WarehouseSystem.ViewModels
         }
 
         private void OpenHomeView() => CurrentViewModel = new HomeVM();
-        private void OpenCategoriesView() => CurrentViewModel = new CategoriesVM();
+        private void OpenCategoriesView() => CurrentViewModel = new CategoriesVM(_baseURL);
     }
 }
