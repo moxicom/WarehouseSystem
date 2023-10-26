@@ -2,3 +2,4 @@
 
 REST API requests:
 * `/auth`
+* `/categories`
