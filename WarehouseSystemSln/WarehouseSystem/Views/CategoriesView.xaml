@@ -24,18 +24,21 @@
             FontSize="50"
             Text="CATEGORIES VIEW" />
 
-        <ScrollViewer Grid.RowSpan="1" Margin="0,0,0,72">
-            <ItemsControl Grid.Row="1" ItemsSource="{Binding Categories}">
+        <ScrollViewer
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Margin="0,0,0,72">
+            <ItemsControl ItemsSource="{Binding Categories}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <components:CategoryCard />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
-                <ItemsControl.ItemsPanel>
+                <!--<ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel />
                     </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
+                </ItemsControl.ItemsPanel>-->
             </ItemsControl>
         </ScrollViewer>
 
