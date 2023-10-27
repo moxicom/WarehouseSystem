@@ -8,8 +8,8 @@ namespace WarehouseSystem.Models
 {
     public class ApiResponse<T>
     {
-        public T Data { get; set; }
+        public T? Data { get; set; }
         public System.Net.HttpStatusCode StatusCode { get; set; }
-        public string ErrorMessage { get; set; }
+        public string ErrorMessage { get; set; } = string.Empty;
     }
 }

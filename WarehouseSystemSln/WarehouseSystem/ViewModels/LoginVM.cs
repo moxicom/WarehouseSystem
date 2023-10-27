@@ -16,8 +16,10 @@ namespace WarehouseSystem.ViewModels
 {
     internal class LoginVM : BaseViewModel
     {
-        private string? _errorTextBlockValue;
-        private string? _password;
+        private string _errorTextBlockValue;
+        private string _password;
+        private string _baseURL;
+
         public string? Username { get; set; }
         public ICommand? LoggingButtonPressed { get; set; }
         public Auth AuthService { get; private set; }
@@ -29,7 +31,7 @@ namespace WarehouseSystem.ViewModels
         {
             AuthService =  new Auth(baseURL);
             LoggingButtonPressed = new RelayCommand(ExecuteLoginRequest);
-
+            _baseURL = baseURL;
             Username = "";
             Password = "";
         }
@@ -68,7 +70,7 @@ namespace WarehouseSystem.ViewModels
             
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                MainViewModel newViewModel = new MainViewModel();
+                MainViewModel newViewModel = new MainViewModel(_baseURL);
                 AppMainWindow newWindow = new AppMainWindow();
                 newWindow.DataContext = newViewModel;
                 newWindow.Show();

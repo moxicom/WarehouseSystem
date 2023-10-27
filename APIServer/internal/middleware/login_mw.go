@@ -28,7 +28,7 @@ func LoginMiddleware(dbase *sql.DB) gin.HandlerFunc {
 		username, password := authData.Username, authData.Password
 		log.Println(username, password)
 
-		user, err := db.GetUser(dbase, username, password)
+		user, err := db.GetUserByNamePass(dbase, username, password)
 		if err != nil {
 			if err.Error() == "No rows" {
 				c.JSON(http.StatusUnauthorized, gin.H{"error": err})

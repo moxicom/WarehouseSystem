@@ -17,7 +17,7 @@ namespace WarehouseSystem.Services
     {
         public Auth(string baseURL) : base(baseURL) { }
 
-        public String Sha256Hash(string value)
+        static String Sha256Hash(string value)
         {
             StringBuilder sb = new StringBuilder();
             using (var hash = SHA256.Create())

@@ -10,21 +10,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WarehouseSystem.ViewModels;
 
 namespace WarehouseSystem.Views
 {
     /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
+    /// Логика взаимодействия для CategoryView.xaml
     /// </summary>
-    
-    public partial class AppMainWindow : Window
+    public partial class CategoryView : UserControl
     {
-        public AppMainWindow()
+        public CategoryView()
         {
             InitializeComponent();
-            DataContext = new MainViewModel("http://localhost:8080"); // after all tests should add baseURL from loginVM
         }
     }
 }
