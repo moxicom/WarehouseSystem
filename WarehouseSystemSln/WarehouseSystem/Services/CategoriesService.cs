@@ -10,9 +10,10 @@ namespace WarehouseSystem.Services
 {
     internal class CategoriesService : BaseRestClient
     {
-        
+        // Construcor
         public CategoriesService(string name) : base(name) { }
-
+        
+        // Methods
         public async Task<ApiResponse<List<Category>>> GetCategories (int userID)
         {
             var request = new RestRequest("/categories", Method.Get) 

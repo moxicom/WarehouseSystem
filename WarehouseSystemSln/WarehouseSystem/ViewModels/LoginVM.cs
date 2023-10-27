@@ -16,9 +16,9 @@ namespace WarehouseSystem.ViewModels
 {
     internal class LoginVM : BaseViewModel
     {
-        private string _errorTextBlockValue;
-        private string _password;
-        private string _baseURL;
+        private string _errorTextBlockValue = string.Empty;
+        private string _password = string.Empty;
+        private readonly string _baseUrl;
 
         public string? Username { get; set; }
         public ICommand? LoggingButtonPressed { get; set; }
@@ -27,18 +27,18 @@ namespace WarehouseSystem.ViewModels
         public delegate void CloseWindowDelegate();
         public event CloseWindowDelegate RequestClose;
 
-        public LoginVM(string baseURL)
+        public LoginVM(string baseUrl)
         {
-            AuthService =  new Auth(baseURL);
+            AuthService =  new Auth(baseUrl);
             LoggingButtonPressed = new RelayCommand(ExecuteLoginRequest);
-            _baseURL = baseURL;
+            _baseUrl = baseUrl;
             Username = "";
             Password = "";
         }
 
         public string ErrorTextBlockValue
         {
-            get { return _errorTextBlockValue; }
+            get => _errorTextBlockValue;
             set
             {
                 _errorTextBlockValue = value;
@@ -48,7 +48,7 @@ namespace WarehouseSystem.ViewModels
 
         public string Password
         {
-            get { return _password; }
+            get => _password;
             set
             {
                 if (_password != value)
@@ -70,8 +70,8 @@ namespace WarehouseSystem.ViewModels
             
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                MainViewModel newViewModel = new MainViewModel(_baseURL);
-                AppMainWindow newWindow = new AppMainWindow();
+                var newViewModel = new MainViewModel(_baseUrl);
+                var newWindow = new AppMainWindow();
                 newWindow.DataContext = newViewModel;
                 newWindow.Show();
                 CloseWindow();
