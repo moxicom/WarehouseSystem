@@ -15,41 +15,53 @@
         BorderThickness="1">
 
         <Grid Background="#343A40">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="7*" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
 
-            <!--  /// Title ///  -->
-            <TextBlock
-                Grid.Row="0"
-                Height="Auto"
-                Margin="10,0,0,0"
-                FontSize="30"
-                FontWeight="Bold"
-                Foreground="#E9ECEF"
-                Text="{Binding Title}"
-                TextWrapping="Wrap" />
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
 
-            <!--  /// Description text ///  -->
-            <TextBlock
-                Grid.Row="1"
-                Height="Auto"
-                Margin="10,0,0,0"
-                FontSize="15"
-                Foreground="#E9ECEF"
-                Text="{Binding Description}"
-                TextWrapping="Wrap" />
+                <!--  /// Title ///  -->
+                <TextBlock
+                    Grid.Row="0"
+                    Height="Auto"
+                    Margin="10,0,0,0"
+                    FontSize="30"
+                    FontWeight="Bold"
+                    Foreground="#E9ECEF"
+                    Text="{Binding Title}"
+                    TextWrapping="Wrap" />
 
-            <!--  /// Delete category button ///  -->
-            <Button
-                Grid.Row="3"
-                Width="120"
-                Height="20"
-                Margin="0,5"
-                Command="{Binding DataContext.RemoveCategoryCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
-                Content="Удалить категорию" />
+                <!--  /// Description text ///  -->
+                <TextBlock
+                    Grid.Row="1"
+                    Height="Auto"
+                    Margin="10,0,0,0"
+                    FontSize="15"
+                    Foreground="#E9ECEF"
+                    Text="{Binding Description}"
+                    TextWrapping="Wrap" />
+
+                <!--  /// Delete category button ///  -->
+                <Button
+                    Grid.Row="3"
+                    Width="120"
+                    Height="20"
+                    Margin="0,5"
+                    Command="{Binding DataContext.RemoveCategoryCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
+                    Content="Удалить категорию" />
+
+            </Grid>
+
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <Button Margin="10" Content="Перейти" />
+            </StackPanel>
 
         </Grid>
     </Border>

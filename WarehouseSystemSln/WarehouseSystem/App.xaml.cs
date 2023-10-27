@@ -16,7 +16,7 @@ namespace WarehouseSystem
     {
         App()
         {
-            Run(new AppMainWindow());
+            Run(new MainWindow());
         }
     }
 }

@@ -19,7 +19,7 @@
             <ColumnDefinition Width="800" />
         </Grid.ColumnDefinitions>
 
-        <StackPanel>
+        <StackPanel VerticalAlignment="Center">
             <Button Command="{Binding HomeBtnClick}" Content="Главная" />
             <Button Command="{Binding CategoriesBtnClick}" Content="Категории" />
         </StackPanel>

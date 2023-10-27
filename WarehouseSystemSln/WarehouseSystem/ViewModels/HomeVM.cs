@@ -8,7 +8,7 @@ using WarehouseSystem.Utilities;
 
 namespace WarehouseSystem.ViewModels
 {
-    public class HomeVM : BaseViewModel
+    internal class HomeVM : BaseViewModel
     {
 
     }
