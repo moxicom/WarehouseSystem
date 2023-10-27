@@ -4,6 +4,7 @@ using RestSharp.Authenticators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -19,12 +20,12 @@ namespace WarehouseSystem.Services
 
         static String Sha256Hash(string value)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             using (var hash = SHA256.Create())
             {
-                byte[] result = hash.ComputeHash(Encoding.UTF8.GetBytes(value));
+                var result = hash.ComputeHash(Encoding.UTF8.GetBytes(value));
                 
-                foreach(byte b in result)
+                foreach(var b in result)
                 {
                     sb.Append(b.ToString("x2"));
                 }
@@ -36,65 +37,64 @@ namespace WarehouseSystem.Services
         {
             try
             {
-                string passwordHash = Sha256Hash(password);
+                var passwordHash = Sha256Hash(password);
 
                 var request = new RestRequest("/auth", Method.Get) { RequestFormat = RestSharp.DataFormat.Json };
                 request.AddJsonBody(new { username, password = passwordHash });
 
                 var response = await Client.ExecuteAsync(request);
 
-                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                switch (response.StatusCode)
                 {
-                    JObject jsonResponse = JObject.Parse(response.Content);
+                    case System.Net.HttpStatusCode.OK:
+                    {
+                        var jsonResponse = JObject.Parse(response.Content);
 
-                    int id = (int)jsonResponse["ID"];
-                    string name = jsonResponse["Name"].ToString();
-                    string surname = jsonResponse["Surname"].ToString();
-                    UserRole role = (UserRole)((int)jsonResponse["Role"]);
+                        var id = (int)jsonResponse["ID"];
+                        var name = jsonResponse["Name"].ToString();
+                        var surname = jsonResponse["Surname"].ToString();
+                        var role = (UserRole)((int)jsonResponse["Role"]);
 
-                    User user = new Models.User
-                    {
-                        Id = id,
-                        Name = name,
-                        Surname = surname,
-                        Role = role
-                    };
+                        var user = new Models.User
+                        {
+                            Id = id,
+                            Name = name,
+                            Surname = surname,
+                            Role = role
+                        };
 
-                    return new ApiResponse<User>
-                    {
-                        Data = user,
-                        ErrorMessage = "",
-                        StatusCode = response.StatusCode
-                    };
-                }
-                else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized) {
-                    return new ApiResponse<User>
-                    {
-                        Data = null,
-                        ErrorMessage = "Введенные данные не верны",
-                        StatusCode = response.StatusCode
-                    };
-                }
-                else
-                {
-                    return new ApiResponse<User>
-                    {
-                        Data = null,
-                        ErrorMessage = response.StatusDescription,
-                        StatusCode = response.StatusCode
-                    };
+                        return new ApiResponse<User>
+                        {
+                            Data = user,
+                            ErrorMessage = "",
+                            StatusCode = response.StatusCode
+                        };
+                    }
+                    case System.Net.HttpStatusCode.Unauthorized:
+                        return new ApiResponse<User>
+                        {
+                            Data = null,
+                            ErrorMessage = "Введенные данные не верны",
+                            StatusCode = response.StatusCode
+                        };
+                    default:
+                        return new ApiResponse<User>
+                        {
+                            Data = null,
+                            ErrorMessage = "Не удалось подключиться к серверу.",
+                            StatusCode = response.StatusCode
+                        };
                 }
             }
-            catch (Exception ex)
+            catch (System.Net.WebException ex)
             {
                 return new ApiResponse<User>
                 {
                     Data = null,
-                    ErrorMessage = ex.Message,
-                    StatusCode = System.Net.HttpStatusCode.RequestTimeout
-                }; 
+                    ErrorMessage = "Ошибка сети." + ex.Message,
+                    StatusCode = HttpStatusCode.Conflict
+                };
             }
-
         }
     }
 }

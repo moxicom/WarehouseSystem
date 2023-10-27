@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Net;
 using System.Windows.Input;
 using WarehouseSystem.Models;
 using WarehouseSystem.Services;
@@ -86,13 +87,23 @@ namespace WarehouseSystem.ViewModels
         public async void LoadCategories()
         {
             var response = await CategoriesService.GetCategories(_user.Id);
-            if (response.Data != null){
-                Categories = new ObservableCollection<Category>(response.Data);
-                IsStatusTextVisible = false;
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                // Check if there is no category
+                if (response.Data != null)
+                {
+                    Categories = new ObservableCollection<Category>(response.Data);
+                    IsStatusTextVisible = false;
+                }
+                else
+                {
+                    StatusTextValue = NoRowsStatus;
+                }
             }
             else
             {
-                StatusTextValue = NoRowsStatus;
+                StatusTextValue = response.ErrorMessage;
             }
             CanReloadCategories = true;
         }

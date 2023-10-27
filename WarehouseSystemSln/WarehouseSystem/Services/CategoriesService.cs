@@ -33,13 +33,15 @@ namespace WarehouseSystem.Services
                     StatusCode = response.StatusCode
                 };
             }
-
-            return new ApiResponse<List<Category>>
+            else
             {
-                Data = null,
-                ErrorMessage = "Пусто",
-                StatusCode = System.Net.HttpStatusCode.OK
-            };
+                return new ApiResponse<List<Category>>
+                {
+                    Data = response.Data,
+                    ErrorMessage = "Не удалось подключиться к серверу",
+                    StatusCode = response.StatusCode
+                };
+            }
         }
     }
 }

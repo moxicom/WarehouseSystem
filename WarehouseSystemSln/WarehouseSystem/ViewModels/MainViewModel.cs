@@ -21,7 +21,7 @@ namespace WarehouseSystem.ViewModels
         public ICommand CategoriesBtnClick { get; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
-
+                         
         public MainViewModel(string baseURL)
         {
             HomeBtnClick = new RelayCommand(OpenHomeView);

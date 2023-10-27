@@ -75,7 +75,7 @@ namespace WarehouseSystem.ViewModels
                 newWindow.DataContext = newViewModel;
                 newWindow.Show();
                 CloseWindow();
-            } 
+            }
         }
 
         public void CloseWindow()
