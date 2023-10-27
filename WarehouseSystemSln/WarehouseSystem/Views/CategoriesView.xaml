@@ -13,14 +13,14 @@
     <Grid
         Width="800"
         HorizontalAlignment="Center"
-        Background="Wheat">
+        Background="#212529">
 
         <Grid.Resources>
             <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         </Grid.Resources>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="75" />
+            <RowDefinition Height="55" />
             <RowDefinition />
         </Grid.RowDefinitions>
 
@@ -35,12 +35,16 @@
 
             <TextBlock
                 Grid.Column="0"
-                FontSize="50"
+                Margin="10,0"
+                FontSize="40"
+                FontWeight="Bold"
+                Foreground="#E9ECEF"
                 Text="Категории товаров" />
 
             <Button
                 Grid.Column="1"
-                Margin="20"
+                Width="20"
+                Height="20"
                 Command="{Binding ReloadCategoriesCommand}"
                 IsEnabled="{Binding CanReloadCategories}" />
         </Grid>
@@ -64,6 +68,7 @@
         <TextBlock
             Grid.Row="1"
             FontSize="22"
+            Foreground="#E9ECEF"
             Text="{Binding StatusTextValue}"
             TextAlignment="Center"
             Visibility="{Binding IsStatusTextVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
