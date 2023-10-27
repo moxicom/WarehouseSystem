@@ -10,6 +10,6 @@ namespace WarehouseSystem.ViewModels
 {
     internal class HomeVM : BaseViewModel
     {
-
+    
     }
 }
