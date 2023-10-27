@@ -32,6 +32,9 @@
                 <DataTemplate DataType="{x:Type viewmodels:CategoriesVM}">
                     <views:CategoriesView />
                 </DataTemplate>
+                <DataTemplate DataType="{x:Type viewmodels:CategoryVM}">
+                    <views:CategoryView />
+                </DataTemplate>
             </ContentControl.Resources>
         </ContentControl>
     </Grid>

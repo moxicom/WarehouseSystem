@@ -25,8 +25,10 @@ namespace WarehouseSystem.ViewModels
         public MainViewModel(string baseURL)
         {
             CurrentViewModel = new HomeVM();
+
             HomeBtnClick = new RelayCommand(OpenHomeView);
             CategoriesBtnClick = new RelayCommand(OpenCategoriesView);
+
             _baseURL = baseURL;
         }
 
@@ -44,6 +46,8 @@ namespace WarehouseSystem.ViewModels
         }
 
         private void OpenHomeView() => CurrentViewModel = new HomeVM();
-        private void OpenCategoriesView() => CurrentViewModel = new CategoriesVM(_baseURL);
+        protected void OpenCategoriesView() => CurrentViewModel = new CategoriesVM(_baseURL);
+        protected void OpenCategoryView() => CurrentViewModel = new CategoryVM();
+        
     }
 }
