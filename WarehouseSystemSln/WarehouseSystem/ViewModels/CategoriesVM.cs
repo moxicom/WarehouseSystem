@@ -50,7 +50,7 @@ namespace WarehouseSystem.ViewModels
 
         public void OpenCategory(int ID)
         {
-            _mainVM.OpenCategoryView();
+            _mainVM.OpenCategoryView(ID);
         }
     }
 }

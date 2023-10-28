@@ -48,7 +48,7 @@ namespace WarehouseSystem.ViewModels
 
         public void OpenCategoriesView() => CurrentViewModel = _categoriesVM;
         public void OpenHomeView() => CurrentViewModel = new HomeVM();
-        public void OpenCategoryView() => CurrentViewModel = new CategoryVM();
+        public void OpenCategoryView(int ID) => CurrentViewModel = new CategoryVM(ID, _baseUrl, this);
         
     }
 }

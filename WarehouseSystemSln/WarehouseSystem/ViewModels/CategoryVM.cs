@@ -7,7 +7,7 @@ using WarehouseSystem.Utilities;
 
 namespace WarehouseSystem.ViewModels
 {
-    internal class CategoryVM : BaseViewModel
+    internal class CategoryVM : BaseItemListVM<object>
     {
         // По сути я должен отсюда иметь возможность возвращаться обратно к категориям,
         // а для этого необходимо иметь доступ к методам класса `MainViewModel`
@@ -15,7 +15,12 @@ namespace WarehouseSystem.ViewModels
         // fields
 
         // constructor
-        public CategoryVM() { }
+        public CategoryVM(int ID, string baseUrl, MainViewModel mainVM) : base(baseUrl, mainVM, "Товары отсутствуют",
+            "Загрузка...")
+        {
+            StatusTextValue = ID.ToString();
+            IsStatusTextVisible = true;
+        }
 
         // methods
     }
