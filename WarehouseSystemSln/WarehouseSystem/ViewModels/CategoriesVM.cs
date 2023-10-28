@@ -21,11 +21,14 @@ namespace WarehouseSystem.ViewModels
         private bool _canReloadCategories;
         private bool _isStatusTextVisible;
 
+        private MainViewModel _mainViewModel;
+
 
         // properties
         public ICommand ReloadCategoriesCommand { get; set; }
+        public ICommand OpenCategoryCommand { get; set; }
         public CategoriesService CategoriesService { get; set; }
-
+        
         public string StatusTextValue
         {
             get => _statusTextValue;
@@ -66,12 +69,17 @@ namespace WarehouseSystem.ViewModels
         }
 
         // Constructor
-        public CategoriesVM(string baseUrl)
+        public CategoriesVM(string baseUrl, MainViewModel mainViewModel)
         {
             ReloadCategoriesCommand = new RelayCommand(ReloadCategories);
+            OpenCategoryCommand = new RelayCommand<int>(OpenCategory);
+
             CategoriesService = new CategoriesService(baseUrl);
             _user = new User() { Id = 1 };
+            _mainViewModel = mainViewModel;
+
             ReloadCategories();
+
         }
 
         // Methods
@@ -106,6 +114,11 @@ namespace WarehouseSystem.ViewModels
                 StatusTextValue = response.ErrorMessage;
             }
             CanReloadCategories = true;
+        }
+
+        public void OpenCategory(int ID)
+        {
+            _mainViewModel.OpenCategoryView();
         }
     }
 }

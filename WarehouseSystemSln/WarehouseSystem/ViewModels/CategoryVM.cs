@@ -11,6 +11,12 @@ namespace WarehouseSystem.ViewModels
     {
         // По сути я должен отсюда иметь возможность возвращаться обратно к категориям,
         // а для этого необходимо иметь доступ к методам класса `MainViewModel`
-        // 
+        
+        // fields
+
+        // constructor
+        public CategoryVM() { }
+
+        // methods
     }
 }

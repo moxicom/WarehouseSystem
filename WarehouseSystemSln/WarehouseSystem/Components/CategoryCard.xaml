@@ -55,7 +55,7 @@
                     Height="20"
                     Margin="0,5"
                     Command="{Binding DataContext.RemoveCategoryCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
-                    CommandParameter="Binding ID"
+                    CommandParameter="{Binding ID}"
                     Content="Удалить категорию" />
 
             </Grid>
@@ -64,7 +64,7 @@
                 <Button
                     Margin="10"
                     Command="{Binding DataContext.OpenCategoryCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
-                    CommandParameter="Binding ID"
+                    CommandParameter="{Binding ID}"
                     Content="Перейти" />
             </StackPanel>
 
