@@ -9,90 +9,22 @@ using WarehouseSystem.Utilities;
 
 namespace WarehouseSystem.ViewModels
 {
-    internal class CategoriesVM : BaseViewModel
+    internal class CategoriesVM : BaseItemListVM<Category>
     {
-        // fields
-        private const string NoRowsStatus = "Категории отсутствуют";
-        private const string LoadingStatus  = "Загрузка...";
-
-        private ObservableCollection<Category>? _categories;
-        private readonly User _user;
-        private string _statusTextValue;
-        private bool _canReloadCategories;
-        private bool _isStatusTextVisible;
-
-        private MainViewModel _mainViewModel;
-
-
         // properties
-        public ICommand ReloadCategoriesCommand { get; set; }
         public ICommand OpenCategoryCommand { get; set; }
         public CategoriesService CategoriesService { get; set; }
-        
-        public string StatusTextValue
-        {
-            get => _statusTextValue;
-            set { 
-                _statusTextValue = value; 
-                OnPropertyChanged(nameof(StatusTextValue));
-            }
-        }
-
-        public bool CanReloadCategories
-        {
-            get => _canReloadCategories;
-            set
-            {
-                _canReloadCategories = value;
-                OnPropertyChanged(nameof(CanReloadCategories));
-            }
-        }
-
-        public bool IsStatusTextVisible
-        {
-            get => _isStatusTextVisible;
-            set
-            {
-                _isStatusTextVisible = value;
-                OnPropertyChanged(nameof(IsStatusTextVisible));
-            }
-        }
-
-        public ObservableCollection<Category>? Categories
-        {
-            get => _categories;
-            set
-            {
-                _categories = value;
-                OnPropertyChanged(nameof(Categories));
-            }
-        }
 
         // Constructor
-        public CategoriesVM(string baseUrl, MainViewModel mainViewModel)
+        public CategoriesVM(string baseUrl, MainViewModel mainViewModel) : base(baseUrl, mainViewModel, "Категории отсутствуют", "Загрузка...")
         {
-            ReloadCategoriesCommand = new RelayCommand(ReloadCategories);
             OpenCategoryCommand = new RelayCommand<int>(OpenCategory);
-
             CategoriesService = new CategoriesService(baseUrl);
-            _user = new User() { Id = 1 };
-            _mainViewModel = mainViewModel;
-
-            ReloadCategories();
-
+            ReloadItems();
         }
 
         // Methods
-        public void ReloadCategories()
-        {
-            CanReloadCategories = false;
-            Categories = null;
-            IsStatusTextVisible = true;
-            StatusTextValue = LoadingStatus;
-            LoadCategories();
-        }
-
-        public async void LoadCategories()
+        protected override async void LoadItems()
         {
             var response = await CategoriesService.GetCategories(_user.Id);
 
@@ -101,7 +33,7 @@ namespace WarehouseSystem.ViewModels
                 // Check if there is no category
                 if (response.Data != null)
                 {
-                    Categories = new ObservableCollection<Category>(response.Data);
+                    ItemList = new ObservableCollection<Category>(response.Data);
                     IsStatusTextVisible = false;
                 }
                 else
@@ -113,12 +45,12 @@ namespace WarehouseSystem.ViewModels
             {
                 StatusTextValue = response.ErrorMessage;
             }
-            CanReloadCategories = true;
+            CanReloadItems = true;
         }
 
         public void OpenCategory(int ID)
         {
-            _mainViewModel.OpenCategoryView();
+            _mainVM.OpenCategoryView();
         }
     }
 }

@@ -45,8 +45,8 @@
                 Grid.Column="1"
                 Width="20"
                 Height="20"
-                Command="{Binding ReloadCategoriesCommand}"
-                IsEnabled="{Binding CanReloadCategories}" />
+                Command="{Binding ReloadItemsCommand}"
+                IsEnabled="{Binding CanReloadItems}" />
         </Grid>
 
         <!--  /// Categories list ///  -->
@@ -54,7 +54,7 @@
             Grid.Row="1"
             Grid.RowSpan="2"
             Margin="0,0,0,72">
-            <ItemsControl ItemsSource="{Binding Categories}">
+            <ItemsControl ItemsSource="{Binding ItemList}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <components:CategoryCard />
