@@ -3,6 +3,7 @@ package db
 import (
 	"APIServer/internal/models"
 	"database/sql"
+	"fmt"
 	"time"
 )
 
@@ -26,6 +27,8 @@ func GetAllCategories(db *sql.DB) ([]models.Category, error) {
 		}
 		categories = append(categories, category)
 	}
+
+	fmt.Println(categories)
 
 	time.Sleep(1 * time.Second)
 	return categories, nil

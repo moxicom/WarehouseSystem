@@ -23,6 +23,7 @@ namespace WarehouseSystem.ViewModels
         public CategoryVM(int categoryID, string baseUrl, MainViewModel mainVM) : base(baseUrl, mainVM, "Товары отсутствуют",
             "Загрузка...")
         {
+            _categoryID = categoryID;
             StatusTextValue = categoryID.ToString();
             IsStatusTextVisible = true;
             CategoryService = new CategoryService(baseUrl);

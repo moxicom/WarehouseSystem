@@ -16,7 +16,7 @@ namespace WarehouseSystem.Services
         // Methods
         public async Task<ApiResponse<List<Item>>> GetItems(int categoryID, int userID)
         {
-            var request = new RestRequest($"/items/{userID}", Method.Get)
+            var request = new RestRequest($"/items/{categoryID}", Method.Get)
             {
                 RequestFormat = RestSharp.DataFormat.Json
             };

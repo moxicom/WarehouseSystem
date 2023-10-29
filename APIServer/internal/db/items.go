@@ -3,13 +3,18 @@ package db
 import (
 	"APIServer/internal/models"
 	"database/sql"
+	"fmt"
+	"log"
 	"time"
 )
 
 func GetAllItems(db *sql.DB, categoryID int) ([]models.Item, error) {
 	rows, err := db.Query(`SELECT id, title, description, category_id, amount FROM public."Items" WHERE category_id = $1`, categoryID)
 
+	fmt.Printf("Getting items from %d category\n", categoryID)
+
 	if err == sql.ErrNoRows {
+		log.Println("sql.NoRows")
 		return nil, err
 	} else if err != nil {
 		return nil, err
