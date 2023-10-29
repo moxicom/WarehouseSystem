@@ -5,6 +5,7 @@ import (
 	"APIServer/internal/middleware"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,6 +29,21 @@ func main() {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		}
 		ctx.JSON(http.StatusOK, categories)
+	})
+	router.GET("/items/:category_id", middleware.CommonMiddleware(dbase), func(ctx *gin.Context) {
+		categoryIDstr := ctx.Param("category_id")
+		categoryIDInt, err := strconv.Atoi(categoryIDstr)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		items, err := db.GetAllItems(dbase, categoryIDInt)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		ctx.JSON(http.StatusOK, items)
 	})
 
 	router.Run(":8080")

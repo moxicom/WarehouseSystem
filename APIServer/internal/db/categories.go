@@ -18,6 +18,7 @@ func GetAllCategories(db *sql.DB) ([]models.Category, error) {
 	defer rows.Close()
 
 	var categories []models.Category
+
 	for rows.Next() {
 		var category models.Category
 		if err := rows.Scan(&category.ID, &category.Title, &category.CreatorID, &category.CreatedAt); err != nil {
