@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using WarehouseSystem.Enums;
 using WarehouseSystem.Models;
 using WarehouseSystem.Services;
 using WarehouseSystem.Utilities;
@@ -20,7 +21,7 @@ namespace WarehouseSystem.ViewModels
         public CategoryService CategoryService { get; set; }
 
         // constructor
-        public CategoryVM(int categoryID, string baseUrl, MainViewModel mainVM) : base(baseUrl, mainVM, "Товары отсутствуют",
+        public CategoryVM(int categoryID, string baseUrl, MainViewModel mainVM) : base(baseUrl, mainVM, PageItemType.Item, "Товары отсутствуют",
             "Загрузка...")
         {
             _categoryID = categoryID;

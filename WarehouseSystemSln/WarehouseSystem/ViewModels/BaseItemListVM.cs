@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
+using WarehouseSystem.Enums;
 using WarehouseSystem.Models;
 using WarehouseSystem.Utilities;
 
@@ -18,6 +19,7 @@ namespace WarehouseSystem.ViewModels
         protected string _statusTextValue;
         protected bool _canReloadItems;
         protected bool _isStatusTextVisible;
+        protected PageItemType _pageItemType;
 
         protected MainViewModel _mainVM;
 
@@ -25,6 +27,7 @@ namespace WarehouseSystem.ViewModels
         protected string NoRowsStatus { get; set; }
         protected string LoadingStatus { get; set; }
         public ICommand ReloadItemsCommand { get; set; }
+        public ICommand RemoveItemCommand { get; set; }
         public string BaseUrl { get; protected set; }
 
         public string StatusTextValue
@@ -68,16 +71,59 @@ namespace WarehouseSystem.ViewModels
         }
 
         // constructor
-        public BaseItemListVM(string baseUrl, MainViewModel mainViewModel, string noRowsStatus, string loadingStatus)
+        public BaseItemListVM(string baseUrl, MainViewModel mainViewModel, PageItemType pageItemType, string noRowsStatus, string loadingStatus)
         {
             ReloadItemsCommand = new RelayCommand(ReloadItems);
+            RemoveItemCommand = new RelayCommand<int>(RemoveItem);
+
             _mainVM = mainViewModel;
+            _pageItemType = pageItemType;
             _user = new User(){ Id = 1, Name = "Test Name", Surname = "Test Surname"};
+
             NoRowsStatus = noRowsStatus;
             LoadingStatus = loadingStatus;
         }
 
         // methods
+        protected virtual async void LoadItems() { }
+
+        protected async void RemoveItem(int itemID)
+        {
+            ConfirmationDialog confirmationDialog = new ConfirmationDialog();
+
+            string message = "Вы уверены, что хотите удалить этот объект?";
+
+            switch (_pageItemType)
+            {
+                case PageItemType.Category:
+                    break;
+                case PageItemType.Item:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            if (await confirmationDialog.ShowConfirmationDialog(message) == false)
+                return;
+
+            ReloadItems();
+        }
+
+        private async void RemoveItemRequest()
+        {
+            
+            switch (_pageItemType)
+            {
+                case PageItemType.Category:
+                    break;
+                case PageItemType.Item:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+        }
+
         public void ReloadItems()
         {
             CanReloadItems = false;
@@ -86,7 +132,5 @@ namespace WarehouseSystem.ViewModels
             StatusTextValue = LoadingStatus;
             LoadItems();
         }
-
-        protected virtual async void LoadItems() { }
     }
 }
