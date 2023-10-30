@@ -1,46 +1,56 @@
-﻿using GalaSoft.MvvmLight;
-using System;
+﻿using GalaSoft.MvvmLight.Command;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net;
+using System.Windows.Input;
 using WarehouseSystem.Models;
 using WarehouseSystem.Services;
 using WarehouseSystem.Utilities;
 
 namespace WarehouseSystem.ViewModels
 {
-    internal class CategoriesVM : BaseViewModel
+    internal class CategoriesVM : BaseItemListVM<Category>
     {
-        private ObservableCollection<Category> _categories;
-        private string _baseURL;
-        private User _user;
-
+        // properties
+        public ICommand OpenCategoryCommand { get; set; }
         public CategoriesService CategoriesService { get; set; }
 
-        public ObservableCollection<Category> Categories
+        // Constructor
+        public CategoriesVM(string baseUrl, MainViewModel mainViewModel) : base(baseUrl, mainViewModel, "Категории отсутствуют", "Загрузка...")
         {
-            get { return _categories; }
-            set
+            OpenCategoryCommand = new RelayCommand<int>(OpenCategory);
+            CategoriesService = new CategoriesService(baseUrl);
+            ReloadItems();
+        }
+
+        // Methods
+        protected override async void LoadItems()
+        {
+            var response = await CategoriesService.GetCategories(_user.Id);
+
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                _categories = value;
-                OnPropertyChanged(nameof(Categories));
+                // Check if there is no category
+                if (response.Data != null)
+                {
+                    ItemList = new ObservableCollection<Category>(response.Data);
+                    IsStatusTextVisible = false;
+                }
+                else
+                {
+                    StatusTextValue = NoRowsStatus;
+                }
             }
+            else
+            {
+                StatusTextValue = response.ErrorMessage;
+            }
+            CanReloadItems = true;
         }
 
-        public CategoriesVM(string baseURL)
+        public void OpenCategory(int ID)
         {
-            CategoriesService = new CategoriesService(baseURL);
-            _user = new User() { Id = 1 };
-
-            LoadCategories();
-        }
-
-        public async void LoadCategories()
-        {
-            ApiResponse<List<Category>> response = await CategoriesService.GetCategories(_user.Id);
-            Categories = new ObservableCollection<Category>(response.Data);
+            _mainVM.OpenCategoryView(ID);
         }
     }
 }

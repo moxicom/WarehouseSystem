@@ -8,7 +8,12 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <Grid Background="Wheat">
-        <TextBlock FontSize="50" Text="HomeView" />
+    <Grid VerticalAlignment="Center" Background="#212529">
+        <TextBlock
+            Margin="10,0"
+            FontSize="40"
+            FontWeight="Bold"
+            Foreground="#E9ECEF"
+            Text="Здравстуйте, Владимир Егоров" />
     </Grid>
 </UserControl>

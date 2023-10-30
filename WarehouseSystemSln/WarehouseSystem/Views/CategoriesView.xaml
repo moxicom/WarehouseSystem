@@ -13,34 +13,65 @@
     <Grid
         Width="800"
         HorizontalAlignment="Center"
-        Background="Wheat">
+        Background="#212529">
+
+        <Grid.Resources>
+            <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        </Grid.Resources>
+
         <Grid.RowDefinitions>
-            <RowDefinition Height="75" />
+            <RowDefinition Height="55" />
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <TextBlock
-            Grid.Row="0"
-            FontSize="50"
-            Text="CATEGORIES VIEW" />
+        <!--  /// Top panel ///  -->
+        <Grid Grid.Row="0">
 
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="9*" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock
+                Grid.Column="0"
+                Margin="10,0"
+                FontSize="40"
+                FontWeight="Bold"
+                Foreground="#E9ECEF"
+                Text="Категории товаров" />
+
+            <Button
+                Grid.Column="1"
+                Width="20"
+                Height="20"
+                Command="{Binding ReloadItemsCommand}"
+                IsEnabled="{Binding CanReloadItems}" />
+        </Grid>
+
+        <!--  /// Categories list ///  -->
         <ScrollViewer
             Grid.Row="1"
             Grid.RowSpan="2"
             Margin="0,0,0,72">
-            <ItemsControl ItemsSource="{Binding Categories}">
+            <ItemsControl ItemsSource="{Binding ItemList}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <components:CategoryCard />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
-                <!--<ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>-->
             </ItemsControl>
         </ScrollViewer>
+
+        <!--  /// Info ///  -->
+
+        <TextBlock
+            Grid.Row="1"
+            FontSize="22"
+            Foreground="#E9ECEF"
+            Text="{Binding StatusTextValue}"
+            TextAlignment="Center"
+            Visibility="{Binding IsStatusTextVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
 
     </Grid>
 </UserControl>

@@ -10,17 +10,18 @@ namespace WarehouseSystem.Services
     internal class BaseRestClient
     {
         public RestClient Client { get; private set; }
-        public string BaseURL { get; private set; }
+        public string BaseUrl { get; private set; }
 
-        public BaseRestClient(string baseURL)
+        public BaseRestClient(string baseUrl)
         {
-            ChangeClientUrl(baseURL);   
+            ChangeClientUrl(baseUrl);  
+            BaseUrl = baseUrl;
         }
 
-        public void ChangeClientUrl(string baseURL)
+        public void ChangeClientUrl(string baseUrl)
         {
-            BaseURL = baseURL;
-            Client = new RestClient(new RestClientOptions { BaseUrl = new Uri(baseURL), MaxTimeout = 20000 });
+            BaseUrl = baseUrl;
+            Client = new RestClient(new RestClientOptions { BaseUrl = new Uri(baseUrl), MaxTimeout = 5000 });
         }
     }
 }

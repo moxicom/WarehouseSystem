@@ -1,33 +1,33 @@
-﻿using RestSharp;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RestSharp;
 using WarehouseSystem.Models;
 
 namespace WarehouseSystem.Services
 {
-    internal class CategoriesService : BaseRestClient
+    internal class CategoryService : BaseRestClient
     {
-        // Construcor
-        public CategoriesService(string name) : base(name) { }
-        
+        // Categoies
+        public CategoryService(string baseUrl) : base(baseUrl) { }
+
         // Methods
-        public async Task<ApiResponse<List<Category>>> GetCategories (int userID)
+        public async Task<ApiResponse<List<Item>>> GetItems(int categoryID, int userID)
         {
-            var request = new RestRequest("/categories", Method.Get) 
-            { 
+            var request = new RestRequest($"/items/{categoryID}", Method.Get)
+            {
                 RequestFormat = RestSharp.DataFormat.Json
             };
 
             request.AddJsonBody(new { userID });
 
-            var response = await Client.ExecuteAsync<List<Category>>(request);
+            var response = await Client.ExecuteAsync<List<Item>>(request);
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                return new ApiResponse<List<Category>>
+                return new ApiResponse<List<Item>>
                 {
                     Data = response.Data,
                     ErrorMessage = "",
@@ -36,7 +36,7 @@ namespace WarehouseSystem.Services
             }
             else
             {
-                return new ApiResponse<List<Category>>
+                return new ApiResponse<List<Item>>
                 {
                     Data = response.Data,
                     ErrorMessage = "Не удалось подключиться к серверу",
