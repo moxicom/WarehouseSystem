@@ -72,7 +72,7 @@ namespace WarehouseSystem.ViewModels
         {
             ReloadItemsCommand = new RelayCommand(ReloadItems);
             _mainVM = mainViewModel;
-            _user = new User(){ Id = 1 };
+            _user = new User(){ Id = 1, Name = "Test Name", Surname = "Test Surname"};
             NoRowsStatus = noRowsStatus;
             LoadingStatus = loadingStatus;
         }

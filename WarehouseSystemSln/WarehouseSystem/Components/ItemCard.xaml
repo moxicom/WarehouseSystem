@@ -53,7 +53,7 @@
                     Width="120"
                     Height="20"
                     Margin="0,5"
-                    Content="Удалить " />
+                    Content="Удалить" />
             </Grid>
 
             <StackPanel Grid.Column="1" VerticalAlignment="Center">
