@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using RestSharp;
@@ -16,7 +17,7 @@ namespace WarehouseSystem.Services
         // Methods
         public async Task<ApiResponse<List<Item>>> GetItems(int categoryID, int userID)
         {
-            var request = new RestRequest($"/items/{categoryID}", Method.Get)
+            var request = new RestRequest($"/categories/{categoryID}", Method.Get)
             {
                 RequestFormat = RestSharp.DataFormat.Json
             };
@@ -45,8 +46,31 @@ namespace WarehouseSystem.Services
             }
         }
 
-        //public async Task<ApiResponse<object>> DeleteItemse(int categoryID, int userID)
-        //{
-        //}
+        public async Task<ApiResponse<object>> RemoveItem(int itemID, int userID)
+        {
+            var request = new RestRequest($"/items/{itemID}", Method.Delete)
+            {
+                RequestFormat = RestSharp.DataFormat.Json
+            };
+            request.AddJsonBody(new { userID });
+            
+            var response = await Client.ExecuteAsync(request);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return new ApiResponse<object>()
+                {
+                    Data = null,
+                    ErrorMessage = "",
+                    StatusCode = response.StatusCode
+                };
+            }
+            return new ApiResponse<object>()
+                {
+                    Data = null,
+                    ErrorMessage = "",
+                    StatusCode = response.StatusCode
+                };
+        }
     }
 }

@@ -30,7 +30,7 @@ func main() {
 		}
 		ctx.JSON(http.StatusOK, categories)
 	})
-	router.GET("/items/:category_id", middleware.CommonMiddleware(dbase), func(ctx *gin.Context) {
+	router.GET("/categories/:category_id", middleware.CommonMiddleware(dbase), func(ctx *gin.Context) {
 		categoryIDstr := ctx.Param("category_id")
 		categoryIDInt, err := strconv.Atoi(categoryIDstr)
 		if err != nil {
