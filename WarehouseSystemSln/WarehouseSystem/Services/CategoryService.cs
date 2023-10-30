@@ -58,17 +58,18 @@ namespace WarehouseSystem.Services
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                return new ApiResponse<object>()
+                return new ApiResponse<object>
                 {
                     Data = null,
                     ErrorMessage = "",
                     StatusCode = response.StatusCode
                 };
             }
-            return new ApiResponse<object>()
+
+            return new ApiResponse<object>
                 {
                     Data = null,
-                    ErrorMessage = "",
+                    ErrorMessage = "Не удалось подключиться к серверу",
                     StatusCode = response.StatusCode
                 };
         }

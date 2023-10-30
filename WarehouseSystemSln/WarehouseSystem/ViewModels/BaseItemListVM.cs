@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using WarehouseSystem.Enums;
 using WarehouseSystem.Models;
+using WarehouseSystem.Services;
 using WarehouseSystem.Utilities;
 
 namespace WarehouseSystem.ViewModels
@@ -80,49 +83,36 @@ namespace WarehouseSystem.ViewModels
             _pageItemType = pageItemType;
             _user = new User(){ Id = 1, Name = "Test Name", Surname = "Test Surname"};
 
+            BaseUrl = baseUrl;
             NoRowsStatus = noRowsStatus;
             LoadingStatus = loadingStatus;
         }
 
         // methods
         protected virtual async void LoadItems() { }
-
+        protected virtual async Task<ApiResponse<object>> RemoveRequest(int itemID, int userID) { return null; }
+         
         protected async void RemoveItem(int itemID)
         {
             ConfirmationDialog confirmationDialog = new ConfirmationDialog();
 
             string message = "Вы уверены, что хотите удалить этот объект?";
 
-            switch (_pageItemType)
-            {
-                case PageItemType.Category:
-                    break;
-                case PageItemType.Item:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
             if (await confirmationDialog.ShowConfirmationDialog(message) == false)
                 return;
+
+            var response = await RemoveRequest(itemID, _user.Id);
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                MessageBox.Show("Не удалось удалить объект", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             ReloadItems();
         }
 
-        private async void RemoveItemRequest()
-        {
-            
-            switch (_pageItemType)
-            {
-                case PageItemType.Category:
-                    break;
-                case PageItemType.Item:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
 
-        }
 
         public void ReloadItems()
         {
