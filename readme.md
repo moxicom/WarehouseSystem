@@ -1,5 +1,7 @@
 # WIREHOUSE system
 
 REST API requests:
-* `/auth`
-* `/categories`
+* GET `/auth`
+* GET `/categories`
+* GET `/categories/:category_id`
+* DELETE `/items/:item_id`
