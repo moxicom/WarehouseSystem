@@ -1,54 +1,45 @@
-﻿using GalaSoft.MvvmLight;
+﻿using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using WarehouseSystem.Utilities;
 
-namespace WarehouseSystem.ViewModels
-{ 
-    public class MainViewModel : BaseViewModel
+namespace WarehouseSystem.ViewModels;
+
+public class MainViewModel : BaseViewModel
+{
+    // fields
+    private readonly string _baseUrl;
+    private readonly CategoriesVM _categoriesVM;
+    private BaseViewModel _currentViewModel;
+
+    // constructor
+    public MainViewModel(string baseUrl)
     {
-        private BaseViewModel _currentViewModel;
-        private CategoriesVM _categoriesVM;
+        CurrentViewModel = new HomeVM();
+        _baseUrl = baseUrl;
+        _categoriesVM = new CategoriesVM(baseUrl, this);
+        HomeBtnClick = new RelayCommand(OpenHomeView);
+        CategoriesBtnClick = new RelayCommand(OpenCategoriesView);
+    }
 
-        private readonly string _baseUrl;
+    // properties
+    public ICommand HomeBtnClick { get; }
+    public ICommand CategoriesBtnClick { get; }
 
-        public ICommand HomeBtnClick { get; }
-        public ICommand CategoriesBtnClick { get; }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-                         
-        public MainViewModel(string baseUrl)
+    public BaseViewModel CurrentViewModel
+    {
+        get => _currentViewModel;
+        set
         {
-            CurrentViewModel = new HomeVM();
-            _baseUrl = baseUrl;
-            _categoriesVM = new CategoriesVM(baseUrl, this);
-            HomeBtnClick = new RelayCommand(OpenHomeView);
-            CategoriesBtnClick = new RelayCommand(OpenCategoriesView);
-        }
-
-        public BaseViewModel CurrentViewModel
-        {
-            get => _currentViewModel;
-            set
+            if (_currentViewModel != value)
             {
-                if (_currentViewModel != value)
-                {
-                    _currentViewModel = value;
-                    OnPropertyChanged(nameof(CurrentViewModel));
-                }
+                _currentViewModel = value;
+                OnPropertyChanged();
             }
         }
-
-        public void OpenCategoriesView() => CurrentViewModel = _categoriesVM;
-        public void OpenHomeView() => CurrentViewModel = new HomeVM();
-        public void OpenCategoryView(int ID) => CurrentViewModel = new CategoryVM(ID, _baseUrl, this);
-        
     }
+
+    // methods
+    public void OpenCategoriesView() => CurrentViewModel = _categoriesVM;
+    public void OpenHomeView() => CurrentViewModel = new HomeVM();
+    public void OpenCategoryView(int ID) => CurrentViewModel = new CategoryVM(ID, _baseUrl, this);
 }

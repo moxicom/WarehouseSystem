@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WarehouseSystem.Enums;
 
 namespace WarehouseSystem.Models
 {
@@ -12,11 +13,5 @@ namespace WarehouseSystem.Models
         public string Name { get; set; } = string.Empty;
         public string Surname {  get; set; } = string.Empty;
         public UserRole Role { get; set; }
-    }
-
-    public enum UserRole
-    {
-        User = 0,
-        Admin = 1,
     }
 }
