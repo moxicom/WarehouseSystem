@@ -1,86 +1,79 @@
-﻿using GalaSoft.MvvmLight.Command;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Net;
 using System.Windows.Input;
-using WarehouseSystem.Models;
+using GalaSoft.MvvmLight.Command;
 using WarehouseSystem.Services;
 using WarehouseSystem.Utilities;
 using WarehouseSystem.Views;
 
-namespace WarehouseSystem.ViewModels
+namespace WarehouseSystem.ViewModels;
+
+internal class LoginVM : BaseViewModel
 {
-    internal class LoginVM : BaseViewModel
+    public delegate void CloseWindowDelegate();
+
+    private readonly string _baseUrl;
+    private string _errorTextBlockValue = string.Empty;
+    private string _password = string.Empty;
+
+    public LoginVM(string baseUrl)
     {
-        private string _errorTextBlockValue = string.Empty;
-        private string _password = string.Empty;
-        private readonly string _baseUrl;
+        AuthService = new Auth(baseUrl);
+        LoggingButtonPressed = new RelayCommand(ExecuteLoginRequest);
+        _baseUrl = baseUrl;
+        Username = "";
+        Password = "";
+    }
 
-        public string? Username { get; set; }
-        public ICommand? LoggingButtonPressed { get; set; }
-        public Auth AuthService { get; private set; }
+    public string? Username { get; set; }
+    public ICommand? LoggingButtonPressed { get; set; }
+    public Auth AuthService { get; }
 
-        public delegate void CloseWindowDelegate();
-        public event CloseWindowDelegate RequestClose;
-
-        public LoginVM(string baseUrl)
+    public string ErrorTextBlockValue
+    {
+        get => _errorTextBlockValue;
+        set
         {
-            AuthService =  new Auth(baseUrl);
-            LoggingButtonPressed = new RelayCommand(ExecuteLoginRequest);
-            _baseUrl = baseUrl;
-            Username = "";
-            Password = "";
+            _errorTextBlockValue = value;
+            OnPropertyChanged();
         }
+    }
 
-        public string ErrorTextBlockValue
+    public string Password
+    {
+        get => _password;
+        set
         {
-            get => _errorTextBlockValue;
-            set
+            if (_password != value)
             {
-                _errorTextBlockValue = value;
-                OnPropertyChanged(nameof(ErrorTextBlockValue));
+                _password = value;
+                OnPropertyChanged();
             }
         }
+    }
 
-        public string Password
+    public event CloseWindowDelegate RequestClose;
+
+    public async void ExecuteLoginRequest()
+    {
+        if (Password == "" || Username == "")
+            return;
+
+        ErrorTextBlockValue = "Ожидайте";
+        var response = await AuthService.VerifyUserRequest(Username, Password);
+        ErrorTextBlockValue = response.ErrorMessage;
+
+        if (response.StatusCode == HttpStatusCode.OK)
         {
-            get => _password;
-            set
-            {
-                if (_password != value)
-                {
-                    _password = value;
-                    OnPropertyChanged(nameof(Password));
-                }
-            }
+            var newViewModel = new MainViewModel(_baseUrl);
+            var newWindow = new AppMainWindow();
+            newWindow.DataContext = newViewModel;
+            newWindow.Show();
+            CloseWindow();
         }
+    }
 
-        public async void ExecuteLoginRequest()
-        {
-            if (Password == "" || Username == "")
-                return;
-
-            ErrorTextBlockValue = "Ожидайте";
-            ApiResponse<User> response = await AuthService.VerifyUserRequest(Username, Password);
-            ErrorTextBlockValue = response.ErrorMessage;
-            
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
-            {
-                var newViewModel = new MainViewModel(_baseUrl);
-                var newWindow = new AppMainWindow();
-                newWindow.DataContext = newViewModel;
-                newWindow.Show();
-                CloseWindow();
-            }
-        }
-
-        public void CloseWindow()
-        {
-            RequestClose.Invoke();
-        }
+    public void CloseWindow()
+    {
+        RequestClose.Invoke();
     }
 }
