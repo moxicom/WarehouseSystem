@@ -5,6 +5,8 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using WarehouseSystem.Services;
+using WarehouseSystem.ViewModels;
 using WarehouseSystem.Views;
 
 namespace WarehouseSystem
@@ -16,7 +18,7 @@ namespace WarehouseSystem
     {
         App()
         {
-            Run(new AppMainWindow());
+            Run(new MainWindow());
         }
     }
 }
