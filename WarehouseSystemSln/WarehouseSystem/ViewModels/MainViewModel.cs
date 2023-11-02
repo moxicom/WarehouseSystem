@@ -43,4 +43,3 @@ public class MainViewModel : BaseViewModel
     public void OpenHomeView() => CurrentViewModel = new HomeVM();
     public void OpenCategoryView(int ID) => CurrentViewModel = new CategoryVM(ID, _baseUrl, this);
 }
-}
