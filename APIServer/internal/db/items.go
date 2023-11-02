@@ -3,15 +3,13 @@ package db
 import (
 	"APIServer/internal/models"
 	"database/sql"
-	"fmt"
 	"log"
 	"time"
 )
 
 func GetAllItems(db *sql.DB, categoryID int) ([]models.Item, error) {
+	time.Sleep(1 * time.Second)
 	rows, err := db.Query(`SELECT id, title, description, category_id, amount FROM public."Items" WHERE category_id = $1`, categoryID)
-
-	fmt.Printf("Getting items from %d category\n", categoryID)
 
 	if err == sql.ErrNoRows {
 		log.Println("sql.NoRows")
@@ -35,7 +33,16 @@ func GetAllItems(db *sql.DB, categoryID int) ([]models.Item, error) {
 		}
 		items = append(items, item)
 	}
-
-	time.Sleep(1 * time.Second)
 	return items, nil
+}
+
+func DeleteItem(db *sql.DB, itemID int) error {
+	time.Sleep(1 * time.Second)
+	_, err := db.Exec(`DELETE FROM public."Items" WHERE id = $1`, itemID)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

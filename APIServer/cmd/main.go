@@ -16,6 +16,8 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// db.AddItemsByConsole(dbase)
+
 	router := gin.Default()
 
 	router.GET("/auth", middleware.LoginMiddleware(dbase), func(ctx *gin.Context) {
@@ -44,6 +46,22 @@ func main() {
 			return
 		}
 		ctx.JSON(http.StatusOK, items)
+	})
+
+	router.DELETE("/items/:item_id", middleware.CommonMiddleware(dbase), func(ctx *gin.Context) {
+		itemIDstr := ctx.Param("item_id")
+		itemIDInt, err := strconv.Atoi(itemIDstr)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		err = db.DeleteItem(dbase, itemIDInt)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		ctx.JSON(http.StatusOK, gin.H{"status": "ok"})
 	})
 
 	router.Run(":8080")
