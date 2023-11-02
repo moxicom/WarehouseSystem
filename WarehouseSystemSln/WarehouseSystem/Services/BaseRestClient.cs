@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace WarehouseSystem.Services
 {
-    internal class BaseRestClient
+    internal abstract class BaseRestClient
     {
         public RestClient Client { get; private set; }
         public string BaseUrl { get; private set; }

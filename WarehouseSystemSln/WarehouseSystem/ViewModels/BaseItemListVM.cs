@@ -15,7 +15,7 @@ using WarehouseSystem.Utilities;
 
 namespace WarehouseSystem.ViewModels
 {
-    internal class BaseItemListVM<T> : BaseViewModel
+    internal abstract class BaseItemListVM<T> : BaseViewModel
     {
         protected ObservableCollection<T>? _itemList;
         protected User _user;
@@ -74,7 +74,7 @@ namespace WarehouseSystem.ViewModels
         }
 
         // constructor
-        public BaseItemListVM(string baseUrl, MainViewModel mainViewModel, PageItemType pageItemType, string noRowsStatus, string loadingStatus)
+        protected BaseItemListVM(string baseUrl, MainViewModel mainViewModel, PageItemType pageItemType, string noRowsStatus, string loadingStatus)
         {
             ReloadItemsCommand = new RelayCommand(ReloadItems);
             RemoveItemCommand = new RelayCommand<int>(RemoveItem);
@@ -86,16 +86,18 @@ namespace WarehouseSystem.ViewModels
             BaseUrl = baseUrl;
             NoRowsStatus = noRowsStatus;
             LoadingStatus = loadingStatus;
+            StatusTextValue = "";
         }
 
         // methods
-        protected virtual async void LoadItems() { }
-        protected virtual async Task<ApiResponse<object>> RemoveRequest(int itemID, int userID) { return null; }
+        protected abstract void LoadItems();
+        
+        protected abstract Task<ApiResponse<object>> RemoveRequest(int itemID, int userID);
          
         protected async void RemoveItem(int itemID)
         {
             ConfirmationDialog confirmationDialog = new ConfirmationDialog();
-
+            
             string message = "Вы уверены, что хотите удалить этот объект?";
 
             if (await confirmationDialog.ShowConfirmationDialog(message) == false)
@@ -111,8 +113,6 @@ namespace WarehouseSystem.ViewModels
 
             ReloadItems();
         }
-
-
 
         public void ReloadItems()
         {

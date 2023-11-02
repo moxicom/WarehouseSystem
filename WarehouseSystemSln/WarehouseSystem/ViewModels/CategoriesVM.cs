@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using WarehouseSystem.Enums;
 using WarehouseSystem.Models;
@@ -47,6 +48,11 @@ namespace WarehouseSystem.ViewModels
                 StatusTextValue = response.ErrorMessage;
             }
             CanReloadItems = true;
+        }
+
+        protected override async Task<ApiResponse<object>> RemoveRequest(int itemID, int userID)
+        {
+            return new ApiResponse<object>();
         }
 
         public void OpenCategory(int ID)

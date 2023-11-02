@@ -10,9 +10,9 @@ using WarehouseSystem.Services;
 
 namespace WarehouseSystem.Utilities
 {
-    public class BaseViewModel : ViewModelBase, INotifyPropertyChanged
+    public abstract class BaseViewModel : ViewModelBase, INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public new event PropertyChangedEventHandler?  PropertyChanged;
 
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
