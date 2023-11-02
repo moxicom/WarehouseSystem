@@ -37,7 +37,7 @@ namespace WarehouseSystem.ViewModels
         protected override async void LoadItems()
         {
             CategoryService CategoryService = new CategoryService(BaseUrl);
-            var response = await CategoryService.GetItems(_categoryID, _user.Id);
+            var response = await CategoryService.GetItems(_categoryID, User.Id);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -63,7 +63,7 @@ namespace WarehouseSystem.ViewModels
         protected override async Task<ApiResponse<object>> RemoveRequest(int itemID, int userID)
         {
             CategoryService CategoryService = new CategoryService(BaseUrl);
-            var response = await CategoryService.RemoveItem(itemID, _user.Id);
+            var response = await CategoryService.RemoveItem(itemID, User.Id);
             return response;
         }
 

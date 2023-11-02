@@ -15,14 +15,11 @@ namespace WarehouseSystem.ViewModels
     public class MainViewModel : BaseViewModel
     {
         private BaseViewModel _currentViewModel;
-        private CategoriesVM _categoriesVM;
-
+        private readonly CategoriesVM _categoriesVM;
         private readonly string _baseUrl;
 
         public ICommand HomeBtnClick { get; }
         public ICommand CategoriesBtnClick { get; }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
                          
         public MainViewModel(string baseUrl)
         {

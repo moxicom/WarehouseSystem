@@ -28,7 +28,7 @@ namespace WarehouseSystem.ViewModels
         // Methods
         protected override async void LoadItems()
         {
-            var response = await CategoriesService.GetCategories(_user.Id);
+            var response = await CategoriesService.GetCategories(User.Id);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -57,7 +57,7 @@ namespace WarehouseSystem.ViewModels
 
         public void OpenCategory(int ID)
         {
-            _mainVM.OpenCategoryView(ID);
+            MainVM.OpenCategoryView(ID);
         }
     }
 }
