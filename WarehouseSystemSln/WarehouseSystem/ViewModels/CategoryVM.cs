@@ -1,71 +1,65 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Collections.ObjectModel;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using WarehouseSystem.Enums;
 using WarehouseSystem.Models;
 using WarehouseSystem.Services;
-using WarehouseSystem.Utilities;
 
-namespace WarehouseSystem.ViewModels
+namespace WarehouseSystem.ViewModels;
+
+internal class CategoryVM : BaseItemListVM<Item>
 {
-    internal class CategoryVM : BaseItemListVM<Item>
+    // Fields
+    private readonly int _categoryID;
+
+    // Properties
+    //public CategoryService CategoryService { get; set; }
+
+    // constructor
+    public CategoryVM(int categoryID, string baseUrl, MainViewModel mainVM) : base(baseUrl, mainVM, PageItemType.Item,
+        "Товары отсутствуют",
+        "Загрузка...")
     {
-        // Fields
-        private int _categoryID;
+        _categoryID = categoryID;
 
-        // Properties
-        //public CategoryService CategoryService { get; set; }
+        StatusTextValue = categoryID.ToString();
+        IsStatusTextVisible = true;
+        BaseUrl = baseUrl;
+        //CategoryService = new CategoryService(baseUrl);
+        ReloadItems();
+    }
 
-        // constructor
-        public CategoryVM(int categoryID, string baseUrl, MainViewModel mainVM) : base(baseUrl, mainVM, PageItemType.Item, "Товары отсутствуют",
-            "Загрузка...")
+    // methods
+    protected override async void LoadItems()
+    {
+        var CategoryService = new CategoryService(BaseUrl);
+        var response = await CategoryService.GetItems(_categoryID, User.Id);
+
+        if (response.StatusCode == HttpStatusCode.OK)
         {
-            _categoryID = categoryID;
-
-            StatusTextValue = categoryID.ToString();
-            IsStatusTextVisible = true;
-            BaseUrl = baseUrl;
-            //CategoryService = new CategoryService(baseUrl);
-            ReloadItems();
-        }
-
-        // methods
-        protected override async void LoadItems()
-        {
-            CategoryService CategoryService = new CategoryService(BaseUrl);
-            var response = await CategoryService.GetItems(_categoryID, User.Id);
-
-            if (response.StatusCode == HttpStatusCode.OK)
+            // Check if there is no items
+            if (response.Data != null)
             {
-                // Check if there is no items
-                if (response.Data != null)
-                {
-                    ItemList = new ObservableCollection<Item>(response.Data);
-                    IsStatusTextVisible = false;
-                }
-                else
-                {
-                    StatusTextValue = NoRowsStatus;
-                }
+                ItemList = new ObservableCollection<Item>(response.Data);
+                IsStatusTextVisible = false;
             }
             else
             {
-                StatusTextValue = response.ErrorMessage;
+                StatusTextValue = NoRowsStatus;
             }
-
-            CanReloadItems = true;
         }
-
-        protected override async Task<ApiResponse<object>> RemoveRequest(int itemID, int userID)
+        else
         {
-            CategoryService CategoryService = new CategoryService(BaseUrl);
-            var response = await CategoryService.RemoveItem(itemID, User.Id);
-            return response;
+            StatusTextValue = response.ErrorMessage;
         }
 
+        CanReloadItems = true;
+    }
+
+    protected override async Task<ApiResponse<object>> RemoveRequest(int itemID, int userID)
+    {
+        var CategoryService = new CategoryService(BaseUrl);
+        var response = await CategoryService.RemoveItem(itemID, User.Id);
+        return response;
     }
 }
