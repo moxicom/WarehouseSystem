@@ -98,7 +98,7 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
 
         var message = "Вы уверены, что хотите удалить этот объект?";
 
-        if (await confirmationDialog.ShowConfirmationDialog(message) == false)
+        if (confirmationDialog.ShowConfirmationDialog(message) == false)
             return;
 
         var response = await RemoveRequest(itemID, User.Id);

@@ -28,9 +28,11 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock
-                FontSize="50"
+                Margin="10,0"
+                FontSize="40"
+                FontWeight="Bold"
                 Foreground="#E9ECEF"
-                Text="Category View" />
+                Text="{Binding PageTitle}" />
 
             <Button
                 Grid.Column="1"

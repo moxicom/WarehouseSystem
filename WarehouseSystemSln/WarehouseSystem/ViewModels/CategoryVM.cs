@@ -11,9 +11,7 @@ internal class CategoryVM : BaseItemListVM<Item>
 {
     // Fields
     private readonly int _categoryID;
-
-    // Properties
-    //public CategoryService CategoryService { get; set; }
+    private string _pageTitle;
 
     // constructor
     public CategoryVM(int categoryID, string baseUrl, MainViewModel mainVM) : base(baseUrl, mainVM, PageItemType.Item,
@@ -25,8 +23,20 @@ internal class CategoryVM : BaseItemListVM<Item>
         StatusTextValue = categoryID.ToString();
         IsStatusTextVisible = true;
         BaseUrl = baseUrl;
+        PageTitle = "Категория";
         //CategoryService = new CategoryService(baseUrl);
         ReloadItems();
+    }
+
+    // Properties
+    public string PageTitle
+    {
+        get => _pageTitle;
+        set
+        {
+            _pageTitle = value;
+            OnPropertyChanged();
+        }
     }
 
     // methods
@@ -37,10 +47,11 @@ internal class CategoryVM : BaseItemListVM<Item>
 
         if (response.StatusCode == HttpStatusCode.OK)
         {
+            PageTitle = response.Data.Title;
             // Check if there is no items
-            if (response.Data != null)
+            if (response.Data.Items != null)
             {
-                ItemList = new ObservableCollection<Item>(response.Data);
+                ItemList = new ObservableCollection<Item>(response.Data.Items);
                 IsStatusTextVisible = false;
             }
             else

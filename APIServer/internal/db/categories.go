@@ -33,3 +33,23 @@ func GetAllCategories(db *sql.DB) ([]models.Category, error) {
 	time.Sleep(1 * time.Second)
 	return categories, nil
 }
+
+func GetCategoryTitle(db *sql.DB, categoryID int) (string, error) {
+	rows, err := db.Query(`SELECT title FROM public."Categories" WHERE id = $1`, categoryID)
+
+	if err == sql.ErrNoRows {
+		return "", err
+	} else if err != nil {
+		return "", err
+	}
+
+	var title string
+
+	for rows.Next() {
+		if err := rows.Scan(&title); err != nil {
+			return "", err
+		}
+	}
+
+	return title, nil
+}

@@ -15,7 +15,7 @@ namespace WarehouseSystem.Services
         public CategoryService(string baseUrl) : base(baseUrl) { }
 
         // Methods
-        public async Task<ApiResponse<List<Item>>> GetItems(int categoryID, int userID)
+        public async Task<ApiResponse<GetCategoryResponseData>> GetItems(int categoryID, int userID)
         {
             var request = new RestRequest($"/categories/{categoryID}", Method.Get)
             {
@@ -24,11 +24,11 @@ namespace WarehouseSystem.Services
 
             request.AddJsonBody(new { userID });
 
-            var response = await Client.ExecuteAsync<List<Item>>(request);
+            var response = await Client.ExecuteAsync<GetCategoryResponseData>(request);
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                return new ApiResponse<List<Item>>
+                return new ApiResponse<GetCategoryResponseData>
                 {
                     Data = response.Data,
                     ErrorMessage = "",
@@ -37,7 +37,7 @@ namespace WarehouseSystem.Services
             }
             else
             {
-                return new ApiResponse<List<Item>>
+                return new ApiResponse<GetCategoryResponseData>
                 {
                     Data = response.Data,
                     ErrorMessage = "Не удалось подключиться к серверу",
