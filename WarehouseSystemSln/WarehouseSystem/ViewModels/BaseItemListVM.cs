@@ -14,6 +14,7 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
 {
     private bool _canReloadItems;
     private bool _isStatusTextVisible;
+    private bool _isAddItemButtonVisible;
     private ObservableCollection<T>? _itemList;
 
     private PageItemType _pageItemType;
@@ -76,6 +77,15 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
             OnPropertyChanged();
         }
     }
+    public bool IsAddItemButtonVisible
+    {
+        get => _isAddItemButtonVisible;
+        set
+        {
+            _isAddItemButtonVisible = value;
+            OnPropertyChanged();
+        }
+    }
 
     public ObservableCollection<T>? ItemList
     {
@@ -98,8 +108,11 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
 
         var message = "Вы уверены, что хотите удалить этот объект?";
 
-        if (confirmationDialog.ShowConfirmationDialog(message) == false)
+        if (await confirmationDialog.ShowConfirmationDialog(message) == false)
             return;
+
+        ChangeToLoadingStatus();
+        ItemList = null;
 
         var response = await RemoveRequest(itemID, User.Id);
 
@@ -114,10 +127,16 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
 
     public void ReloadItems()
     {
-        CanReloadItems = false;
+        ChangeToLoadingStatus();
         ItemList = null;
+        LoadItems();
+    }
+
+    public void ChangeToLoadingStatus()
+    {
+        CanReloadItems = false;
         IsStatusTextVisible = true;
         StatusTextValue = LoadingStatus;
-        LoadItems();
+        IsAddItemButtonVisible = false;
     }
 }

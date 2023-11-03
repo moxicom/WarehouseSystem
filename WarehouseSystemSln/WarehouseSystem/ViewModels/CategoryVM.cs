@@ -23,7 +23,7 @@ internal class CategoryVM : BaseItemListVM<Item>
         StatusTextValue = categoryID.ToString();
         IsStatusTextVisible = true;
         BaseUrl = baseUrl;
-        PageTitle = "Категория";
+        PageTitle = "Загрузка категории...";
         //CategoryService = new CategoryService(baseUrl);
         ReloadItems();
     }
@@ -53,10 +53,12 @@ internal class CategoryVM : BaseItemListVM<Item>
             {
                 ItemList = new ObservableCollection<Item>(response.Data.Items);
                 IsStatusTextVisible = false;
+                IsAddItemButtonVisible = true;
             }
             else
             {
                 StatusTextValue = NoRowsStatus;
+                IsAddItemButtonVisible = true;
             }
         }
         else
