@@ -18,7 +18,10 @@ namespace WarehouseSystem
     {
         App()
         {
-            Run(new MainWindow());
+            var window = new AppMainWindow();
+            window.DataContext = new MainViewModel("http://localhost:8080");
+            Run(window);
+            //Run(new MainWindow());
         }
     }
 }

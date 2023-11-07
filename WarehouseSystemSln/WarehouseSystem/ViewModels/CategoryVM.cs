@@ -85,14 +85,14 @@ internal class CategoryVM : BaseItemListVM<Item>
     protected void AddNewItemRequest()
     {
         var additionDialog = new ItemDialogView();
-        var vm = new ItemDialogVM();
-        additionDialog.DataContext = vm;
-        vm.DialogClosing += (sender, data) =>
+        var itemDialogVM = new ItemDialogVM(ItemDialogType.Item, ItemDialogMode.Insert);
+        additionDialog.DataContext = itemDialogVM;
+        itemDialogVM.DialogClosing += (sender, data) =>
         {
             if (data != null)
             {
                 IsStatusTextVisible = true;
-                StatusTextValue = data;
+                StatusTextValue = data.Title;
             }
             additionDialog.Close();
         };

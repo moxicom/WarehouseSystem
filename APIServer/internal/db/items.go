@@ -8,7 +8,7 @@ import (
 )
 
 func GetAllItems(db *sql.DB, categoryID int) ([]models.Item, error) {
-	time.Sleep(1 * time.Second)
+	// time.Sleep(1 * time.Second)
 	rows, err := db.Query(`SELECT id, title, description, category_id, amount FROM public."Items" WHERE category_id = $1`, categoryID)
 
 	if err == sql.ErrNoRows {
