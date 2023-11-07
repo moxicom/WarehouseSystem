@@ -4,7 +4,6 @@ import (
 	"APIServer/internal/models"
 	"database/sql"
 	"fmt"
-	"time"
 )
 
 func GetAllCategories(db *sql.DB) ([]models.Category, error) {
@@ -30,7 +29,7 @@ func GetAllCategories(db *sql.DB) ([]models.Category, error) {
 
 	fmt.Println(categories)
 
-	time.Sleep(1 * time.Second)
+	// time.Sleep(1 * time.Second)
 	return categories, nil
 }
 

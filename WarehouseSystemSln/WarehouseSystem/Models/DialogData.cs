@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace WarehouseSystem.Models
 {
-    internal class GetCategoryResponseData
+    internal class DialogData
     {
-        public string Title { get; set; } = "";
-        public List<Item>? Items { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public int Amount { get; set; }
     }
 }
