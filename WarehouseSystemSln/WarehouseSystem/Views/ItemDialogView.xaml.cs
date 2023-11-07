@@ -11,15 +11,16 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WarehouseSystem.ViewModels;
 
 namespace WarehouseSystem.Views
 {
     /// <summary>
     /// Логика взаимодействия для AddNewItemView.xaml
     /// </summary>
-    public partial class AddNewItemView : Window
+    public partial class ItemDialogView : Window
     {
-        public AddNewItemView()
+        public ItemDialogView()
         {
             InitializeComponent();
         }

@@ -1,9 +1,12 @@
-﻿using System.Collections.ObjectModel;
+﻿using GalaSoft.MvvmLight.Command;
+using System.Collections.ObjectModel;
 using System.Net;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using WarehouseSystem.Enums;
 using WarehouseSystem.Models;
 using WarehouseSystem.Services;
+using WarehouseSystem.Views;
 
 namespace WarehouseSystem.ViewModels;
 
@@ -18,6 +21,7 @@ internal class CategoryVM : BaseItemListVM<Item>
         "Товары отсутствуют",
         "Загрузка...")
     {
+        AddNewItemCommand = new RelayCommand(AddNewItemRequest);
         _categoryID = categoryID;
 
         StatusTextValue = categoryID.ToString();
@@ -29,6 +33,8 @@ internal class CategoryVM : BaseItemListVM<Item>
     }
 
     // Properties
+    public ICommand AddNewItemCommand { get; set; }
+
     public string PageTitle
     {
         get => _pageTitle;
@@ -71,8 +77,26 @@ internal class CategoryVM : BaseItemListVM<Item>
 
     protected override async Task<ApiResponse<object>> RemoveRequest(int itemID, int userID)
     {
-        var CategoryService = new CategoryService(BaseUrl);
-        var response = await CategoryService.RemoveItem(itemID, User.Id);
+        var categoryService = new CategoryService(BaseUrl);
+        var response = await categoryService.RemoveItem(itemID, User.Id);
         return response;
+    }
+
+    protected void AddNewItemRequest()
+    {
+        var additionDialog = new ItemDialogView();
+        var vm = new ItemDialogVM();
+        additionDialog.DataContext = vm;
+        vm.DialogClosing += (sender, data) =>
+        {
+            if (data != null)
+            {
+                IsStatusTextVisible = true;
+                StatusTextValue = data;
+            }
+            additionDialog.Close();
+        };
+
+        additionDialog.ShowDialog();
     }
 }
