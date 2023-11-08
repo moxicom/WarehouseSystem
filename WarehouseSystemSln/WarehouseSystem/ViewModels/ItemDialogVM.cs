@@ -102,12 +102,16 @@ namespace WarehouseSystem.ViewModels
                 IsAmountVisible = true;
                 if (mode == ItemDialogMode.Insert)
                     PageTitle = "Добавление товара";
+                if (mode == ItemDialogMode.Update)
+                    PageTitle = "Обновление товара";
             }
             else
             {
                 IsAmountVisible = false;
+                if (mode == ItemDialogMode.Insert)
+                    PageTitle = "Добавление категории";
                 if (mode == ItemDialogMode.Update)
-                    PageTitle = "Удаление товара";
+                    PageTitle = "Обновление категории";
             }
         }
     }

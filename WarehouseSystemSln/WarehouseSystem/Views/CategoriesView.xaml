@@ -49,29 +49,38 @@
                 IsEnabled="{Binding CanReloadItems}" />
         </Grid>
 
-        <!--  /// Categories list ///  -->
-        <ScrollViewer
-            Grid.Row="1"
-            Grid.RowSpan="2"
-            Margin="0,0,0,72">
-            <ItemsControl ItemsSource="{Binding ItemList}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <components:CategoryCard />
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
+        <StackPanel Grid.Row="1">
+            <!--  /// Categories list ///  -->
+            <ScrollViewer
+                MaxHeight="420"
+                Margin="0,0,0,10"
+                VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding ItemList}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <components:CategoryCard />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
 
-        <!--  /// Info ///  -->
+            <!--  /// Info ///  -->
+            <TextBlock
+                FontSize="22"
+                Foreground="#E9ECEF"
+                Text="{Binding StatusTextValue}"
+                TextAlignment="Center"
+                Visibility="{Binding IsStatusTextVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
 
-        <TextBlock
-            Grid.Row="1"
-            FontSize="22"
-            Foreground="#E9ECEF"
-            Text="{Binding StatusTextValue}"
-            TextAlignment="Center"
-            Visibility="{Binding IsStatusTextVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
+            <!--  /// Add new category button ///  -->
+            <components:AddItemButton
+                Grid.Row="1"
+                Width="150"
+                Height="30"
+                Margin="15"
+                Visibility="{Binding IsAddItemButtonVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+        </StackPanel>
 
     </Grid>
 </UserControl>
