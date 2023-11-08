@@ -79,5 +79,8 @@ func main() {
 		ctx.JSON(http.StatusOK, gin.H{"status": "ok"})
 	})
 
+	router.POST("/items", middleware.ItemMW(dbase), func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{"status": "ok"})
+	})
 	router.Run(":8080")
 }

@@ -74,13 +74,13 @@ namespace WarehouseSystem.Services
                 };
         }
 
-        public async Task<ApiResponse<object>> InsertItem(int userID, DialogData itemData)
+        public async Task<ApiResponse<object>> InsertItem(int userID, Item item)
         {
-            var request = new RestRequest("$/items", Method.Post)
+            var request = new RestRequest("/items", Method.Post)
             {
                 RequestFormat = RestSharp.DataFormat.Json
             };
-            request.AddJsonBody(new { userID, itemData });
+            request.AddJsonBody(new { userID = userID, itemData = item });         
 
             var response = await Client.ExecuteAsync(request);
 

@@ -3,12 +3,13 @@ package db
 import (
 	"APIServer/internal/models"
 	"database/sql"
+	"errors"
 	"log"
 	"time"
 )
 
 func GetAllItems(db *sql.DB, categoryID int) ([]models.Item, error) {
-	// time.Sleep(1 * time.Second)
+	time.Sleep(50 * time.Millisecond)
 	rows, err := db.Query(`SELECT id, title, description, category_id, amount FROM public."Items" WHERE category_id = $1`, categoryID)
 
 	if err == sql.ErrNoRows {
@@ -37,7 +38,7 @@ func GetAllItems(db *sql.DB, categoryID int) ([]models.Item, error) {
 }
 
 func DeleteItem(db *sql.DB, itemID int) error {
-	time.Sleep(1 * time.Second)
+	time.Sleep(50 * time.Millisecond)
 	_, err := db.Exec(`DELETE FROM public."Items" WHERE id = $1`, itemID)
 
 	if err != nil {
@@ -45,4 +46,9 @@ func DeleteItem(db *sql.DB, itemID int) error {
 	}
 
 	return nil
+}
+
+func InsertItem(db *sql.DB) error {
+	time.Sleep(50 * time.Millisecond)
+	return errors.New("asd")
 }
