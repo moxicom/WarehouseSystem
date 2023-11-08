@@ -80,6 +80,15 @@ func main() {
 	})
 
 	router.POST("/items", middleware.ItemMW(dbase), func(ctx *gin.Context) {
+		itemCtx, _ := ctx.Get("item")
+		item, ok := itemCtx.(models.Item)
+		if !ok {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
+			return
+		}
+		if err := db.InsertItem(dbase, item); err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
 		ctx.JSON(http.StatusOK, gin.H{"status": "ok"})
 	})
 	router.Run(":8080")

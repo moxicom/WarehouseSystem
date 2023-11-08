@@ -3,7 +3,6 @@ package db
 import (
 	"APIServer/internal/models"
 	"database/sql"
-	"errors"
 	"log"
 	"time"
 )
@@ -48,7 +47,16 @@ func DeleteItem(db *sql.DB, itemID int) error {
 	return nil
 }
 
-func InsertItem(db *sql.DB) error {
+func InsertItem(db *sql.DB, item models.Item) error {
 	time.Sleep(50 * time.Millisecond)
-	return errors.New("asd")
+
+	_, err := db.Exec(`INSERT INTO public."Items"(title, description, category_id, amount) 
+		VALUES ($1, $2, $3, $4)`,
+		item.Title, item.Description, item.CategoryID, item.Amount)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
