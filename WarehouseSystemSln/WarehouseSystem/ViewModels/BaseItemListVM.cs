@@ -7,6 +7,7 @@ using GalaSoft.MvvmLight.Command;
 using WarehouseSystem.Enums;
 using WarehouseSystem.Models;
 using WarehouseSystem.Utilities;
+using WarehouseSystem.Views;
 
 namespace WarehouseSystem.ViewModels;
 
@@ -16,18 +17,15 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
     private bool _isStatusTextVisible;
     private bool _isAddItemButtonVisible;
     private ObservableCollection<T>? _itemList;
-
-    private PageItemType _pageItemType;
     private string _statusTextValue;
 
     // constructor
-    protected BaseItemListVM(string baseUrl, MainViewModel mainViewModel, PageItemType pageItemType,
+    protected BaseItemListVM(string baseUrl, MainViewModel mainViewModel,
         string noRowsStatus, string loadingStatus)
     {
         ReloadItemsCommand = new RelayCommand(ReloadItems);
         RemoveItemCommand = new RelayCommand<int>(RemoveItem);
-
-        _pageItemType = pageItemType;
+        AddNewItemCommand = new RelayCommand(AddItem);
         
         User = new User { Id = 1, Name = "Test Name", Surname = "Test Surname" };
         MainVM = mainViewModel;
@@ -43,7 +41,9 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
     protected string LoadingStatus { get; set; }
     public ICommand ReloadItemsCommand { get; set; }
     public ICommand RemoveItemCommand { get; set; }
+    public ICommand AddNewItemCommand { get; set; }
     public string BaseUrl { get; protected set; }
+    public ItemDialogType ItemDialogType { get; set; }
 
     public User User { get; }
     public MainViewModel MainVM { get; }
@@ -77,6 +77,7 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
             OnPropertyChanged();
         }
     }
+
     public bool IsAddItemButtonVisible
     {
         get => _isAddItemButtonVisible;
@@ -98,9 +99,14 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
     }
 
     // methods
+    
+    // loads and shows a chosen list
     protected abstract void LoadItems();
+    // makes a request to server to remove item (item / category)
+    protected abstract Task<ApiResponse<object>> RemoveRequest(int itemID);
+    // makes a request to server to add new item (item / category)
+    protected abstract Task<ApiResponse<object>> AdditionRequest(DialogData formData);
 
-    protected abstract Task<ApiResponse<object>> RemoveRequest(int itemID, int userID);
 
     protected async void RemoveItem(int itemID)
     {
@@ -114,7 +120,7 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
         ChangeToLoadingStatus();
         ItemList = null;
 
-        var response = await RemoveRequest(itemID, User.Id);
+        var response = await RemoveRequest(itemID);
 
         if (response.StatusCode != HttpStatusCode.OK)
         {
@@ -138,5 +144,58 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
         IsStatusTextVisible = true;
         StatusTextValue = LoadingStatus;
         IsAddItemButtonVisible = false;
+    }
+
+    // shows dialog with type and mode, that containts input form, processes its data
+    protected DialogData ShowItemDialog(ItemDialogMode mode)
+    {
+        var additionDialog = new ItemDialogView();
+        var itemDialogVM = new ItemDialogVM(ItemDialogType, mode);
+        additionDialog.DataContext = itemDialogVM;
+
+        var dialogData = new DialogData();
+        string errorText = "";
+
+        itemDialogVM.DialogClosing += (sender, data) =>
+        {
+            if (data != null)
+            {
+                dialogData = data;
+                if (data.Title == "")
+                {
+                    errorText += "Название не может быть пустым\n";
+                }
+                if (data.Description == "")
+                {
+                    errorText += "Описание не может быть пустым\n";
+                }
+            }
+            additionDialog.Close();
+        };
+
+        additionDialog.ShowDialog();
+
+        if (errorText != "")
+        {
+            MessageBox.Show(errorText, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            return null;
+        } else
+        {
+            return dialogData;
+        }
+    }
+
+    // item addition 
+    protected async void AddItem()
+    {
+        var formData = ShowItemDialog(ItemDialogMode.Insert);
+        if (formData == null) 
+            return;
+        var response = await AdditionRequest(formData);
+        if (response.StatusCode != HttpStatusCode.OK)
+        {
+            MessageBox.Show(response.StatusCode.ToString(), "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        ReloadItems();
     }
 }

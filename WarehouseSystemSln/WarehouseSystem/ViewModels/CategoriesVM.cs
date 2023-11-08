@@ -13,10 +13,11 @@ internal class CategoriesVM : BaseItemListVM<Category>
 {
     // Constructor
     public CategoriesVM(string baseUrl, MainViewModel mainViewModel) : base(baseUrl, mainViewModel,
-        PageItemType.Category, "Категории отсутствуют", "Загрузка...")
+        "Категории отсутствуют", "Загрузка...")
     {
         OpenCategoryCommand = new RelayCommand<int>(OpenCategory);
         CategoriesService = new CategoriesService(baseUrl);
+        ItemDialogType = ItemDialogType.Category;
         ReloadItems();
     }
 
@@ -50,7 +51,7 @@ internal class CategoriesVM : BaseItemListVM<Category>
         CanReloadItems = true;
     }
 
-    protected override async Task<ApiResponse<object>> RemoveRequest(int itemID, int userID)
+    protected override async Task<ApiResponse<object>> RemoveRequest(int itemID)
     {
         return new ApiResponse<object>();
     }
@@ -58,5 +59,10 @@ internal class CategoriesVM : BaseItemListVM<Category>
     public void OpenCategory(int ID)
     {
         MainVM.OpenCategoryView(ID);
+    }
+
+    protected override Task<ApiResponse<object>> AdditionRequest(DialogData formData)
+    {
+        return null;
     }
 }

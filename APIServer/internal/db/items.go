@@ -8,7 +8,7 @@ import (
 )
 
 func GetAllItems(db *sql.DB, categoryID int) ([]models.Item, error) {
-	// time.Sleep(1 * time.Second)
+	time.Sleep(50 * time.Millisecond)
 	rows, err := db.Query(`SELECT id, title, description, category_id, amount FROM public."Items" WHERE category_id = $1`, categoryID)
 
 	if err == sql.ErrNoRows {
@@ -37,8 +37,22 @@ func GetAllItems(db *sql.DB, categoryID int) ([]models.Item, error) {
 }
 
 func DeleteItem(db *sql.DB, itemID int) error {
-	time.Sleep(1 * time.Second)
+	time.Sleep(50 * time.Millisecond)
 	_, err := db.Exec(`DELETE FROM public."Items" WHERE id = $1`, itemID)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func InsertItem(db *sql.DB, item models.Item) error {
+	time.Sleep(50 * time.Millisecond)
+
+	_, err := db.Exec(`INSERT INTO public."Items"(title, description, category_id, amount) 
+		VALUES ($1, $2, $3, $4)`,
+		item.Title, item.Description, item.CategoryID, item.Amount)
 
 	if err != nil {
 		return err

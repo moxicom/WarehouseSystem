@@ -17,24 +17,21 @@ internal class CategoryVM : BaseItemListVM<Item>
     private string _pageTitle;
 
     // constructor
-    public CategoryVM(int categoryID, string baseUrl, MainViewModel mainVM) : base(baseUrl, mainVM, PageItemType.Item,
+    public CategoryVM(int categoryID, string baseUrl, MainViewModel mainVM) : base(baseUrl, mainVM,
         "Товары отсутствуют",
         "Загрузка...")
     {
-        AddNewItemCommand = new RelayCommand(AddNewItemRequest);
         _categoryID = categoryID;
 
         StatusTextValue = categoryID.ToString();
         IsStatusTextVisible = true;
         BaseUrl = baseUrl;
         PageTitle = "Загрузка категории...";
-        //CategoryService = new CategoryService(baseUrl);
+        ItemDialogType = ItemDialogType.Item;
         ReloadItems();
     }
 
-    // Properties
-    public ICommand AddNewItemCommand { get; set; }
-
+    // properties
     public string PageTitle
     {
         get => _pageTitle;
@@ -75,28 +72,25 @@ internal class CategoryVM : BaseItemListVM<Item>
         CanReloadItems = true;
     }
 
-    protected override async Task<ApiResponse<object>> RemoveRequest(int itemID, int userID)
+    protected override async Task<ApiResponse<object>> RemoveRequest(int itemID)
     {
         var categoryService = new CategoryService(BaseUrl);
         var response = await categoryService.RemoveItem(itemID, User.Id);
         return response;
     }
 
-    protected void AddNewItemRequest()
+    protected override async Task<ApiResponse<object>> AdditionRequest(DialogData formData)
     {
-        var additionDialog = new ItemDialogView();
-        var itemDialogVM = new ItemDialogVM(ItemDialogType.Item, ItemDialogMode.Insert);
-        additionDialog.DataContext = itemDialogVM;
-        itemDialogVM.DialogClosing += (sender, data) =>
+        var categoryService = new CategoryService(BaseUrl);
+        var item = new Item()
         {
-            if (data != null)
-            {
-                IsStatusTextVisible = true;
-                StatusTextValue = data.Title;
-            }
-            additionDialog.Close();
+            ID = 0,
+            Title = formData.Title,
+            Description = formData.Description,
+            Amount = formData.Amount,
+            CategoryID = _categoryID
         };
-
-        additionDialog.ShowDialog();
+        var response = await categoryService.InsertItem(User.Id, item);
+        return response;
     }
 }
