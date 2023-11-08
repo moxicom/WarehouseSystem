@@ -155,12 +155,13 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
 
         var dialogData = new DialogData();
         string errorText = "";
+        bool hasData = false;
 
         itemDialogVM.DialogClosing += (sender, data) =>
         {
             if (data != null)
             {
-                dialogData = data;
+                hasData = true;
                 if (data.Title == "")
                 {
                     errorText += "Название не может быть пустым\n";
@@ -169,15 +170,19 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
                 {
                     errorText += "Описание не может быть пустым\n";
                 }
+                dialogData = data;
             }
             additionDialog.Close();
         };
 
         additionDialog.ShowDialog();
 
+        if (!hasData) 
+            return null;
+
         if (errorText != "")
         {
-            MessageBox.Show(errorText, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(errorText, "Ошибка добавления", MessageBoxButton.OK, MessageBoxImage.Error);
             return null;
         } else
         {
