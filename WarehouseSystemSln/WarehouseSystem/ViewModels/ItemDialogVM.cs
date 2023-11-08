@@ -9,8 +9,9 @@ namespace WarehouseSystem.ViewModels
 {
     internal class ItemDialogVM : BaseViewModel
     {
-        
+
         // Fields
+        private string _pageTitle = string.Empty;
         private string _title = string.Empty;
         private string _description = string.Empty;
         private int _amount;
@@ -20,12 +21,22 @@ namespace WarehouseSystem.ViewModels
 
         public ItemDialogVM(ItemDialogType type, ItemDialogMode mode)
         {
-            ShowCorrectProperties(type);
+            ShowCorrectProperties(type, mode);
         }
 
         // Parameters
         public ICommand? OkButtonCommand => new RelayCommand(OkButtonClickHandler);
         public ICommand? CancelButtonCommand => new RelayCommand(CancelButtonClickHandler);
+
+        public string PageTitle
+        {
+            get => _pageTitle;
+            set
+            {
+                _pageTitle = value;
+                OnPropertyChanged();
+            }
+        }
 
         public string Title
         {
@@ -84,15 +95,19 @@ namespace WarehouseSystem.ViewModels
             DialogClosing?.Invoke(this, null);
         }
 
-        private void ShowCorrectProperties(ItemDialogType itemDialogType)
+        private void ShowCorrectProperties(ItemDialogType type, ItemDialogMode mode)
         {
-            if (itemDialogType == ItemDialogType.Item)
+            if (type == ItemDialogType.Item)
             {
                 IsAmountVisible = true;
+                if (mode == ItemDialogMode.Insert)
+                    PageTitle = "Добавление товара";
             }
             else
             {
                 IsAmountVisible = false;
+                if (mode == ItemDialogMode.Update)
+                    PageTitle = "Удаление товара";
             }
         }
     }

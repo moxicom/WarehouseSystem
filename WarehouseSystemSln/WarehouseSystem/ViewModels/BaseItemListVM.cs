@@ -7,6 +7,7 @@ using GalaSoft.MvvmLight.Command;
 using WarehouseSystem.Enums;
 using WarehouseSystem.Models;
 using WarehouseSystem.Utilities;
+using WarehouseSystem.Views;
 
 namespace WarehouseSystem.ViewModels;
 
@@ -100,7 +101,7 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
     // methods
     protected abstract void LoadItems();
 
-    protected abstract Task<ApiResponse<object>> RemoveRequest(int itemID, int userID);
+    protected abstract Task<ApiResponse<object>> RemoveRequest(int itemID);
 
     protected async void RemoveItem(int itemID)
     {
@@ -114,7 +115,7 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
         ChangeToLoadingStatus();
         ItemList = null;
 
-        var response = await RemoveRequest(itemID, User.Id);
+        var response = await RemoveRequest(itemID);
 
         if (response.StatusCode != HttpStatusCode.OK)
         {
@@ -138,5 +139,43 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
         IsStatusTextVisible = true;
         StatusTextValue = LoadingStatus;
         IsAddItemButtonVisible = false;
+    }
+
+    protected DialogData ShowItemDialog(ItemDialogType type, ItemDialogMode mode)
+    {
+        var additionDialog = new ItemDialogView();
+        var itemDialogVM = new ItemDialogVM(type, mode);
+        additionDialog.DataContext = itemDialogVM;
+
+        var dialogData = new DialogData();
+        string errorText = "";
+
+        itemDialogVM.DialogClosing += (sender, data) =>
+        {
+            if (data != null)
+            {
+                dialogData = data;
+                if (data.Title == "")
+                {
+                    errorText += "Название не может быть пустым\n";
+                }
+                if (data.Description == "")
+                {
+                    errorText += "Описание не может быть пустым\n";
+                }
+            }
+            additionDialog.Close();
+        };
+
+        additionDialog.ShowDialog();
+
+        if (errorText != "")
+        {
+
+            return null;
+        } else
+        {
+            return dialogData;
+        }
     }
 }

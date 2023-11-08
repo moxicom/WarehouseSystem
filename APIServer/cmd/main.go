@@ -17,7 +17,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// db.AddItemsByConsole(dbase)
+	db.AddItemsByConsole(dbase)
 
 	router := gin.Default()
 

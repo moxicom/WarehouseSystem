@@ -50,7 +50,7 @@ internal class CategoriesVM : BaseItemListVM<Category>
         CanReloadItems = true;
     }
 
-    protected override async Task<ApiResponse<object>> RemoveRequest(int itemID, int userID)
+    protected override async Task<ApiResponse<object>> RemoveRequest(int itemID)
     {
         return new ApiResponse<object>();
     }

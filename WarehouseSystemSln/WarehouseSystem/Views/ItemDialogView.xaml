@@ -6,7 +6,7 @@
     xmlns:local="clr-namespace:WarehouseSystem.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-    Title="AddNewItemView"
+    Title="Форма для заполения"
     Width="800"
     Height="350"
     ResizeMode="NoResize"

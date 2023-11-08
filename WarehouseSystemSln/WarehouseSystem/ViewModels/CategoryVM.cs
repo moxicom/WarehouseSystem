@@ -21,7 +21,7 @@ internal class CategoryVM : BaseItemListVM<Item>
         "Товары отсутствуют",
         "Загрузка...")
     {
-        AddNewItemCommand = new RelayCommand(AddNewItemRequest);
+        AddNewItemCommand = new RelayCommand(AdditionRequest);
         _categoryID = categoryID;
 
         StatusTextValue = categoryID.ToString();
@@ -75,28 +75,17 @@ internal class CategoryVM : BaseItemListVM<Item>
         CanReloadItems = true;
     }
 
-    protected override async Task<ApiResponse<object>> RemoveRequest(int itemID, int userID)
+    protected override async Task<ApiResponse<object>> RemoveRequest(int itemID)
     {
         var categoryService = new CategoryService(BaseUrl);
         var response = await categoryService.RemoveItem(itemID, User.Id);
         return response;
     }
 
-    protected void AddNewItemRequest()
+    protected void AdditionRequest()
     {
-        var additionDialog = new ItemDialogView();
-        var itemDialogVM = new ItemDialogVM(ItemDialogType.Item, ItemDialogMode.Insert);
-        additionDialog.DataContext = itemDialogVM;
-        itemDialogVM.DialogClosing += (sender, data) =>
-        {
-            if (data != null)
-            {
-                IsStatusTextVisible = true;
-                StatusTextValue = data.Title;
-            }
-            additionDialog.Close();
-        };
-
-        additionDialog.ShowDialog();
+        ShowItemDialog(ItemDialogType.Item, ItemDialogMode.Insert);
     }
+
+    
 }
