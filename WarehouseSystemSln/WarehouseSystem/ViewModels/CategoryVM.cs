@@ -17,24 +17,21 @@ internal class CategoryVM : BaseItemListVM<Item>
     private string _pageTitle;
 
     // constructor
-    public CategoryVM(int categoryID, string baseUrl, MainViewModel mainVM) : base(baseUrl, mainVM, PageItemType.Item,
+    public CategoryVM(int categoryID, string baseUrl, MainViewModel mainVM) : base(baseUrl, mainVM,
         "Товары отсутствуют",
         "Загрузка...")
     {
-        AddNewItemCommand = new RelayCommand(AdditionRequest);
         _categoryID = categoryID;
 
         StatusTextValue = categoryID.ToString();
         IsStatusTextVisible = true;
         BaseUrl = baseUrl;
         PageTitle = "Загрузка категории...";
-        //CategoryService = new CategoryService(baseUrl);
+        ItemDialogType = ItemDialogType.Item;
         ReloadItems();
     }
 
-    // Properties
-    public ICommand AddNewItemCommand { get; set; }
-
+    // properties
     public string PageTitle
     {
         get => _pageTitle;
@@ -82,10 +79,10 @@ internal class CategoryVM : BaseItemListVM<Item>
         return response;
     }
 
-    protected void AdditionRequest()
+    protected override async Task<ApiResponse<object>> AdditionRequest(DialogData formData)
     {
-        ShowItemDialog(ItemDialogType.Item, ItemDialogMode.Insert);
+        var categoryService = new CategoryService(BaseUrl);
+        var response = await categoryService.InsertItem(User.Id, formData);
+        return response;
     }
-
-    
 }

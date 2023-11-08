@@ -73,5 +73,33 @@ namespace WarehouseSystem.Services
                     StatusCode = response.StatusCode
                 };
         }
+
+        public async Task<ApiResponse<object>> InsertItem(int userID, DialogData itemData)
+        {
+            var request = new RestRequest("$/items", Method.Post)
+            {
+                RequestFormat = RestSharp.DataFormat.Json
+            };
+            request.AddJsonBody(new { userID, itemData });
+
+            var response = await Client.ExecuteAsync(request);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return new ApiResponse<object>
+                {
+                    Data = null,
+                    ErrorMessage = "",
+                    StatusCode = response.StatusCode
+                };
+            }
+
+            return new ApiResponse<object>
+            {
+                Data = null,
+                ErrorMessage = "Не удалось подключиться к серверу",
+                StatusCode = response.StatusCode
+            };
+        }
     }
 }
