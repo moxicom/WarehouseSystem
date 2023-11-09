@@ -1,7 +1,9 @@
 ﻿using GalaSoft.MvvmLight.Command;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using WarehouseSystem.Enums;
 using WarehouseSystem.Models;
@@ -15,6 +17,7 @@ internal class CategoryVM : BaseItemListVM<Item>
     // Fields
     private readonly int _categoryID;
     private string _pageTitle;
+    private const string _titleLoadingText = "Загрузка категории...";
 
     // constructor
     public CategoryVM(int categoryID, string baseUrl, MainViewModel mainVM) : base(baseUrl, mainVM,
@@ -26,7 +29,7 @@ internal class CategoryVM : BaseItemListVM<Item>
         StatusTextValue = categoryID.ToString();
         IsStatusTextVisible = true;
         BaseUrl = baseUrl;
-        PageTitle = "Загрузка категории...";
+        PageTitle = _titleLoadingText;
         ItemDialogType = ItemDialogType.Item;
         ReloadItems();
     }
@@ -43,33 +46,22 @@ internal class CategoryVM : BaseItemListVM<Item>
     }
 
     // methods
-    protected override async void LoadItems()
+    protected override async Task<ApiResponse<List<Item>>> LoadItemsRequest()
     {
         var CategoryService = new CategoryService(BaseUrl);
+        PageTitle = _titleLoadingText;
         var response = await CategoryService.GetItems(_categoryID, User.Id);
+        await LoadTitle();
+        return response;
+    }
 
-        if (response.StatusCode == HttpStatusCode.OK)
-        {
-            PageTitle = response.Data.Title;
-            // Check if there is no items
-            if (response.Data.Items != null)
-            {
-                ItemList = new ObservableCollection<Item>(response.Data.Items);
-                IsStatusTextVisible = false;
-                IsAddItemButtonVisible = true;
-            }
-            else
-            {
-                StatusTextValue = NoRowsStatus;
-                IsAddItemButtonVisible = true;
-            }
-        }
-        else
-        {
-            StatusTextValue = response.ErrorMessage;
-        }
-
-        CanReloadItems = true;
+    protected async Task LoadTitle()
+    {
+        var categoryService = new CategoryService(BaseUrl);
+        var response = await categoryService.GetTitle(_categoryID, User.Id);
+        var processResult = categoryService.ProcessTitleRequest(response);
+        if (processResult != string.Empty)
+            PageTitle = processResult;
     }
 
     protected override async Task<ApiResponse<object>> RemoveRequest(int itemID)

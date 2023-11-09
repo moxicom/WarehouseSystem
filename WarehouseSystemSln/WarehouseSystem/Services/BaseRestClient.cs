@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,6 +23,23 @@ namespace WarehouseSystem.Services
         {
             BaseUrl = baseUrl;
             Client = new RestClient(new RestClientOptions { BaseUrl = new Uri(baseUrl), MaxTimeout = 5000 });
+        }
+
+        protected string ProcessRequestStatus(HttpStatusCode statusCode) 
+        {
+            switch (statusCode)
+            {
+                case HttpStatusCode.OK:
+                    return "";
+                case HttpStatusCode.NotFound:
+                    return "Ресурс не существует на сервере";
+                case HttpStatusCode.Unauthorized:
+                    return "Отказано в доступе";
+                case 0:
+                    return "Ответ от сервера не получен. Проверьте подключение";
+                default:
+                    return "";
+            }
         }
     }
 }

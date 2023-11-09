@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using WarehouseSystem.Enums;
@@ -28,32 +30,11 @@ internal class CategoriesVM : BaseItemListVM<Category>
     //public CategoriesService CategoriesService { get; set; }
 
     // Methods
-    protected override async void LoadItems()
+    protected override async Task<ApiResponse<List<Category>>> LoadItemsRequest()
     {
         var categoriesService = new CategoriesService(BaseUrl);
         var response = await categoriesService.GetCategories(User.Id);
-
-        if (response.StatusCode == HttpStatusCode.OK)
-        {
-            // Check if there is no category
-            if (response.Data != null)
-            {
-                ItemList = new ObservableCollection<Category>(response.Data);
-                IsStatusTextVisible = false;
-                IsAddItemButtonVisible = true;
-            }
-            else
-            {
-                StatusTextValue = NoRowsStatus;
-                IsAddItemButtonVisible = true;
-            }
-        }
-        else
-        {
-            StatusTextValue = response.ErrorMessage;
-        }
-
-        CanReloadItems = true;
+        return response;
     }
 
     protected override async Task<ApiResponse<object>> RemoveRequest(int itemID)
