@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -16,19 +17,21 @@ internal class CategoriesVM : BaseItemListVM<Category>
         "Категории отсутствуют", "Загрузка...")
     {
         OpenCategoryCommand = new RelayCommand<int>(OpenCategory);
-        CategoriesService = new CategoriesService(baseUrl);
+        //CategoriesService = new CategoriesService(baseUrl);
         ItemDialogType = ItemDialogType.Category;
+        BaseUrl = baseUrl;
         ReloadItems();
     }
 
     // properties
     public ICommand OpenCategoryCommand { get; set; }
-    public CategoriesService CategoriesService { get; set; }
+    //public CategoriesService CategoriesService { get; set; }
 
     // Methods
     protected override async void LoadItems()
     {
-        var response = await CategoriesService.GetCategories(User.Id);
+        var categoriesService = new CategoriesService(BaseUrl);
+        var response = await categoriesService.GetCategories(User.Id);
 
         if (response.StatusCode == HttpStatusCode.OK)
         {
@@ -37,10 +40,12 @@ internal class CategoriesVM : BaseItemListVM<Category>
             {
                 ItemList = new ObservableCollection<Category>(response.Data);
                 IsStatusTextVisible = false;
+                IsAddItemButtonVisible = true;
             }
             else
             {
                 StatusTextValue = NoRowsStatus;
+                IsAddItemButtonVisible = true;
             }
         }
         else
@@ -61,8 +66,17 @@ internal class CategoriesVM : BaseItemListVM<Category>
         MainVM.OpenCategoryView(ID);
     }
 
-    protected override Task<ApiResponse<object>> AdditionRequest(DialogData formData)
+    protected override async Task<ApiResponse<object>> AdditionRequest(DialogData formData)
     {
-        return null;
+        var categoriesService = new CategoriesService(BaseUrl);
+        var category = new Category()
+        {
+            ID = 0,
+            Title = formData.Title,
+            CreatorID = User.Id,
+            CreatedAt = DateTime.Now,
+        };
+        var response = await categoriesService.InsertCategory(User.Id, category);
+        return response;
     }
 }

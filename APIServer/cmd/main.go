@@ -79,7 +79,7 @@ func main() {
 		ctx.JSON(http.StatusOK, gin.H{"status": "ok"})
 	})
 
-	router.POST("/items", middleware.ItemMW(dbase), func(ctx *gin.Context) {
+	router.POST("/items", middleware.ItemMW[models.Item](dbase), func(ctx *gin.Context) {
 		itemCtx, _ := ctx.Get("item")
 		item, ok := itemCtx.(models.Item)
 		if !ok {
@@ -87,6 +87,26 @@ func main() {
 			return
 		}
 		if err := db.InsertItem(dbase, item); err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+		ctx.JSON(http.StatusOK, gin.H{"status": "ok"})
+	})
+
+	router.POST("/categories", middleware.ItemMW[models.Category](dbase), func(ctx *gin.Context) {
+		itemCtx, _ := ctx.Get("item")
+		item, ok := itemCtx.(models.Category)
+		if !ok {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
+			return
+		}
+
+		userCtx, _ := ctx.Get("user")
+		user, ok := userCtx.(models.User)
+		if !ok {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
+		}
+
+		if err := db.InsertCategory(dbase, item, user.ID); err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		}
 		ctx.JSON(http.StatusOK, gin.H{"status": "ok"})

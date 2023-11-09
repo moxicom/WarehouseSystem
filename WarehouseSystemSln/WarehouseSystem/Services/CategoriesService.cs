@@ -2,9 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using WarehouseSystem.Models;
+using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
 namespace WarehouseSystem.Services
 {
@@ -44,5 +46,34 @@ namespace WarehouseSystem.Services
                 };
             }
         }
+
+        public async Task<ApiResponse<object>> InsertCategory(int userID, Category category)
+        {
+            var request = new RestRequest("/categories", Method.Post)
+            {
+                RequestFormat = RestSharp.DataFormat.Json
+            };
+            request.AddJsonBody(new { userID = userID, itemData = category });
+
+            var response = await Client.ExecuteAsync(request);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return new ApiResponse<object>
+                {
+                    Data = null,
+                    ErrorMessage = "",
+                    StatusCode = response.StatusCode
+                };
+            }
+
+            return new ApiResponse<object>
+            {
+                Data = null,
+                ErrorMessage = "Не удалось подключиться к серверу",
+                StatusCode = response.StatusCode
+            };
+        }
+
     }
 }

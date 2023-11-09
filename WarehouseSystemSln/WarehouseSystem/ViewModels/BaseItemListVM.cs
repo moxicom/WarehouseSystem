@@ -199,7 +199,7 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
         var response = await AdditionRequest(formData);
         if (response.StatusCode != HttpStatusCode.OK)
         {
-            MessageBox.Show(response.StatusCode.ToString(), "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(response.ErrorMessage, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
         }
         ReloadItems();
     }

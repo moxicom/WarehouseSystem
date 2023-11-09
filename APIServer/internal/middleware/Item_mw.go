@@ -2,19 +2,19 @@ package middleware
 
 import (
 	"APIServer/internal/db"
-	"APIServer/internal/models"
 	"database/sql"
+	"encoding/json"
 	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func ItemMW(dbase *sql.DB) gin.HandlerFunc {
+func ItemMW[T any](dbase *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var data struct {
-			UserID int         `json:"userID"`
-			Item   models.Item `json:"itemData"`
+			UserID int             `json:"userID"`
+			Item   json.RawMessage `json:"itemData"`
 		}
 
 		if err := c.ShouldBindJSON(&data); err != nil {
@@ -23,7 +23,6 @@ func ItemMW(dbase *sql.DB) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-
 		i := data.UserID
 		user, err := db.GetUserByID(dbase, i)
 
@@ -35,8 +34,16 @@ func ItemMW(dbase *sql.DB) gin.HandlerFunc {
 			}
 		}
 
+		var itemData T
+		if err := json.Unmarshal(data.Item, &itemData); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Невозможно разобрать данные"})
+			log.Println("JSON Unmarshal error")
+			c.Abort()
+			return
+		}
+
 		c.Set("user", user)
-		c.Set("item", data.Item)
+		c.Set("item", itemData)
 		c.Next()
 	}
 }
