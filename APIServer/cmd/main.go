@@ -30,6 +30,7 @@ func main() {
 		categories, err := db.GetAllCategories(dbase)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
 		}
 		ctx.JSON(http.StatusOK, categories)
 	})
@@ -41,7 +42,6 @@ func main() {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-
 		items, err := db.GetAllItems(dbase, categoryIDInt)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -51,6 +51,26 @@ func main() {
 		ctx.JSON(http.StatusOK, items)
 	})
 
+	router.DELETE("/categories/:category_id", middleware.CommonMiddleware(dbase), func(ctx *gin.Context) {
+		categoryIDstr := ctx.Param("category_id")
+		categoryIDInt, err := strconv.Atoi(categoryIDstr)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		err = db.DeleteItemsByCategory(dbase, categoryIDInt)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		err = db.DeleteCategory(dbase, categoryIDInt)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		ctx.Status(http.StatusOK)
+	})
+
 	router.GET("/categories/:category_id/title", middleware.CommonMiddleware(dbase), func(ctx *gin.Context) {
 		categoryIDstr := ctx.Param("category_id")
 		categoryIDInt, err := strconv.Atoi(categoryIDstr)
@@ -58,13 +78,11 @@ func main() {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-
 		title, err := db.GetCategoryTitle(dbase, categoryIDInt)
-
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
 		}
-
 		ctx.JSON(http.StatusOK, title)
 	})
 
@@ -75,7 +93,6 @@ func main() {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-
 		err = db.DeleteItem(dbase, itemIDInt)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -93,6 +110,7 @@ func main() {
 		}
 		if err := db.InsertItem(dbase, item); err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
 		}
 		ctx.JSON(http.StatusOK, gin.H{"status": "ok"})
 	})
@@ -104,15 +122,15 @@ func main() {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
 			return
 		}
-
 		userCtx, _ := ctx.Get("user")
 		user, ok := userCtx.(models.User)
 		if !ok {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
+			return
 		}
-
 		if err := db.InsertCategory(dbase, item, user.ID); err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
 		}
 		ctx.JSON(http.StatusOK, gin.H{"status": "ok"})
 	})

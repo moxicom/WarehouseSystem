@@ -39,7 +39,9 @@ internal class CategoriesVM : BaseItemListVM<Category>
 
     protected override async Task<ApiResponse<object>> RemoveRequest(int itemID)
     {
-        return new ApiResponse<object>();
+        var categoriesService = new CategoriesService(BaseUrl);
+        var response = await categoriesService.RemoveCategory(User.Id, itemID);
+        return response;
     }
 
     protected override async Task<ApiResponse<object>> AdditionRequest(DialogData formData)

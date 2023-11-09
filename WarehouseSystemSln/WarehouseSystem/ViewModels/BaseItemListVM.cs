@@ -171,7 +171,6 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
         if (response.StatusCode != HttpStatusCode.OK)
         {
             MessageBox.Show("Не удалось удалить объект", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            return;
         }
 
         ReloadItems();
