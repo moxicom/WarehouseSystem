@@ -23,7 +23,6 @@ func ItemMW[T any](dbase *sql.DB) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-
 		i := data.UserID
 		user, err := db.GetUserByID(dbase, i)
 

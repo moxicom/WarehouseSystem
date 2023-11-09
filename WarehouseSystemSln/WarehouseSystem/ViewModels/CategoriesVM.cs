@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -70,8 +71,10 @@ internal class CategoriesVM : BaseItemListVM<Category>
         var categoriesService = new CategoriesService(BaseUrl);
         var category = new Category()
         {
+            ID = 0,
             Title = formData.Title,
-            Description = formData.Description,
+            CreatorID = User.Id,
+            CreatedAt = DateTime.Now,
         };
         var response = await categoriesService.InsertCategory(User.Id, category);
         return response;

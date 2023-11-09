@@ -53,7 +53,7 @@ namespace WarehouseSystem.Services
             {
                 RequestFormat = RestSharp.DataFormat.Json
             };
-            request.AddJsonBody(new { userID = userID, categoryData = category });
+            request.AddJsonBody(new { userID = userID, itemData = category });
 
             var response = await Client.ExecuteAsync(request);
 
