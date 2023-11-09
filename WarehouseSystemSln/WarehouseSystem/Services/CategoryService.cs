@@ -31,12 +31,13 @@ namespace WarehouseSystem.Services
 
         public string ProcessTitleRequest(ApiResponse<string> response)
         {
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                return "Ошибка загрузки заголовка";
+            }
             if (response.Data == null) { 
                 MessageBox.Show("Заголовок отсутствует у выбранной категории");
-                return string.Empty;
-            }
-            if (response.StatusCode != HttpStatusCode.OK) { 
-                return "Ошибка загрузки заголовка";
+                return "";
             }
             return response.Data;
         }
@@ -51,25 +52,12 @@ namespace WarehouseSystem.Services
             request.AddJsonBody(new { userID });
 
             var response = await Client.ExecuteAsync<List<Item>>(request);
-
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            return new ApiResponse<List<Item>>
             {
-                return new ApiResponse<List<Item>>
-                {
-                    Data = response.Data,
-                    ErrorMessage = "",
-                    StatusCode = response.StatusCode
-                };
-            }
-            else
-            {
-                return new ApiResponse<List<Item>>
-                {
-                    Data = response.Data,
-                    ErrorMessage = "Не удалось подключиться к серверу",
-                    StatusCode = response.StatusCode
-                };
-            }
+                Data = response.Data,
+                StatusCode = response.StatusCode,
+                ErrorMessage = ProcessRequestStatus(response.StatusCode)
+            };
         }
 
         public async Task<ApiResponse<object>> RemoveItem(int itemID, int userID)
@@ -81,23 +69,12 @@ namespace WarehouseSystem.Services
             request.AddJsonBody(new { userID });
             
             var response = await Client.ExecuteAsync(request);
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                return new ApiResponse<object>
-                {
-                    Data = null,
-                    ErrorMessage = "",
-                    StatusCode = response.StatusCode
-                };
-            }
-
             return new ApiResponse<object>
-                {
-                    Data = null,
-                    ErrorMessage = "Не удалось подключиться к серверу",
-                    StatusCode = response.StatusCode
-                };
+            {
+                Data = null,
+                StatusCode = response.StatusCode,
+                ErrorMessage = ProcessRequestStatus(response.StatusCode)
+            };
         }
 
         public async Task<ApiResponse<object>> InsertItem(int userID, Item item)
@@ -109,22 +86,11 @@ namespace WarehouseSystem.Services
             request.AddJsonBody(new { userID = userID, itemData = item });         
 
             var response = await Client.ExecuteAsync(request);
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                return new ApiResponse<object>
-                {
-                    Data = null,
-                    ErrorMessage = "",
-                    StatusCode = response.StatusCode
-                };
-            }
-
             return new ApiResponse<object>
             {
                 Data = null,
-                ErrorMessage = "Не удалось подключиться к серверу",
-                StatusCode = response.StatusCode
+                StatusCode = response.StatusCode,
+                ErrorMessage = ProcessRequestStatus(response.StatusCode)
             };
         }
     }
