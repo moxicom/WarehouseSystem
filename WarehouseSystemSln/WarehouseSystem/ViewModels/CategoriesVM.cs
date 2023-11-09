@@ -67,6 +67,13 @@ internal class CategoriesVM : BaseItemListVM<Category>
 
     protected override async Task<ApiResponse<object>> AdditionRequest(DialogData formData)
     {
-        return new ApiResponse<object>();
+        var categoriesService = new CategoriesService(BaseUrl);
+        var category = new Category()
+        {
+            Title = formData.Title,
+            Description = formData.Description,
+        };
+        var response = await categoriesService.InsertCategory(User.Id, category);
+        return response;
     }
 }

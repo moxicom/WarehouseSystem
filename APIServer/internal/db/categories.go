@@ -33,6 +33,8 @@ func GetAllCategories(db *sql.DB) ([]models.Category, error) {
 	return categories, nil
 }
 
+
+
 func GetCategoryTitle(db *sql.DB, categoryID int) (string, error) {
 	rows, err := db.Query(`SELECT title FROM public."Categories" WHERE id = $1`, categoryID)
 
