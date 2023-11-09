@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using RestSharp;
 using WarehouseSystem.Models;
 
@@ -15,7 +16,32 @@ namespace WarehouseSystem.Services
         public CategoryService(string baseUrl) : base(baseUrl) { }
 
         // Methods
-        public async Task<ApiResponse<GetCategoryResponseData>> GetItems(int categoryID, int userID)
+
+        public async Task<ApiResponse<string>> GetTitle(int categoryID, int userID)
+        {
+            var request = new RestRequest($"/categories/{categoryID}/title", Method.Get)
+            {
+                RequestFormat = RestSharp.DataFormat.Json,
+            };
+            request.AddBody(new { userID });
+
+            var response = await Client.ExecuteAsync<string>(request);
+            return new ApiResponse<string> { Data = response.Data, StatusCode = response.StatusCode };
+        }
+
+        public string ProcessTitleRequest(ApiResponse<string> response)
+        {
+            if (response.Data == null) { 
+                MessageBox.Show("Заголовок отсутствует у выбранной категории");
+                return string.Empty;
+            }
+            if (response.StatusCode != HttpStatusCode.OK) { 
+                return "Ошибка загрузки заголовка";
+            }
+            return response.Data;
+        }
+
+        public async Task<ApiResponse<List<Item>>> GetItems(int categoryID, int userID)
         {
             var request = new RestRequest($"/categories/{categoryID}", Method.Get)
             {
@@ -24,11 +50,11 @@ namespace WarehouseSystem.Services
 
             request.AddJsonBody(new { userID });
 
-            var response = await Client.ExecuteAsync<GetCategoryResponseData>(request);
+            var response = await Client.ExecuteAsync<List<Item>>(request);
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                return new ApiResponse<GetCategoryResponseData>
+                return new ApiResponse<List<Item>>
                 {
                     Data = response.Data,
                     ErrorMessage = "",
@@ -37,7 +63,7 @@ namespace WarehouseSystem.Services
             }
             else
             {
-                return new ApiResponse<GetCategoryResponseData>
+                return new ApiResponse<List<Item>>
                 {
                     Data = response.Data,
                     ErrorMessage = "Не удалось подключиться к серверу",

@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
@@ -100,15 +101,60 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
 
     // methods
     
-    // loads and shows a chosen list
-    protected abstract void LoadItems();
+    // makes a request to server to get all items of chosen list (item / category)
+    protected abstract Task<ApiResponse<List<T>>> LoadItemsRequest();
     // makes a request to server to remove item (item / category)
     protected abstract Task<ApiResponse<object>> RemoveRequest(int itemID);
     // makes a request to server to add new item (item / category)
     protected abstract Task<ApiResponse<object>> AdditionRequest(DialogData formData);
 
+    // loads items of chosen list
+    private async void LoadItems()
+    {
+        var response = await LoadItemsRequest();
+        ProcessItemsLoading(response);
+    }
 
-    protected async void RemoveItem(int itemID)
+    private void ProcessItemsLoading(ApiResponse<List<T>> response)
+    {
+        if (response.StatusCode == HttpStatusCode.OK)
+        {
+            if (response.Data != null)
+            {
+                ItemList = new ObservableCollection<T>(response.Data);
+                IsStatusTextVisible = false;
+                IsAddItemButtonVisible = true;
+            }
+            else
+            {
+                StatusTextValue = NoRowsStatus;
+                IsAddItemButtonVisible = true;
+            }
+        }
+        else
+        {
+            StatusTextValue = response.ErrorMessage;
+        }
+
+        CanReloadItems = true;
+    }
+
+    public void ReloadItems()
+    {
+        ChangeToLoadingStatus();
+        ItemList = null;
+        LoadItems();
+    }
+
+    private void ChangeToLoadingStatus()
+    {
+        CanReloadItems = false;
+        IsStatusTextVisible = true;
+        StatusTextValue = LoadingStatus;
+        IsAddItemButtonVisible = false;
+    }
+
+    private async void RemoveItem(int itemID)
     {
         var confirmationDialog = new ConfirmationDialog();
 
@@ -131,23 +177,8 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
         ReloadItems();
     }
 
-    public void ReloadItems()
-    {
-        ChangeToLoadingStatus();
-        ItemList = null;
-        LoadItems();
-    }
-
-    public void ChangeToLoadingStatus()
-    {
-        CanReloadItems = false;
-        IsStatusTextVisible = true;
-        StatusTextValue = LoadingStatus;
-        IsAddItemButtonVisible = false;
-    }
-
     // shows dialog with type and mode, that containts input form, processes its data
-    protected DialogData ShowItemDialog(ItemDialogMode mode)
+    private DialogData ShowItemDialog(ItemDialogMode mode)
     {
         var additionDialog = new ItemDialogView();
         var itemDialogVM = new ItemDialogVM(ItemDialogType, mode);
@@ -191,7 +222,7 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
     }
 
     // item addition 
-    protected async void AddItem()
+    private async void AddItem()
     {
         var formData = ShowItemDialog(ItemDialogMode.Insert);
         if (formData == null) 

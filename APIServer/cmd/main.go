@@ -47,20 +47,25 @@ func main() {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
+
+		ctx.JSON(http.StatusOK, items)
+	})
+
+	router.GET("/categories/:category_id/title", middleware.CommonMiddleware(dbase), func(ctx *gin.Context) {
+		categoryIDstr := ctx.Param("category_id")
+		categoryIDInt, err := strconv.Atoi(categoryIDstr)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
 		title, err := db.GetCategoryTitle(dbase, categoryIDInt)
 
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		}
 
-		type Ans struct {
-			Title string        `json:"Title"`
-			Items []models.Item `json:"Items"`
-		}
-
-		data := Ans{title, items}
-
-		ctx.JSON(http.StatusOK, data)
+		ctx.JSON(http.StatusOK, title)
 	})
 
 	router.DELETE("/items/:item_id", middleware.CommonMiddleware(dbase), func(ctx *gin.Context) {
