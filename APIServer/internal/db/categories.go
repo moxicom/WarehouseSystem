@@ -8,7 +8,6 @@ import (
 
 func GetAllCategories(db *sql.DB) ([]models.Category, error) {
 	rows, err := db.Query(`SELECT id, title, creator_id, created_at FROM public."Categories"`)
-
 	if err == sql.ErrNoRows {
 		return nil, err
 	} else if err != nil {
@@ -45,7 +44,6 @@ func InsertCategory(db *sql.DB, category models.Category, creatorID int) error {
 
 func GetCategoryTitle(db *sql.DB, categoryID int) (string, error) {
 	rows, err := db.Query(`SELECT title FROM public."Categories" WHERE id = $1`, categoryID)
-
 	if err == sql.ErrNoRows {
 		return "", err
 	} else if err != nil {
@@ -61,4 +59,12 @@ func GetCategoryTitle(db *sql.DB, categoryID int) (string, error) {
 	}
 
 	return title, nil
+}
+
+func DeleteCategory(db *sql.DB, categoryID int) error {
+	_, err := db.Query(`DELETE FROM public."Categories" WHERE id = $1`, categoryID)
+	if err != nil {
+		return err
+	}
+	return nil
 }

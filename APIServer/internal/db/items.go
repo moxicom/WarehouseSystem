@@ -39,11 +39,18 @@ func GetAllItems(db *sql.DB, categoryID int) ([]models.Item, error) {
 func DeleteItem(db *sql.DB, itemID int) error {
 	time.Sleep(50 * time.Millisecond)
 	_, err := db.Exec(`DELETE FROM public."Items" WHERE id = $1`, itemID)
-
 	if err != nil {
 		return err
 	}
+	return nil
+}
 
+func DeleteItemsByCategory(db *sql.DB, categoryID int) error {
+	time.Sleep(50 * time.Millisecond)
+	_, err := db.Exec(`DELETE FROM public."Items" WHERE category_id = $1`, categoryID)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

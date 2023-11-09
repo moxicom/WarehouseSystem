@@ -51,5 +51,22 @@ namespace WarehouseSystem.Services
             };
         }
 
+        public async Task<ApiResponse<object>> RemoveCategory(int userID, int categoryID)
+        {
+            var request = new RestRequest($"/categories/{categoryID}", Method.Delete)
+            {
+                RequestFormat = RestSharp.DataFormat.Json
+            };
+            request.AddJsonBody(new {userID = userID});
+
+            var response = await Client.ExecuteAsync(request);
+            return new ApiResponse<object>
+            {
+                Data = null,
+                StatusCode = response.StatusCode,
+                ErrorMessage = ProcessRequestStatus(response.StatusCode)
+            };
+        }
+
     }
 }
