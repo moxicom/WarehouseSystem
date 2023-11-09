@@ -6,3 +6,4 @@ REST API requests:
 * GET `/categories/:category_id`
 * DELETE `/items/:item_id`
 * POST `/items`
+* POST `/categories`
