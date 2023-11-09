@@ -42,11 +42,6 @@ internal class CategoriesVM : BaseItemListVM<Category>
         return new ApiResponse<object>();
     }
 
-    public void OpenCategory(int ID)
-    {
-        MainVM.OpenCategoryView(ID);
-    }
-
     protected override async Task<ApiResponse<object>> AdditionRequest(DialogData formData)
     {
         var categoriesService = new CategoriesService(BaseUrl);
@@ -59,5 +54,10 @@ internal class CategoriesVM : BaseItemListVM<Category>
         };
         var response = await categoriesService.InsertCategory(User.Id, category);
         return response;
+    }
+
+    public void OpenCategory(int ID)
+    {
+        MainVM.OpenCategoryView(ID);
     }
 }
