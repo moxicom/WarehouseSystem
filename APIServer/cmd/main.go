@@ -20,8 +20,10 @@ func main() {
 
 	router := gin.Default()
 
+	// auth
 	router.GET("/auth", middleware.LoginMiddleware(dbase), handlers.AuthHandler)
 
+	// categories
 	router.GET("/categories", middleware.CommonMiddleware(dbase), func(ctx *gin.Context) {
 		handlers.GetAllCategoriesHandler(ctx, dbase)
 	})
@@ -42,6 +44,11 @@ func main() {
 		handlers.DeleteCategory(ctx, dbase)
 	})
 
+	router.PUT("/categories/:category_id", middleware.ItemMW[models.Category](dbase), func(ctx *gin.Context) {
+		handlers.UpdateCategory(ctx, dbase)
+	})
+
+	// items
 	router.DELETE("/items/:item_id", middleware.CommonMiddleware(dbase), func(ctx *gin.Context) {
 		handlers.DeleteItem(ctx, dbase)
 	})

@@ -58,6 +58,7 @@ func DeleteCategory(ctx *gin.Context, dbase *sql.DB) {
 	ctx.Status(http.StatusOK)
 }
 
+// endpoint: /categories/:category_id/title
 func GetCategoryTitle(ctx *gin.Context, dbase *sql.DB) {
 	categoryIDstr := ctx.Param("category_id")
 	categoryIDInt, err := strconv.Atoi(categoryIDstr)
@@ -73,6 +74,7 @@ func GetCategoryTitle(ctx *gin.Context, dbase *sql.DB) {
 	ctx.JSON(http.StatusOK, title)
 }
 
+// endpoint: /categories
 func InsertCategory(ctx *gin.Context, dbase *sql.DB) {
 	itemCtx, _ := ctx.Get("item")
 	item, ok := itemCtx.(models.Category)
@@ -87,6 +89,22 @@ func InsertCategory(ctx *gin.Context, dbase *sql.DB) {
 		return
 	}
 	if err := db.InsertCategory(dbase, item, user.ID); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{"status": "ok"})
+}
+
+// endpoint: /categories/:category_id
+func UpdateCategory(ctx *gin.Context, dbase *sql.DB) {
+	itemCtx, _ := ctx.Get("item")
+	item, ok := itemCtx.(models.Category)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
+		return
+	}
+
+	if err := db.UpdateCategory(dbase, item); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
