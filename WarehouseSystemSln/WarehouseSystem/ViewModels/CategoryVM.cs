@@ -71,15 +71,15 @@ internal class CategoryVM : BaseItemListVM<Item>
         return response;
     }
 
-    protected override async Task<ApiResponse<object>> AdditionRequest(DialogData formData)
+    protected override async Task<ApiResponse<object>> AdditionRequest(DialogData dialogData)
     {
         var categoryService = new CategoryService(BaseUrl);
         var item = new Item()
         {
             ID = 0,
-            Title = formData.Title,
-            Description = formData.Description,
-            Amount = formData.Amount,
+            Title = dialogData.Title,
+            Description = dialogData.Description,
+            Amount = dialogData.Amount,
             CategoryID = _categoryID
         };
         var response = await categoryService.InsertItem(User.Id, item);

@@ -43,6 +43,7 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
     public ICommand ReloadItemsCommand { get; set; }
     public ICommand RemoveItemCommand { get; set; }
     public ICommand AddNewItemCommand { get; set; }
+    public ICommand UpdateItemCommand { get; set; }
     public string BaseUrl { get; protected set; }
     public ItemDialogType ItemDialogType { get; set; }
 
@@ -106,7 +107,9 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
     // makes a request to server to remove item (item / category)
     protected abstract Task<ApiResponse<object>> RemoveRequest(int itemID);
     // makes a request to server to add new item (item / category)
-    protected abstract Task<ApiResponse<object>> AdditionRequest(DialogData formData);
+    protected abstract Task<ApiResponse<object>> AdditionRequest(DialogData dialogData);
+    // makes a request to server to update chosen item (item / category)
+    protected abstract Task<ApiResponse<object>> UpdatingRequest(int itemID, DialogData dialogData);
 
     // loads items of chosen list
     private async void LoadItems()
@@ -176,6 +179,29 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
         ReloadItems();
     }
 
+    // item addition 
+    private async void AddItem()
+    {
+        var formData = ShowItemDialog(ItemDialogMode.Insert);
+        if (formData == null) 
+            return;
+        var response = await AdditionRequest(formData);
+        if (response.StatusCode != HttpStatusCode.OK)
+        {
+            MessageBox.Show(response.ErrorMessage, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        ReloadItems();
+    }
+
+    // item updating
+    private async void UpdateItem()
+    {
+        var formData = ShowItemDialog(ItemDialogMode.Update);
+        if (formData == null)
+            return;
+        //var response = await
+    }
+
     // shows dialog with type and mode, that containts input form, processes its data
     private DialogData ShowItemDialog(ItemDialogMode mode)
     {
@@ -207,30 +233,17 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
 
         additionDialog.ShowDialog();
 
-        if (!hasData) 
+        if (!hasData)
             return null;
 
         if (errorText != "")
         {
             MessageBox.Show(errorText, "Ошибка добавления", MessageBoxButton.OK, MessageBoxImage.Error);
             return null;
-        } else
+        }
+        else
         {
             return dialogData;
         }
-    }
-
-    // item addition 
-    private async void AddItem()
-    {
-        var formData = ShowItemDialog(ItemDialogMode.Insert);
-        if (formData == null) 
-            return;
-        var response = await AdditionRequest(formData);
-        if (response.StatusCode != HttpStatusCode.OK)
-        {
-            MessageBox.Show(response.ErrorMessage, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-        ReloadItems();
     }
 }

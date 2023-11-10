@@ -44,13 +44,13 @@ internal class CategoriesVM : BaseItemListVM<Category>
         return response;
     }
 
-    protected override async Task<ApiResponse<object>> AdditionRequest(DialogData formData)
+    protected override async Task<ApiResponse<object>> AdditionRequest(DialogData dialogData)
     {
         var categoriesService = new CategoriesService(BaseUrl);
         var category = new Category()
         {
             ID = 0,
-            Title = formData.Title,
+            Title = dialogData.Title,
             CreatorID = User.Id,
             CreatedAt = DateTime.Now,
         };
