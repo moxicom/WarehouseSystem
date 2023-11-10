@@ -48,15 +48,27 @@
                     Text="{Binding Description}"
                     TextWrapping="Wrap" />
 
-                <!--  /// Delete category button ///  -->
-                <Button
+                <!--  /// Bottom buttons ///  -->
+                <StackPanel
                     Grid.Row="2"
-                    Width="120"
-                    Height="20"
-                    Margin="0,5"
-                    Command="{Binding DataContext.RemoveItemCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
-                    CommandParameter="{Binding ID}"
-                    Content="Удалить категорию" />
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal">
+                    <!--  /// Delete category button ///  -->
+                    <Button
+                        Width="100"
+                        Height="20"
+                        Margin="5,5"
+                        Command="{Binding DataContext.UpdateItemCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
+                        CommandParameter="{Binding ID}"
+                        Content="Изменить" />
+                    <Button
+                        Width="100"
+                        Height="20"
+                        Margin="5,5"
+                        Command="{Binding DataContext.RemoveItemCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
+                        CommandParameter="{Binding ID}"
+                        Content="Удалить" />
+                </StackPanel>
 
             </Grid>
 
