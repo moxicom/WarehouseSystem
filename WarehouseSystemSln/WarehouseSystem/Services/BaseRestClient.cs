@@ -35,6 +35,8 @@ namespace WarehouseSystem.Services
                     return "Ресурс не существует на сервере";
                 case HttpStatusCode.Unauthorized:
                     return "Отказано в доступе";
+                case HttpStatusCode.InternalServerError:
+                    return "Внутрисерверная ошибка";
                 case 0:
                     return "Ответ от сервера не получен. Проверьте подключение";
                 default:

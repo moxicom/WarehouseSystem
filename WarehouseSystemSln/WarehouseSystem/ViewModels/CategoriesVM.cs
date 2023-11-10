@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Documents;
@@ -37,25 +38,55 @@ internal class CategoriesVM : BaseItemListVM<Category>
         return response;
     }
 
-    protected override async Task<ApiResponse<object>> RemoveRequest(int itemID)
+    protected override async Task<ApiResponse<object>> RemoveRequest(int categoryID)
     {
         var categoriesService = new CategoriesService(BaseUrl);
-        var response = await categoriesService.RemoveCategory(User.Id, itemID);
+        var response = await categoriesService.RemoveCategory(User.Id, categoryID);
         return response;
     }
 
-    protected override async Task<ApiResponse<object>> AdditionRequest(DialogData formData)
+    protected override async Task<ApiResponse<object>> AdditionRequest(DialogData dialogData)
     {
         var categoriesService = new CategoriesService(BaseUrl);
-        var category = new Category()
+        var category = ProcessDialogData(categoryID: 0, dialogData);
+        var response = await categoriesService.InsertCategory(User.Id, category);
+        return response;
+    }
+
+    protected override async Task<ApiResponse<object>> UpdatingRequest(int categoryID, DialogData dialogData)
+    {
+        var categoriesService = new CategoriesService(BaseUrl);
+        var category = ProcessDialogData(categoryID, dialogData);
+        var response = await categoriesService.UpdateCategory(User.Id, category);
+        return response;
+    }
+
+    protected override DialogData? GetItemData(int itemID)
+    {
+        if (ItemList == null)
+            return null;
+
+        Category? item = ItemList.FirstOrDefault(item => item.ID == itemID);
+        if (item == null)
+            return null;
+        
+        return new DialogData()
         {
-            ID = 0,
-            Title = formData.Title,
+            Title = item.Title,
+            Description = "",
+            Amount = 0
+        };
+    }
+
+    private Category ProcessDialogData(int categoryID, DialogData dialogData)
+    {
+        return new Category()
+        {
+            ID = categoryID,
+            Title = dialogData.Title,
             CreatorID = User.Id,
             CreatedAt = DateTime.Now,
         };
-        var response = await categoriesService.InsertCategory(User.Id, category);
-        return response;
     }
 
     public void OpenCategory(int ID)

@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
@@ -71,18 +72,48 @@ internal class CategoryVM : BaseItemListVM<Item>
         return response;
     }
 
-    protected override async Task<ApiResponse<object>> AdditionRequest(DialogData formData)
+    protected override async Task<ApiResponse<object>> AdditionRequest(DialogData dialogData)
     {
         var categoryService = new CategoryService(BaseUrl);
-        var item = new Item()
-        {
-            ID = 0,
-            Title = formData.Title,
-            Description = formData.Description,
-            Amount = formData.Amount,
-            CategoryID = _categoryID
-        };
+        var item = ProcessDialogData(itemID: 0, dialogData);
         var response = await categoryService.InsertItem(User.Id, item);
         return response;
+    }
+
+    protected override async Task<ApiResponse<object>> UpdatingRequest(int itemID, DialogData dialogData)
+    {
+        var categoryService = new CategoryService(BaseUrl);
+        var item = ProcessDialogData(itemID, dialogData);
+        var response = await categoryService.UpdateItem(User.Id, item);
+        return response;
+    }
+
+    protected override DialogData GetItemData(int itemID)
+    {
+        if (ItemList == null)
+            return null;
+
+        Item? item = ItemList.FirstOrDefault(item => item.ID == itemID);
+        if (item == null)
+            return null;
+
+        return new DialogData()
+        {
+            Title = item.Title,
+            Description = item.Description,
+            Amount = item.Amount
+        };
+    }
+
+    private Item ProcessDialogData(int itemID, DialogData dialogData)
+    {
+        return new Item()
+        {
+            ID = itemID,
+            Title = dialogData.Title,
+            Description = dialogData.Description,
+            Amount = dialogData.Amount,
+            CategoryID = _categoryID
+        };
     }
 }

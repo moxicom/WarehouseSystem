@@ -2,11 +2,10 @@ package main
 
 import (
 	"APIServer/internal/db"
+	"APIServer/internal/handlers"
 	"APIServer/internal/middleware"
 	"APIServer/internal/models"
 	"log"
-	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,118 +20,46 @@ func main() {
 
 	router := gin.Default()
 
-	router.GET("/auth", middleware.LoginMiddleware(dbase), func(ctx *gin.Context) {
-		user, _ := ctx.Get("user")
-		ctx.JSON(http.StatusOK, user)
-	})
+	// auth
+	router.GET("/auth", middleware.LoginMiddleware(dbase), handlers.AuthHandler)
 
+	// categories
 	router.GET("/categories", middleware.CommonMiddleware(dbase), func(ctx *gin.Context) {
-		categories, err := db.GetAllCategories(dbase)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		ctx.JSON(http.StatusOK, categories)
+		handlers.GetAllCategoriesHandler(ctx, dbase)
 	})
 
 	router.GET("/categories/:category_id", middleware.CommonMiddleware(dbase), func(ctx *gin.Context) {
-		categoryIDstr := ctx.Param("category_id")
-		categoryIDInt, err := strconv.Atoi(categoryIDstr)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		items, err := db.GetAllItems(dbase, categoryIDInt)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-
-		ctx.JSON(http.StatusOK, items)
-	})
-
-	router.DELETE("/categories/:category_id", middleware.CommonMiddleware(dbase), func(ctx *gin.Context) {
-		categoryIDstr := ctx.Param("category_id")
-		categoryIDInt, err := strconv.Atoi(categoryIDstr)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		err = db.DeleteItemsByCategory(dbase, categoryIDInt)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		err = db.DeleteCategory(dbase, categoryIDInt)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		ctx.Status(http.StatusOK)
+		handlers.GetCategoryHandler(ctx, dbase)
 	})
 
 	router.GET("/categories/:category_id/title", middleware.CommonMiddleware(dbase), func(ctx *gin.Context) {
-		categoryIDstr := ctx.Param("category_id")
-		categoryIDInt, err := strconv.Atoi(categoryIDstr)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		title, err := db.GetCategoryTitle(dbase, categoryIDInt)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		ctx.JSON(http.StatusOK, title)
-	})
-
-	router.DELETE("/items/:item_id", middleware.CommonMiddleware(dbase), func(ctx *gin.Context) {
-		itemIDstr := ctx.Param("item_id")
-		itemIDInt, err := strconv.Atoi(itemIDstr)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		err = db.DeleteItem(dbase, itemIDInt)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		ctx.JSON(http.StatusOK, gin.H{"status": "ok"})
-	})
-
-	router.POST("/items", middleware.ItemMW[models.Item](dbase), func(ctx *gin.Context) {
-		itemCtx, _ := ctx.Get("item")
-		item, ok := itemCtx.(models.Item)
-		if !ok {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
-			return
-		}
-		if err := db.InsertItem(dbase, item); err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		ctx.JSON(http.StatusOK, gin.H{"status": "ok"})
+		handlers.GetCategoryTitle(ctx, dbase)
 	})
 
 	router.POST("/categories", middleware.ItemMW[models.Category](dbase), func(ctx *gin.Context) {
-		itemCtx, _ := ctx.Get("item")
-		item, ok := itemCtx.(models.Category)
-		if !ok {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
-			return
-		}
-		userCtx, _ := ctx.Get("user")
-		user, ok := userCtx.(models.User)
-		if !ok {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
-			return
-		}
-		if err := db.InsertCategory(dbase, item, user.ID); err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		ctx.JSON(http.StatusOK, gin.H{"status": "ok"})
+		handlers.InsertCategory(ctx, dbase)
 	})
+
+	router.DELETE("/categories/:category_id", middleware.CommonMiddleware(dbase), func(ctx *gin.Context) {
+		handlers.DeleteCategory(ctx, dbase)
+	})
+
+	router.PUT("/categories/:category_id", middleware.ItemMW[models.Category](dbase), func(ctx *gin.Context) {
+		handlers.UpdateCategory(ctx, dbase)
+	})
+
+	// items
+	router.DELETE("/items/:item_id", middleware.CommonMiddleware(dbase), func(ctx *gin.Context) {
+		handlers.DeleteItem(ctx, dbase)
+	})
+
+	router.POST("/items", middleware.ItemMW[models.Item](dbase), func(ctx *gin.Context) {
+		handlers.InsertItem(ctx, dbase)
+	})
+
+	router.PUT("/items/:item_id", middleware.ItemMW[models.Item](dbase), func(ctx *gin.Context) {
+		handlers.UpdateItem(ctx, dbase)
+	})
+
 	router.Run(":8080")
 }

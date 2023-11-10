@@ -31,14 +31,24 @@ func GetAllCategories(db *sql.DB) ([]models.Category, error) {
 
 func InsertCategory(db *sql.DB, category models.Category, creatorID int) error {
 	time.Sleep(50 * time.Millisecond)
-
 	_, err := db.Exec(`INSERT INTO public."Categories"(title, creator_id) VALUES ($1, $2)`,
 		category.Title, creatorID)
-
 	if err != nil {
 		return err
 	}
+	return nil
+}
 
+func UpdateCategory(db *sql.DB, category models.Category) error {
+	time.Sleep(50 * time.Millisecond)
+	_, err := db.Exec(`
+		UPDATE public."Categories"
+		SET title=$1
+		WHERE id=$2;
+	`, category.Title, category.ID)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:WarehouseSystem.Components"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="100"
+    d:DesignHeight="150"
     d:DesignWidth="800"
     mc:Ignorable="d">
     <Border
@@ -14,61 +14,67 @@
         BorderBrush="Transparent"
         BorderThickness="1">
         <Grid Background="#343A40">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width=" 7*" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition MinHeight="0" />
+                <RowDefinition MinHeight="0" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
 
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
+            <!--  /// Title ///  -->
+            <TextBlock
+                Grid.Row="0"
+                Margin="10,0,0,0"
+                FontSize="25"
+                FontWeight="Bold"
+                Foreground="#E9ECEF"
+                Text="{Binding Title}"
+                TextWrapping="Wrap" />
 
-                <!--  /// Title ///  -->
-                <TextBlock
-                    Grid.Row="0"
-                    Height="Auto"
-                    Margin="10,0,0,0"
-                    FontSize="20"
-                    FontWeight="Medium"
-                    Foreground="#E9ECEF"
-                    Text="{Binding Title}"
-                    TextWrapping="Wrap" />
+            <!--  /// Description ///  -->
+            <TextBlock
+                Grid.Row="1"
+                Height="Auto"
+                MinHeight="0"
+                Margin="10,0,0,0"
+                FontSize="15"
+                Foreground="#E9ECEF"
+                Text="{Binding StringFormat=Описание: {0}, Path=Description}"
+                TextWrapping="Wrap" />
 
-                <!--  /// Description ///  -->
-                <TextBlock
-                    Grid.Row="1"
-                    Height="Auto"
-                    Margin="10,0,0,0"
-                    FontSize="15"
-                    Foreground="#E9ECEF"
-                    Text="{Binding Description}"
-                    TextWrapping="Wrap" />
+            <!--  /// Amount ///  -->
+            <TextBlock
+                Grid.Row="2"
+                Height="Auto"
+                MinHeight="0"
+                Margin="10,0,0,0"
+                FontSize="15"
+                Foreground="#E9ECEF"
+                Text="{Binding StringFormat=Количество: {0}, Path=Amount}"
+                TextWrapping="Wrap" />
 
-                <!--  /// Delete button ///  -->
+            <!--  /// Bottom buttons ///  -->
+            <StackPanel
+                Grid.Row="3"
+                HorizontalAlignment="Center"
+                Orientation="Horizontal">
+                <!--  /// Update category button ///  -->
                 <Button
-                    Grid.Row="2"
-                    Width="120"
+                    Width="100"
                     Height="20"
-                    Margin="0,5"
+                    Margin="5,5"
+                    Command="{Binding DataContext.UpdateItemCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
+                    CommandParameter="{Binding ID}"
+                    Content="Изменить" />
+                <!--  /// Delete category button ///  -->
+                <Button
+                    Width="100"
+                    Height="20"
+                    Margin="5,5"
                     Command="{Binding DataContext.RemoveItemCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
                     CommandParameter="{Binding ID}"
                     Content="Удалить" />
-            </Grid>
-
-            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                <Button
-                    Width="20"
-                    Margin="10"
-                    Content="+" />
-                <Button
-                    Width="20"
-                    Margin="10"
-                    Content="-" />
             </StackPanel>
-
         </Grid>
     </Border>
 </UserControl>

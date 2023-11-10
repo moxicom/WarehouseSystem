@@ -60,6 +60,7 @@ namespace WarehouseSystem.Services
             };
         }
 
+        // Makes a request to remove an item with the received itemID
         public async Task<ApiResponse<object>> RemoveItem(int itemID, int userID)
         {
             var request = new RestRequest($"/items/{itemID}", Method.Delete)
@@ -77,13 +78,26 @@ namespace WarehouseSystem.Services
             };
         }
 
+        // Makes a request to insert the received item
         public async Task<ApiResponse<object>> InsertItem(int userID, Item item)
         {
-            var request = new RestRequest("/items", Method.Post)
+            return await SubmitItemData("/items", Method.Post, userID, item);
+        }
+
+        // Makes a request to server to update the received item
+        public async Task<ApiResponse<object>> UpdateItem(int userID, Item item)
+        {
+            return await SubmitItemData($"/items/{item.ID}", Method.Put, userID, item);
+        }
+
+        // Makes a request to the server with the json body `userID = userID, itemData = item`
+        private async Task<ApiResponse<object>> SubmitItemData(string endPoint, Method method, int userID, Item item)
+        {
+            var request = new RestRequest(endPoint, method)
             {
                 RequestFormat = RestSharp.DataFormat.Json
             };
-            request.AddJsonBody(new { userID = userID, itemData = item });         
+            request.AddJsonBody(new { userID = userID, itemData = item });
 
             var response = await Client.ExecuteAsync(request);
             return new ApiResponse<object>
