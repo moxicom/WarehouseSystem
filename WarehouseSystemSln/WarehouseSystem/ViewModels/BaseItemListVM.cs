@@ -111,6 +111,8 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
     protected abstract Task<ApiResponse<object>> AdditionRequest(DialogData dialogData);
     // makes a request to server to update chosen item (item / category)
     protected abstract Task<ApiResponse<object>> UpdatingRequest(int itemID, DialogData dialogData);
+    //
+    protected abstract DialogData GetItemData(int itemID);
 
     // loads items of chosen list
     private async void LoadItems()
@@ -197,9 +199,11 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
     // item updating
     private async void UpdateItem(int itemID)
     {
-        var dialogData = ShowItemDialog(ItemDialogMode.Update);
+        var itemData = GetItemData(itemID);
+        var dialogData = ShowItemDialog(ItemDialogMode.Update, itemData);
         if (dialogData == null)
             return;
+        MessageBox.Show(dialogData.Title + ' ' + dialogData.Description + ' ' + dialogData.Amount.ToString());
         var response = await UpdatingRequest(itemID, dialogData);
         if (response.StatusCode != HttpStatusCode.OK)
             MessageBox.Show(response.ErrorMessage, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -207,11 +211,18 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
     }
 
     // shows dialog with type and mode, that containts input form, processes its data
-    private DialogData ShowItemDialog(ItemDialogMode mode)
-    {
+    private DialogData ShowItemDialog(ItemDialogMode mode, DialogData? itemData = null)
+    { 
         var additionDialog = new ItemDialogView();
         var itemDialogVM = new ItemDialogVM(ItemDialogType, mode);
         additionDialog.DataContext = itemDialogVM;
+
+        if (itemData != null)
+        {
+            itemDialogVM.Title = itemData.Title;
+            itemDialogVM.Description = itemData.Description;
+            itemDialogVM.Amount = itemData.Amount;
+        }
 
         var dialogData = new DialogData();
         string errorText = "";

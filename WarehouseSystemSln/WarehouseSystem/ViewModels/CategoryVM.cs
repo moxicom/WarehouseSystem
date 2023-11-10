@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
@@ -85,6 +86,23 @@ internal class CategoryVM : BaseItemListVM<Item>
         var item = ProcessDialogData(itemID, dialogData);
         var response = await categoryService.UpdateItem(User.Id, item);
         return response;
+    }
+
+    protected override DialogData GetItemData(int itemID)
+    {
+        if (ItemList == null)
+            return null;
+
+        Item? item = ItemList.FirstOrDefault(item => item.ID == itemID);
+        if (item == null)
+            return null;
+
+        return new DialogData()
+        {
+            Title = item.Title,
+            Description = "",
+            Amount = 0
+        };
     }
 
     private Item ProcessDialogData(int itemID, DialogData dialogData)

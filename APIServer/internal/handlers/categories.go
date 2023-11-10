@@ -4,6 +4,7 @@ import (
 	"APIServer/internal/db"
 	"APIServer/internal/models"
 	"database/sql"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -100,11 +101,13 @@ func UpdateCategory(ctx *gin.Context, dbase *sql.DB) {
 	itemCtx, _ := ctx.Get("item")
 	item, ok := itemCtx.(models.Category)
 	if !ok {
+		log.Println("Не удалось распарсить")
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
 		return
 	}
-
+	log.Println(item)
 	if err := db.UpdateCategory(dbase, item); err != nil {
+		log.Println("Ошибка обновления записи в базе данных")
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
