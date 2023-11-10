@@ -37,25 +37,38 @@ internal class CategoriesVM : BaseItemListVM<Category>
         return response;
     }
 
-    protected override async Task<ApiResponse<object>> RemoveRequest(int itemID)
+    protected override async Task<ApiResponse<object>> RemoveRequest(int categoryID)
     {
         var categoriesService = new CategoriesService(BaseUrl);
-        var response = await categoriesService.RemoveCategory(User.Id, itemID);
+        var response = await categoriesService.RemoveCategory(User.Id, categoryID);
         return response;
     }
 
     protected override async Task<ApiResponse<object>> AdditionRequest(DialogData dialogData)
     {
         var categoriesService = new CategoriesService(BaseUrl);
-        var category = new Category()
+        var category = ProcessDialogData(categoryID: 0, dialogData);
+        var response = await categoriesService.InsertCategory(User.Id, category);
+        return response;
+    }
+
+    protected override async Task<ApiResponse<object>> UpdatingRequest(int categoryID, DialogData dialogData)
+    {
+        var categoriesService = new CategoriesService(BaseUrl);
+        var category = ProcessDialogData(categoryID, dialogData);
+        var response = await categoriesService.UpdateCategory(User.Id, category);
+        return response;
+    }
+
+    private Category ProcessDialogData(int categoryID, DialogData dialogData)
+    {
+        return new Category()
         {
-            ID = 0,
+            ID = categoryID,
             Title = dialogData.Title,
             CreatorID = User.Id,
             CreatedAt = DateTime.Now,
         };
-        var response = await categoriesService.InsertCategory(User.Id, category);
-        return response;
     }
 
     public void OpenCategory(int ID)

@@ -27,6 +27,7 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
         ReloadItemsCommand = new RelayCommand(ReloadItems);
         RemoveItemCommand = new RelayCommand<int>(RemoveItem);
         AddNewItemCommand = new RelayCommand(AddItem);
+        UpdateItemCommand = new RelayCommand<int>(UpdateItem);
         
         User = new User { Id = 1, Name = "Test Name", Surname = "Test Surname" };
         MainVM = mainViewModel;
@@ -182,10 +183,10 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
     // item addition 
     private async void AddItem()
     {
-        var formData = ShowItemDialog(ItemDialogMode.Insert);
-        if (formData == null) 
+        var dialogData = ShowItemDialog(ItemDialogMode.Insert);
+        if (dialogData == null) 
             return;
-        var response = await AdditionRequest(formData);
+        var response = await AdditionRequest(dialogData);
         if (response.StatusCode != HttpStatusCode.OK)
         {
             MessageBox.Show(response.ErrorMessage, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -194,12 +195,15 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
     }
 
     // item updating
-    private async void UpdateItem()
+    private async void UpdateItem(int itemID)
     {
-        var formData = ShowItemDialog(ItemDialogMode.Update);
-        if (formData == null)
+        var dialogData = ShowItemDialog(ItemDialogMode.Update);
+        if (dialogData == null)
             return;
-        //var response = await
+        var response = await UpdatingRequest(itemID, dialogData);
+        if (response.StatusCode != HttpStatusCode.OK)
+            MessageBox.Show(response.ErrorMessage, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+        ReloadItems();
     }
 
     // shows dialog with type and mode, that containts input form, processes its data

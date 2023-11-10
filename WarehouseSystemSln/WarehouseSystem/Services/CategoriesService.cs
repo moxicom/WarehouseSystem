@@ -34,13 +34,13 @@ namespace WarehouseSystem.Services
             };
         }
 
-        public async Task<ApiResponse<object>> InsertCategory(int userID, Category category)
+        public async Task<ApiResponse<object>> RemoveCategory(int userID, int categoryID)
         {
-            var request = new RestRequest("/categories", Method.Post)
+            var request = new RestRequest($"/categories/{categoryID}", Method.Delete)
             {
                 RequestFormat = RestSharp.DataFormat.Json
             };
-            request.AddJsonBody(new { userID = userID, itemData = category });
+            request.AddJsonBody(new {userID = userID});
 
             var response = await Client.ExecuteAsync(request);
             return new ApiResponse<object>
@@ -51,13 +51,26 @@ namespace WarehouseSystem.Services
             };
         }
 
-        public async Task<ApiResponse<object>> RemoveCategory(int userID, int categoryID)
+        // Makes a request to insert received category
+        public async Task<ApiResponse<object>> InsertCategory(int userID, Category category)
         {
-            var request = new RestRequest($"/categories/{categoryID}", Method.Delete)
+            return await SubmitCategoryData("/categories", Method.Post, userID, category);
+        }
+
+        // Makes a request to server to update received category
+        public async Task<ApiResponse<object>> UpdateCategory(int userID, Category category)
+        {
+            return await SubmitCategoryData($"/categories/{category.ID}", Method.Put, userID, category);
+        }
+
+        // Makes a request to the server with the json body `userID = userID, itemData = category`.
+        private async Task<ApiResponse<object>> SubmitCategoryData(string endPoint, Method method, int userID, Category category) 
+        {
+            var request = new RestRequest(endPoint, method)
             {
                 RequestFormat = RestSharp.DataFormat.Json
             };
-            request.AddJsonBody(new {userID = userID});
+            request.AddJsonBody(new { userID = userID, itemData = category });
 
             var response = await Client.ExecuteAsync(request);
             return new ApiResponse<object>
