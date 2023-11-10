@@ -57,5 +57,9 @@ func main() {
 		handlers.InsertItem(ctx, dbase)
 	})
 
+	router.PUT("/items/:item_id", middleware.ItemMW[models.Item](dbase), func(ctx *gin.Context) {
+		handlers.UpdateItem(ctx, dbase)
+	})
+
 	router.Run(":8080")
 }

@@ -100,8 +100,8 @@ internal class CategoryVM : BaseItemListVM<Item>
         return new DialogData()
         {
             Title = item.Title,
-            Description = "",
-            Amount = 0
+            Description = item.Description,
+            Amount = item.Amount
         };
     }
 

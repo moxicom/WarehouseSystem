@@ -163,9 +163,7 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
     private async void RemoveItem(int itemID)
     {
         var confirmationDialog = new ConfirmationDialog();
-
         var message = "Вы уверены, что хотите удалить этот объект?";
-
         if (await confirmationDialog.ShowConfirmationDialog(message) == false)
             return;
 
@@ -173,12 +171,10 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
         ItemList = null;
 
         var response = await RemoveRequest(itemID);
-
         if (response.StatusCode != HttpStatusCode.OK)
         {
             MessageBox.Show("Не удалось удалить объект", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-
         ReloadItems();
     }
 
@@ -203,7 +199,6 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
         var dialogData = ShowItemDialog(ItemDialogMode.Update, itemData);
         if (dialogData == null)
             return;
-        MessageBox.Show(dialogData.Title + ' ' + dialogData.Description + ' ' + dialogData.Amount.ToString());
         var response = await UpdatingRequest(itemID, dialogData);
         if (response.StatusCode != HttpStatusCode.OK)
             MessageBox.Show(response.ErrorMessage, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);

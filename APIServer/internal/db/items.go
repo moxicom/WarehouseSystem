@@ -56,14 +56,27 @@ func DeleteItemsByCategory(db *sql.DB, categoryID int) error {
 
 func InsertItem(db *sql.DB, item models.Item) error {
 	time.Sleep(50 * time.Millisecond)
-
-	_, err := db.Exec(`INSERT INTO public."Items"(title, description, category_id, amount) 
+	_, err := db.Exec(`
+		INSERT INTO public."Items"(title, description, category_id, amount) 
 		VALUES ($1, $2, $3, $4)`,
 		item.Title, item.Description, item.CategoryID, item.Amount)
-
 	if err != nil {
 		return err
 	}
+	return nil
+}
 
+func UpdateItem(db *sql.DB, item models.Item) error {
+	time.Sleep(50 * time.Millisecond)
+	_, err := db.Exec(`
+		UPDATE public."Items"
+		SET title=$1,
+		description=$2,
+		amount=$3
+		WHERE id=$4;
+	`, item.Title, item.Description, item.Amount, item.ID)
+	if err != nil {
+		return err
+	}
 	return nil
 }
