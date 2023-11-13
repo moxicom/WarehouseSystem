@@ -48,7 +48,7 @@ internal class Auth : BaseRestClient
                     var id = (int)jsonResponse["ID"];
                     var name = jsonResponse["Name"].ToString();
                     var surname = jsonResponse["Surname"].ToString();
-                    var role = (UserRole)(int)jsonResponse["Role"];
+                    var role = (UserRoles)(int)jsonResponse["Role"];
 
                     var user = new User
                     {

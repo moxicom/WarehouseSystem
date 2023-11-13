@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace WarehouseSystem.Enums
 {
-    public enum UserRole
+    public enum UserRoles
     {
-        User = 0,
-        Admin = 1,
+        Guest = 0,
+        BasicEmployee,
+        Moderator,
+        Admin,
     }
 }
