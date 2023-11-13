@@ -15,12 +15,12 @@ public class MainViewModel : BaseViewModel
     // constructor
     public MainViewModel(string baseUrl, User user)
     {
+        User = user;
         CurrentViewModel = new HomeVM();
         _baseUrl = baseUrl;
         _categoriesVM = new CategoriesVM(baseUrl, this);
         HomeBtnClick = new RelayCommand(OpenHomeView);
         CategoriesBtnClick = new RelayCommand(OpenCategoriesView);
-        User = user;
     }
 
     // properties

@@ -19,17 +19,18 @@ namespace WarehouseSystem
     {
         App()
         {
-            //    var window = new AppMainWindow();
-            //    User user = new User()
-            //    {
-            //        Id = 1,
-            //        Name = "TestName",
-            //        Surname = "TestSurname",
-            //        Role = Enums.UserRoles.Admin,
-            //    };
-            //    window.DataContext = new MainViewModel("http://localhost:8080", user);
-            //    Run(window);
-            Run(new MainWindow());
+            var window = new AppMainWindow();
+            User user = new User()
+            {
+                Id = 1,
+                Name = "TestName",
+                Surname = "TestSurname",
+                Role = Enums.UserRoles.Guest,
+            };
+            window.DataContext = new MainViewModel("http://localhost:8080", user);
+            Run(window);
+
+            //Run(new MainWindow());
         }
     }
 }

@@ -137,8 +137,9 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
     protected abstract DialogData GetItemData(int itemID);
 
     // loads items of chosen list
-    private async void LoadItems()
+    private async Task LoadItems()
     {
+        ChangeToLoadingStatus();
         var response = await LoadItemsRequest();
         ProcessItemsLoading(response);
     }
@@ -151,12 +152,12 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
             {
                 ItemList = new ObservableCollection<T>(response.Data);
                 IsStatusTextVisible = false;
-                IsAddItemButtonVisible = true;
+                ShowAddItemButton();
             }
             else
             {
                 StatusTextValue = NoRowsStatus;
-                IsAddItemButtonVisible = true;
+                ShowAddItemButton();
             }
         }
         else
@@ -167,19 +168,11 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
         CanReloadItems = true;
     }
 
-    public void ReloadItems()
+    public async void ReloadItems()
     {
-        ChangeToLoadingStatus();
         ItemList = null;
-        LoadItems();
-    }
-
-    private void ChangeToLoadingStatus()
-    {
-        CanReloadItems = false;
-        IsStatusTextVisible = true;
-        StatusTextValue = LoadingStatus;
-        IsAddItemButtonVisible = false;
+        await LoadItems();
+        ShowButtonsRole();
     }
 
     private async void RemoveItem(int itemID)
@@ -276,6 +269,48 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
         else
         {
             return dialogData;
+        }
+    }
+
+    private void ChangeToLoadingStatus()
+    {
+        CanReloadItems = false;
+        IsStatusTextVisible = true;
+        StatusTextValue = LoadingStatus;
+        IsAddItemButtonVisible = false;
+    }
+
+    private void ShowAddItemButton()
+    {
+        if (MainVM.User.Role >= UserRoles.Moderator)
+        {
+            IsAddItemButtonVisible = true;
+            return;
+        }
+        IsAddItemButtonVisible = false;
+    }
+
+    private void ShowButtonsRole()
+    {
+        var role = MainVM.User.Role;
+        // add admin panel visibility
+        IsUpdateButtonVisible = false;
+        IsRemoveButtonVisible = false;
+        switch (role)
+        {
+            case UserRoles.Admin:
+                IsUpdateButtonVisible = true;
+                IsRemoveButtonVisible = true;
+                break;
+            case UserRoles.Moderator:
+                IsUpdateButtonVisible = true;
+                IsRemoveButtonVisible = true;
+                break;
+            case UserRoles.BasicEmployee:
+                IsUpdateButtonVisible = true;
+                break;
+            case UserRoles.Guest:
+                break;
         }
     }
 }
