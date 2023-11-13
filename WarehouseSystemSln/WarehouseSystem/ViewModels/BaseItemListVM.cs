@@ -20,7 +20,7 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
     private bool _isRemoveButtonVisible;
     private bool _isUpdateButtonVisible;
     private ObservableCollection<T>? _itemList;
-    private string _statusTextValue;
+    private string _statusTextValue = string.Empty;
 
     // constructor
     protected BaseItemListVM(string baseUrl, MainViewModel mainViewModel,

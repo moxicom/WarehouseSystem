@@ -24,7 +24,6 @@ namespace WarehouseSystem.Views
         public AppMainWindow()
         {
             InitializeComponent();
-            DataContext = new MainViewModel("http://localhost:8080"); // after all tests should add baseURL from loginVM
         }
     }
 }

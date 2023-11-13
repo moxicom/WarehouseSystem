@@ -16,7 +16,7 @@ namespace WarehouseSystem.ViewModels;
 internal class CategoriesVM : BaseItemListVM<Category>
 {
     // Constructor
-    public CategoriesVM(string baseUrl, MainViewModel mainViewModel) : base(baseUrl, mainViewModel,
+    public CategoriesVM(string baseUrl, MainViewModel mainVM) : base(baseUrl, mainVM,
         "Категории отсутствуют", "Загрузка...")
     {
         OpenCategoryCommand = new RelayCommand<int>(OpenCategory);

@@ -1,5 +1,6 @@
 ﻿using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
+using WarehouseSystem.Models;
 using WarehouseSystem.Utilities;
 
 namespace WarehouseSystem.ViewModels;
@@ -12,18 +13,20 @@ public class MainViewModel : BaseViewModel
     private BaseViewModel _currentViewModel;
 
     // constructor
-    public MainViewModel(string baseUrl)
+    public MainViewModel(string baseUrl, User user)
     {
         CurrentViewModel = new HomeVM();
         _baseUrl = baseUrl;
         _categoriesVM = new CategoriesVM(baseUrl, this);
         HomeBtnClick = new RelayCommand(OpenHomeView);
         CategoriesBtnClick = new RelayCommand(OpenCategoriesView);
+        User = user;
     }
 
     // properties
     public ICommand HomeBtnClick { get; }
     public ICommand CategoriesBtnClick { get; }
+    public User User { get; }
 
     public BaseViewModel CurrentViewModel
     {

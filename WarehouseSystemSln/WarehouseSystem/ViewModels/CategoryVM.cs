@@ -17,7 +17,7 @@ internal class CategoryVM : BaseItemListVM<Item>
 {
     // Fields
     private readonly int _categoryID;
-    private string _pageTitle;
+    private string _pageTitle = string.Empty;
     private const string _titleLoadingText = "Загрузка категории...";
 
     // constructor
