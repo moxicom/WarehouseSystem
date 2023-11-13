@@ -17,6 +17,8 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
     private bool _canReloadItems;
     private bool _isStatusTextVisible;
     private bool _isAddItemButtonVisible;
+    private bool _isRemoveButtonVisible;
+    private bool _isUpdateButtonVisible;
     private ObservableCollection<T>? _itemList;
     private string _statusTextValue;
 
@@ -87,6 +89,26 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
         set
         {
             _isAddItemButtonVisible = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool IsRemoveButtonVisible
+    {
+        get => _isRemoveButtonVisible;
+        set
+        {
+            _isRemoveButtonVisible = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool IsUpdateButtonVisible
+    {
+        get => _isUpdateButtonVisible;
+        set
+        {
+            _isUpdateButtonVisible = value;
             OnPropertyChanged();
         }
     }
