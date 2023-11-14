@@ -21,7 +21,7 @@ namespace WarehouseSystem.Services
             {
                 RequestFormat = RestSharp.DataFormat.Json,
             };
-            request.AddBody(new { userID });
+            request.AddJsonBody(new { userID });
 
             var response = await Client.ExecuteAsync<List<User>>(request);
             return new ApiResponse<List<User>> 

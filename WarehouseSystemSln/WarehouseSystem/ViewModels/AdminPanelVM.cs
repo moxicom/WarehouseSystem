@@ -23,27 +23,39 @@ namespace WarehouseSystem.ViewModels
         private string _statusTextValue;
         private bool _isStatusTextVisible;
         private bool _isTableVisible;
+        private ObservableCollection<User> _users;
 
     // Constructor
     public AdminPanelVM(string baseUrl, MainViewModel mainVM)
         {
             MainVM = mainVM;
             BaseUrl = baseUrl;
+            Users = new ObservableCollection<User>();
             AddCommand = new RelayCommand(AddEmployee);
             DeleteCommand = new RelayCommand(DeleteEmployee, CanDeleteEmployee);
             EditCommand = new RelayCommand(EditEmployee, CanEditEmployee);
             ReloadItemsCommand = new RelayCommand(ReloadData, CanReloadItems);
+            ShowTable();
             ReloadData();
         }
 
         // Properties
         public string BaseUrl { get; }
         public MainViewModel MainVM { get; }
-        public ObservableCollection<User> Users { get; set; } = new ObservableCollection<User>();
         public ICommand AddCommand { get; }
         public ICommand DeleteCommand { get; }
         public ICommand EditCommand { get; }
         public ICommand ReloadItemsCommand { get; }
+
+        public ObservableCollection<User> Users
+        {
+            get => _users;
+            set
+            {
+                _users = value;
+                OnPropertyChanged();
+            }
+        }
 
         public User SelectedUser
         {
@@ -101,7 +113,6 @@ namespace WarehouseSystem.ViewModels
         {
             ShowStatus(_loadingStatus);
             CanReloadItems = false;
-            Users = new ObservableCollection<User>();
             await LoadData();
         }
 
@@ -126,6 +137,11 @@ namespace WarehouseSystem.ViewModels
                 if (response.Data != null)
                 {
                     Users = new ObservableCollection<User>(response.Data);
+                    ShowTable();
+                }
+                else
+                {
+                    Users = new ObservableCollection<User>();
                     ShowTable();
                 }
             }
@@ -163,8 +179,18 @@ namespace WarehouseSystem.ViewModels
 
         private bool CanDeleteEmployee()
         {
-            // Включаем кнопку удаления только при наличии выбранного работника
-            return SelectedUser!= null;
+            if (SelectedUser == null)
+            {
+                return false;
+            }
+            else if (SelectedUser.Id == MainVM.User.Id)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         private void EditEmployee()
@@ -178,8 +204,18 @@ namespace WarehouseSystem.ViewModels
 
         private bool CanEditEmployee()
         {
-            // Включаем кнопку изменения только при наличии выбранного работника
-            return SelectedUser!= null;
+            if (SelectedUser == null)
+            {
+                return false;
+            }
+            else if (SelectedUser.Id == MainVM.User.Id)
+            {
+                return false;
+            }
+            else
+            { 
+                return true;
+            }
         }
 
         private void UpdateCommands()

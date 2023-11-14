@@ -4,7 +4,28 @@ import (
 	"APIServer/internal/models"
 	"database/sql"
 	"errors"
+	"fmt"
 )
+
+func GetAllUsers(db *sql.DB) ([]models.User, error) {
+	rows, err := db.Query(`SELECT id, name, surname, role
+	FROM public."Users"`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []models.User
+	for rows.Next() {
+		var user models.User
+		if err := rows.Scan(&user.ID, &user.Name, &user.Surname, &user.Role); err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+	fmt.Println(users)
+	return users, nil
+}
 
 func GetUserByNamePass(db *sql.DB, username string, password string) (models.User, error) {
 

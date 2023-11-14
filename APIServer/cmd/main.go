@@ -23,6 +23,11 @@ func main() {
 	// auth
 	router.GET("/auth", middleware.LoginMiddleware(dbase), handlers.AuthHandler)
 
+	// users
+	router.GET("/users", middleware.CommonMiddleware(dbase), func(ctx *gin.Context) {
+		handlers.GetAllUsers(ctx, dbase)
+	})
+
 	// categories
 	router.GET("/categories", middleware.CommonMiddleware(dbase), func(ctx *gin.Context) {
 		handlers.GetAllCategoriesHandler(ctx, dbase)
