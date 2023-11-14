@@ -49,9 +49,9 @@ internal class CategoryVM : BaseItemListVM<Item>
     // methods
     protected override async Task<ApiResponse<List<Item>>> LoadItemsRequest()
     {
-        var CategoryService = new CategoryService(BaseUrl);
+        var categoryService = new CategoryService(BaseUrl);
         PageTitle = _titleLoadingText;
-        var response = await CategoryService.GetItems(_categoryID, User.Id);
+        var response = await categoryService.GetItems(_categoryID, User.Id);
         await LoadTitle();
         return response;
     }

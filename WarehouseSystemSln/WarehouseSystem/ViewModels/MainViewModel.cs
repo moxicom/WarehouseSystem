@@ -47,5 +47,5 @@ public class MainViewModel : BaseViewModel
     public void OpenCategoriesView() => CurrentViewModel = _categoriesVM;
     public void OpenHomeView() => CurrentViewModel = new HomeVM();
     public void OpenCategoryView(int ID) => CurrentViewModel = new CategoryVM(ID, _baseUrl, this);
-    public void OpenAdminPanel() => CurrentViewModel = new AdminPanelVM(this);
+    public void OpenAdminPanel() => CurrentViewModel = new AdminPanelVM(_baseUrl, this);
 }
