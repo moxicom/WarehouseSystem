@@ -64,7 +64,7 @@ internal class LoginVM : BaseViewModel
 
         if (response.StatusCode == HttpStatusCode.OK)
         {
-            var newViewModel = new MainViewModel(_baseUrl);
+            var newViewModel = new MainViewModel(_baseUrl, response.Data);
             var newWindow = new AppMainWindow();
             newWindow.DataContext = newViewModel;
             newWindow.Show();

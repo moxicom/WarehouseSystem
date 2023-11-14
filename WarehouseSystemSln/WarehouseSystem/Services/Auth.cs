@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using WarehouseSystem.Enums;
@@ -34,33 +35,19 @@ internal class Auth : BaseRestClient
         {
             var passwordHash = Sha256Hash(password);
 
-            var request = new RestRequest("/auth") { RequestFormat = DataFormat.Json };
+            var request = new RestRequest("/auth") { RequestFormat = RestSharp.DataFormat.Json };
             request.AddJsonBody(new { username, password = passwordHash });
 
-            var response = await Client.ExecuteAsync(request);
+            var response = await Client.ExecuteAsync<User>(request);
 
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:
                 {
-                    var jsonResponse = JObject.Parse(response.Content);
-
-                    var id = (int)jsonResponse["ID"];
-                    var name = jsonResponse["Name"].ToString();
-                    var surname = jsonResponse["Surname"].ToString();
-                    var role = (UserRole)(int)jsonResponse["Role"];
-
-                    var user = new User
-                    {
-                        Id = id,
-                        Name = name,
-                        Surname = surname,
-                        Role = role
-                    };
-
+                    //MessageBox.Show(response.Data.Name + " " + response.Data.Surname);
                     return new ApiResponse<User>
                     {
-                        Data = user,
+                        Data = response.Data,
                         ErrorMessage = "",
                         StatusCode = response.StatusCode
                     };

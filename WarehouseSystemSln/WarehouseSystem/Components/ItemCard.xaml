@@ -21,6 +21,10 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
 
+            <Grid.Resources>
+                <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            </Grid.Resources>
+
             <!--  /// Title ///  -->
             <TextBlock
                 Grid.Row="0"
@@ -65,7 +69,8 @@
                     Margin="5,5"
                     Command="{Binding DataContext.UpdateItemCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
                     CommandParameter="{Binding ID}"
-                    Content="Изменить" />
+                    Content="Изменить"
+                    Visibility="{Binding DataContext.IsUpdateButtonVisible, Converter={StaticResource BoolToVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
                 <!--  /// Delete category button ///  -->
                 <Button
                     Width="100"
@@ -73,7 +78,8 @@
                     Margin="5,5"
                     Command="{Binding DataContext.RemoveItemCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
                     CommandParameter="{Binding ID}"
-                    Content="Удалить" />
+                    Content="Удалить"
+                    Visibility="{Binding DataContext.IsRemoveButtonVisible, Converter={StaticResource BoolToVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
             </StackPanel>
         </Grid>
     </Border>
