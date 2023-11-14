@@ -22,8 +22,9 @@
         <Border Grid.Column="0" Background="#343A40" />
 
         <StackPanel VerticalAlignment="Center">
-            <Button Command="{Binding HomeBtnClick}" Content="Главная" />
-            <Button Command="{Binding CategoriesBtnClick}" Content="Категории" />
+            <Button Command="{Binding OpenHomeCommand}" Content="Главная" />
+            <Button Command="{Binding OpenCategoriesCommand}" Content="Категории" />
+            <Button Command="{Binding OpenAdminPanelCommand}" Content="Панель управления" />
         </StackPanel>
 
         <ContentControl Grid.Column="1" Content="{Binding CurrentViewModel}">
@@ -36,6 +37,9 @@
                 </DataTemplate>
                 <DataTemplate DataType="{x:Type viewmodels:CategoryVM}">
                     <views:CategoryView />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type viewmodels:AdminPanelVM}">
+                    <views:AdminPanel />
                 </DataTemplate>
             </ContentControl.Resources>
         </ContentControl>

@@ -1,0 +1,65 @@
+﻿<UserControl
+    x:Class="WarehouseSystem.Views.AdminPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:WarehouseSystem.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+
+    <Grid>
+        <Grid Margin="50,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="9*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+
+
+            <ListView
+                x:Name="userListBox"
+                ItemsSource="{Binding Users}"
+                SelectedItem="{Binding SelectedUser, Mode=TwoWay}">
+
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn DisplayMemberBinding="{Binding Id}" Header="Id" />
+                        <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Name" />
+                        <GridViewColumn DisplayMemberBinding="{Binding Surname}" Header="Surname" />
+                        <GridViewColumn DisplayMemberBinding="{Binding Role}" Header="Role" />
+                    </GridView>
+                </ListView.View>
+
+            </ListView>
+
+            <!--  /// Buttons ///  -->
+            <StackPanel
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                Orientation="Horizontal">
+                <Button
+                    Margin="10,0,10,10"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"
+                    Command="{Binding AddCommand}"
+                    Content="Добавить" />
+                <Button
+                    Margin="10,0,10,10"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    Command="{Binding DeleteCommand}"
+                    Content="Удалить"
+                    IsEnabled="{Binding IsDeleteEnabled}" />
+                <Button
+                    Margin="10,0,10,10"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Command="{Binding EditCommand}"
+                    Content="Изменить"
+                    IsEnabled="{Binding IsEditEnabled}" />
+            </StackPanel>
+
+        </Grid>
+    </Grid>
+</UserControl>
