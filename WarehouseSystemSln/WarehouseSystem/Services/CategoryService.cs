@@ -12,7 +12,7 @@ namespace WarehouseSystem.Services
 {
     internal class CategoryService : BaseRestClient
     {
-        // Categoies
+        // Constructor
         public CategoryService(string baseUrl) : base(baseUrl) { }
 
         // Methods
