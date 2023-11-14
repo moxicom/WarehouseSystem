@@ -15,7 +15,7 @@ namespace WarehouseSystem.Services
         public UsersService(string baseUrl) : base(baseUrl) { }
 
         // Methods
-        public async Task<ApiResponse<List<User>>> GetUser(int userID)
+        public async Task<ApiResponse<List<User>>> GetUsers(int userID)
         {
             var request = new RestRequest($"/users", Method.Get)
             {
@@ -29,6 +29,23 @@ namespace WarehouseSystem.Services
                 Data = response.Data,
                 StatusCode = response.StatusCode,
                 ErrorMessage = ProcessRequestStatus(response.StatusCode) 
+            };
+        }
+
+        public async Task<ApiResponse<object>> RemoveUser(int senderID, int userIDtoDelete)
+        {
+            var request = new RestRequest($"/users/{userIDtoDelete}", Method.Delete)
+            {
+                RequestFormat = RestSharp.DataFormat.Json,
+            };
+            request.AddJsonBody(new { userID = senderID });
+
+            var response = await Client.ExecuteAsync(request);
+            return new ApiResponse<object>
+            {
+                Data = null,
+                StatusCode = response.StatusCode,
+                ErrorMessage = ProcessRequestStatus(response.StatusCode)
             };
         }
     }

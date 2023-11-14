@@ -32,7 +32,7 @@ namespace WarehouseSystem.ViewModels
             BaseUrl = baseUrl;
             Users = new ObservableCollection<User>();
             AddCommand = new RelayCommand(AddEmployee);
-            DeleteCommand = new RelayCommand(DeleteEmployee, CanDeleteEmployee);
+            RemoveCommand = new RelayCommand(RemoveEmployee, CanRemoveEmployee);
             EditCommand = new RelayCommand(EditEmployee, CanEditEmployee);
             ReloadItemsCommand = new RelayCommand(ReloadData, CanReloadItems);
             ShowTable();
@@ -43,7 +43,7 @@ namespace WarehouseSystem.ViewModels
         public string BaseUrl { get; }
         public MainViewModel MainVM { get; }
         public ICommand AddCommand { get; }
-        public ICommand DeleteCommand { get; }
+        public ICommand RemoveCommand { get; }
         public ICommand EditCommand { get; }
         public ICommand ReloadItemsCommand { get; }
 
@@ -126,7 +126,7 @@ namespace WarehouseSystem.ViewModels
         private async Task<ApiResponse<List<User>>> GetUsersRequest()
         {
             var userService = new UsersService(BaseUrl);
-            var response = await userService.GetUser(MainVM.User.Id);
+            var response = await userService.GetUsers(MainVM.User.Id);
             return response;
         }
 
@@ -159,38 +159,32 @@ namespace WarehouseSystem.ViewModels
             // Затем добавляем нового работника в коллекцию
             Users.Add(new User() 
             {
-                Id = 1,
+                Id = 228,
                 Name = "name",
                 Surname = "surname",
                 Role = Enums.UserRoles.BasicEmployee,
             });
         }
 
-        private void DeleteEmployee()
+        private async void RemoveEmployee()
         {
-            // Логика удаления выбранного работника
-            if (false)
-            {
+            var confirmationDialog = new ConfirmationDialog();
+            var message = "Вы уверены, что хотите удалить этого пользователя?";
+            if (await confirmationDialog.ShowConfirmationDialog(message) == false)
                 return;
+            var response = await RemoveUserRequest();
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                MessageBox.Show(response.ErrorMessage);
             }
-            Users.Remove(SelectedUser);
-            SelectedUser= null;
+            ReloadData();
         }
 
-        private bool CanDeleteEmployee()
+        private async Task<ApiResponse<object>> RemoveUserRequest()
         {
-            if (SelectedUser == null)
-            {
-                return false;
-            }
-            else if (SelectedUser.Id == MainVM.User.Id)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            var userService = new UsersService(BaseUrl);
+            var response = await userService.RemoveUser(senderID: MainVM.User.Id, userIDtoDelete: SelectedUser.Id);
+            return response;
         }
 
         private void EditEmployee()
@@ -200,30 +194,6 @@ namespace WarehouseSystem.ViewModels
             // Затем обновляем свойства выбранного работника
             // Например: SelectedEmployee.Name = "Новое имя";
             //          SelectedEmployee.Position = "Новая должность";
-        }
-
-        private bool CanEditEmployee()
-        {
-            if (SelectedUser == null)
-            {
-                return false;
-            }
-            else if (SelectedUser.Id == MainVM.User.Id)
-            {
-                return false;
-            }
-            else
-            { 
-                return true;
-            }
-        }
-
-        private void UpdateCommands()
-        {
-            // Вызываем это метод после смены выбранного работника
-            // для обновления состояния команд
-            ((RelayCommand)DeleteCommand).RaiseCanExecuteChanged();
-            ((RelayCommand)EditCommand).RaiseCanExecuteChanged();
         }
 
         private void ShowStatus(string statusText)
@@ -237,6 +207,46 @@ namespace WarehouseSystem.ViewModels
         {
             IsStatusTextVisible = false;
             IsTableVisible = true;
+        }
+
+        private bool CanEditEmployee()
+        {
+            if (SelectedUser == null)
+            {
+                return false;
+            }
+            else if (SelectedUser.Id == MainVM.User.Id)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        private bool CanRemoveEmployee()
+        {
+            if (SelectedUser == null)
+            {
+                return false;
+            }
+            else if (SelectedUser.Id == MainVM.User.Id)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        private void UpdateCommands()
+        {
+            // Вызываем это метод после смены выбранного работника
+            // для обновления состояния команд
+            ((RelayCommand)RemoveCommand).RaiseCanExecuteChanged();
+            ((RelayCommand)EditCommand).RaiseCanExecuteChanged();
         }
     }
 }

@@ -90,9 +90,9 @@
                         Margin="10,0,10,10"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Bottom"
-                        Command="{Binding DeleteCommand}"
+                        Command="{Binding RemoveCommand}"
                         Content="Удалить"
-                        IsEnabled="{Binding IsDeleteEnabled}" />
+                        IsEnabled="{Binding IsRemoveEnabled}" />
                     <Button
                         Margin="10,0,10,10"
                         HorizontalAlignment="Right"

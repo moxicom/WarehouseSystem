@@ -10,6 +10,7 @@ public class MainViewModel : BaseViewModel
     // fields
     private readonly string _baseUrl;
     private readonly CategoriesVM _categoriesVM;
+    private readonly AdminPanelVM _adminPanelVM;
     private BaseViewModel _currentViewModel;
 
     // constructor
@@ -19,6 +20,7 @@ public class MainViewModel : BaseViewModel
         CurrentViewModel = new HomeVM();
         _baseUrl = baseUrl;
         _categoriesVM = new CategoriesVM(baseUrl, this);
+        _adminPanelVM = new AdminPanelVM(baseUrl, this);
         OpenHomeCommand = new RelayCommand(OpenHomeView);
         OpenCategoriesCommand = new RelayCommand(OpenCategoriesView);
         OpenAdminPanelCommand = new RelayCommand(OpenAdminPanel);
@@ -47,5 +49,5 @@ public class MainViewModel : BaseViewModel
     public void OpenCategoriesView() => CurrentViewModel = _categoriesVM;
     public void OpenHomeView() => CurrentViewModel = new HomeVM();
     public void OpenCategoryView(int ID) => CurrentViewModel = new CategoryVM(ID, _baseUrl, this);
-    public void OpenAdminPanel() => CurrentViewModel = new AdminPanelVM(_baseUrl, this);
+    public void OpenAdminPanel() => CurrentViewModel = _adminPanelVM;
 }
