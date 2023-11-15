@@ -212,7 +212,6 @@ namespace WarehouseSystem.ViewModels
             } else
             {                
                 password = Auth.Sha256Hash(dialogData.Password);
-                MessageBox.Show(dialogData.Password + "\n" + password);
             }
             var user = new User()
             {
@@ -226,6 +225,7 @@ namespace WarehouseSystem.ViewModels
             var response = await UpdateRequest(MainVM.User.Id, user);
             if (response.StatusCode != HttpStatusCode.OK)
                 MessageBox.Show(response.ErrorMessage);
+            MessageBox.Show("Информация о пользователе успешно обновлена");
             ReloadData();
         }
 
