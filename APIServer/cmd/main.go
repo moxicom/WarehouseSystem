@@ -36,6 +36,10 @@ func main() {
 		handlers.DeleteUserByID(ctx, dbase)
 	})
 
+	router.PUT("/users/:user_id", middleware.DataMW[models.User](dbase), func(ctx *gin.Context) {
+		handlers.UpdateUser(ctx, dbase)
+	})
+
 	// categories
 	router.GET("/categories", middleware.CommonMiddleware(dbase), func(ctx *gin.Context) {
 		handlers.GetAllCategoriesHandler(ctx, dbase)

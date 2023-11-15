@@ -70,7 +70,7 @@ namespace WarehouseSystem.Services
             {
                 RequestFormat = RestSharp.DataFormat.Json
             };
-            request.AddJsonBody(new { userID = userID, itemData = category });
+            request.AddJsonBody(new { userID = userID, data = category });
 
             var response = await Client.ExecuteAsync(request);
             return new ApiResponse<object>

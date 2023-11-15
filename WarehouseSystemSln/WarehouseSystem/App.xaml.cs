@@ -20,19 +20,19 @@ namespace WarehouseSystem
         App()
         {
             string baseUrl = "http://localhost:8080";
-            
-            var window = new AppMainWindow();
-            User user = new User()
-            {
-                Id = 1,
-                Name = "TestName",
-                Surname = "TestSurname",
-                Role = Enums.UserRoles.Admin,
-            };
-            window.DataContext = new MainViewModel(baseUrl, user);
-            Run(window);
 
-            // Run(new MainWindow(baseUrl));
+            //var window = new AppMainWindow();
+            //User user = new User()
+            //{
+            //    Id = 1,
+            //    Name = "TestName",
+            //    Surname = "TestSurname",
+            //    Role = Enums.UserRoles.Admin,
+            //};
+            //window.DataContext = new MainViewModel(baseUrl, user);
+            //Run(window);
+
+            Run(new MainWindow(baseUrl));
         }
     }
 }

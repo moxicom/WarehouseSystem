@@ -69,6 +69,7 @@
                             <GridViewColumn DisplayMemberBinding="{Binding Id}" Header="Id" />
                             <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Name" />
                             <GridViewColumn DisplayMemberBinding="{Binding Surname}" Header="Surname" />
+                            <GridViewColumn DisplayMemberBinding="{Binding Username}" Header="Username" />
                             <GridViewColumn DisplayMemberBinding="{Binding Role}" Header="Role" />
                         </GridView>
                     </ListView.View>
@@ -97,7 +98,7 @@
                         Margin="10,0,10,10"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Bottom"
-                        Command="{Binding EditCommand}"
+                        Command="{Binding UpdateCommand}"
                         Content="Изменить"
                         IsEnabled="{Binding IsEditEnabled}" />
                 </StackPanel>
