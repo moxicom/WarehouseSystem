@@ -2,6 +2,9 @@
 
 REST API requests:
 * GET `/auth`
+* GET `/users`
+* DELETE `/users/:user_id`
+* POST `/users`
 * GET `/categories`
 * GET `/categories/:category_id`
 * GET `/categories/:category_id/title`
