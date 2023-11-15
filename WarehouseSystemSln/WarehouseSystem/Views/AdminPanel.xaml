@@ -98,7 +98,7 @@
                         Margin="10,0,10,10"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Bottom"
-                        Command="{Binding EditCommand}"
+                        Command="{Binding UpdateCommand}"
                         Content="Изменить"
                         IsEnabled="{Binding IsEditEnabled}" />
                 </StackPanel>

@@ -35,7 +35,7 @@ namespace WarehouseSystem.ViewModels
             Users = new ObservableCollection<User>();
             AddCommand = new RelayCommand(AddUser);
             RemoveCommand = new RelayCommand(RemoveUser, CanRemoveEmployee);
-            EditCommand = new RelayCommand(EditEmployee, CanEditEmployee);
+            UpdateCommand = new RelayCommand(UpdateUser, CanUpdateUser);
             ReloadItemsCommand = new RelayCommand(ReloadData, CanReloadItems);
             ShowTable();
             ReloadData();
@@ -46,7 +46,7 @@ namespace WarehouseSystem.ViewModels
         public MainViewModel MainVM { get; }
         public ICommand AddCommand { get; }
         public ICommand RemoveCommand { get; }
-        public ICommand EditCommand { get; }
+        public ICommand UpdateCommand { get; }
         public ICommand ReloadItemsCommand { get; }
 
         public ObservableCollection<User> Users
@@ -199,13 +199,51 @@ namespace WarehouseSystem.ViewModels
             return response;
         }
 
-        private void EditEmployee()
+        private async void UpdateUser()
         {
-            // Логика изменения выбранного работника
-            // Возможно, открывается диалоговое окно для редактирования данных
-            // Затем обновляем свойства выбранного работника
-            // Например: SelectedEmployee.Name = "Новое имя";
-            //          SelectedEmployee.Position = "Новая должность";
+            var userData = MakeDialogData(SelectedUser);
+            var dialogData = ShowUserDialog(isUpdating: true, userData);
+            if (dialogData == null)
+                return;
+            string password;
+            if (dialogData.Password == string.Empty)
+            {
+                password = string.Empty;
+            } else
+            {
+                password = Auth.Sha256Hash(dialogData.Password);
+            }
+            var user = new User()
+            {
+                Id = SelectedUser.Id,
+                Name = dialogData.Name,
+                Surname = dialogData.Surname,
+                Username = dialogData.Username,
+                Password = password,
+                Role = dialogData.Role,
+            };
+            var response = await UpdateRequest(MainVM.User.Id, user);
+            if (response.StatusCode != HttpStatusCode.OK)
+                MessageBox.Show(response.ErrorMessage);
+            ReloadData();
+        }
+
+        private async Task<ApiResponse<object>> UpdateRequest(int senderID, User user)
+        {
+            var userService = new UsersService(BaseUrl);
+            var response = await userService.UpdateUser(senderID: MainVM.User.Id, user);
+            return response;
+        }
+
+        private UserDialogData MakeDialogData(User user)
+        {
+            return new UserDialogData
+            {
+                Name = user.Name,
+                Surname = user.Surname,
+                Username = user.Username,
+                Role = user.Role,
+            };
         }
 
         // shows dialog with user data
@@ -257,7 +295,7 @@ namespace WarehouseSystem.ViewModels
             IsTableVisible = true;
         }
 
-        private bool CanEditEmployee()
+        private bool CanUpdateUser()
         {
             if (SelectedUser == null)
             {
@@ -294,7 +332,7 @@ namespace WarehouseSystem.ViewModels
             // Вызываем это метод после смены выбранного работника
             // для обновления состояния команд
             ((RelayCommand)RemoveCommand).RaiseCanExecuteChanged();
-            ((RelayCommand)EditCommand).RaiseCanExecuteChanged();
+            ((RelayCommand)UpdateCommand).RaiseCanExecuteChanged();
         }
     }
 }
