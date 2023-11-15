@@ -170,6 +170,8 @@ namespace WarehouseSystem.ViewModels
             var response = await AddUserRequest(MainVM.User.Id, user);
             if (response.StatusCode != HttpStatusCode.OK)
                 MessageBox.Show(response.ErrorMessage);
+            else
+                MessageBox.Show("Пользователь успешно добавлен");
             ReloadData();
         }
 
@@ -189,6 +191,8 @@ namespace WarehouseSystem.ViewModels
             var response = await RemoveUserRequest();
             if (response.StatusCode != HttpStatusCode.OK)
                 MessageBox.Show(response.ErrorMessage);
+            else
+                MessageBox.Show("Пользователь успешно удален");
             ReloadData();
         }
 
@@ -225,7 +229,8 @@ namespace WarehouseSystem.ViewModels
             var response = await UpdateRequest(MainVM.User.Id, user);
             if (response.StatusCode != HttpStatusCode.OK)
                 MessageBox.Show(response.ErrorMessage);
-            MessageBox.Show("Информация о пользователе успешно обновлена");
+            else
+                MessageBox.Show("Информация о пользователе успешно обновлена");
             ReloadData();
         }
 
