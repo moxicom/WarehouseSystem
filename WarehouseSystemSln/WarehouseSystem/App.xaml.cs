@@ -25,7 +25,7 @@ namespace WarehouseSystem
                 Id = 1,
                 Name = "TestName",
                 Surname = "TestSurname",
-                Role = Enums.UserRoles.Guest,
+                Role = Enums.UserRoles.Admin,
             };
             window.DataContext = new MainViewModel("http://localhost:8080", user);
             Run(window);

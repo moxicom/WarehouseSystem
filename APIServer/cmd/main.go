@@ -28,6 +28,10 @@ func main() {
 		handlers.GetAllUsers(ctx, dbase)
 	})
 
+	router.DELETE("/users/:user_id", middleware.CommonMiddleware(dbase), func(ctx *gin.Context) {
+		handlers.DeleteUserByID(ctx, dbase)
+	})
+
 	// categories
 	router.GET("/categories", middleware.CommonMiddleware(dbase), func(ctx *gin.Context) {
 		handlers.GetAllCategoriesHandler(ctx, dbase)

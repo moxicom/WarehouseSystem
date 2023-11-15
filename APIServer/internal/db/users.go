@@ -83,3 +83,11 @@ func GetUserByID(db *sql.DB, userID int) (models.User, error) {
 
 	return user, nil
 }
+
+func DeleteUserByID(db *sql.DB, userID int) error {
+	_, err := db.Exec(`DELETE FROM public."Users" WHERE id = $1`, userID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
