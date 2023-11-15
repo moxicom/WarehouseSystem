@@ -69,6 +69,7 @@
                             <GridViewColumn DisplayMemberBinding="{Binding Id}" Header="Id" />
                             <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Name" />
                             <GridViewColumn DisplayMemberBinding="{Binding Surname}" Header="Surname" />
+                            <GridViewColumn DisplayMemberBinding="{Binding Username}" Header="Username" />
                             <GridViewColumn DisplayMemberBinding="{Binding Role}" Header="Role" />
                         </GridView>
                     </ListView.View>

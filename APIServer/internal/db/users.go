@@ -8,7 +8,7 @@ import (
 )
 
 func GetAllUsers(db *sql.DB) ([]models.User, error) {
-	rows, err := db.Query(`SELECT id, name, surname, role
+	rows, err := db.Query(`SELECT id, name, surname, username, password, role
 	FROM public."Users"`)
 	if err != nil {
 		return nil, err
@@ -18,7 +18,7 @@ func GetAllUsers(db *sql.DB) ([]models.User, error) {
 	var users []models.User
 	for rows.Next() {
 		var user models.User
-		if err := rows.Scan(&user.ID, &user.Name, &user.Surname, &user.Role); err != nil {
+		if err := rows.Scan(&user.ID, &user.Name, &user.Surname, &user.Username, &user.Password, &user.Role); err != nil {
 			return nil, err
 		}
 		users = append(users, user)
@@ -29,7 +29,7 @@ func GetAllUsers(db *sql.DB) ([]models.User, error) {
 
 func GetUserByNamePass(db *sql.DB, username string, password string) (models.User, error) {
 
-	rows, err := db.Query(`SELECT id, name, surname, role
+	rows, err := db.Query(`SELECT id, name, surname, username, password, role
 	FROM public."Users" WHERE username = $1 AND password = $2`, username, password)
 
 	if err == sql.ErrNoRows {
@@ -43,7 +43,7 @@ func GetUserByNamePass(db *sql.DB, username string, password string) (models.Use
 	var user models.User
 	found := false
 	for rows.Next() {
-		if err := rows.Scan(&user.ID, &user.Name, &user.Surname, &user.Role); err != nil {
+		if err := rows.Scan(&user.ID, &user.Name, &user.Surname, &user.Username, &user.Password, &user.Role); err != nil {
 			return models.User{}, err
 		}
 		found = true
@@ -57,7 +57,7 @@ func GetUserByNamePass(db *sql.DB, username string, password string) (models.Use
 }
 
 func GetUserByID(db *sql.DB, userID int) (models.User, error) {
-	rows, err := db.Query(`SELECT id, name, surname, role
+	rows, err := db.Query(`SELECT id, name, surname, username, password, role
 	FROM public."Users" WHERE id = $1`, userID)
 
 	if err == sql.ErrNoRows {
@@ -71,7 +71,7 @@ func GetUserByID(db *sql.DB, userID int) (models.User, error) {
 	var user models.User
 	found := false
 	for rows.Next() {
-		if err := rows.Scan(&user.ID, &user.Name, &user.Surname, &user.Role); err != nil {
+		if err := rows.Scan(&user.ID, &user.Name, &user.Surname, &user.Username, &user.Password, &user.Role); err != nil {
 			return models.User{}, err
 		}
 		found = true
