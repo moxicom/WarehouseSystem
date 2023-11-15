@@ -84,8 +84,28 @@ func GetUserByID(db *sql.DB, userID int) (models.User, error) {
 	return user, nil
 }
 
+func IsUserExist(db *sql.DB, username string) (bool, error) {
+	query := `SELECT EXISTS(SELECT 1 FROM public."Users" WHERE username = $1)`
+	var exists bool
+	err := db.QueryRow(query, username).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+	return exists, nil
+}
+
 func DeleteUserByID(db *sql.DB, userID int) error {
 	_, err := db.Exec(`DELETE FROM public."Users" WHERE id = $1`, userID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func InsertUser(db *sql.DB, user models.User) error {
+	_, err := db.Exec(`
+		INSERT INTO public."Users"(name, surname, username, password, role) VALUES ($1, $2, $3, $4, $5)
+	`, user.Name, user.Surname, user.Username, user.Password, user.Role)
 	if err != nil {
 		return err
 	}

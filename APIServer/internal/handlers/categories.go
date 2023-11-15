@@ -77,7 +77,7 @@ func GetCategoryTitle(ctx *gin.Context, dbase *sql.DB) {
 
 // endpoint: /categories
 func InsertCategory(ctx *gin.Context, dbase *sql.DB) {
-	itemCtx, _ := ctx.Get("item")
+	itemCtx, _ := ctx.Get("data")
 	item, ok := itemCtx.(models.Category)
 	if !ok {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
@@ -98,7 +98,7 @@ func InsertCategory(ctx *gin.Context, dbase *sql.DB) {
 
 // endpoint: /categories/:category_id
 func UpdateCategory(ctx *gin.Context, dbase *sql.DB) {
-	itemCtx, _ := ctx.Get("item")
+	itemCtx, _ := ctx.Get("data")
 	item, ok := itemCtx.(models.Category)
 	if !ok {
 		log.Println("Не удалось распарсить")
