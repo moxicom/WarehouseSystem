@@ -12,24 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WarehouseSystem.ViewModels;
 
-namespace WarehouseSystem
+namespace WarehouseSystem.Views
 {
-    public partial class MainWindow : Window
+    /// <summary>
+    /// Логика взаимодействия для AdminPanel.xaml
+    /// </summary>
+    public partial class AdminPanel : UserControl
     {
-        public MainWindow(string baseUrl)
+        public AdminPanel()
         {
             InitializeComponent();
-            LoginVM loginViewModel = new LoginVM(baseUrl);
-            loginViewModel.RequestClose += CloseWindow;
-            DataContext = loginViewModel;
-                
-        }
-
-        private void CloseWindow()
-        {
-            this.Close();
         }
     }
 }

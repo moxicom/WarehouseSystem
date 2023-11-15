@@ -23,6 +23,19 @@ func main() {
 	// auth
 	router.GET("/auth", middleware.LoginMiddleware(dbase), handlers.AuthHandler)
 
+	// users
+	router.GET("/users", middleware.CommonMiddleware(dbase), func(ctx *gin.Context) {
+		handlers.GetAllUsers(ctx, dbase)
+	})
+
+	router.POST("/users", middleware.DataMW[models.User](dbase), func(ctx *gin.Context) {
+		handlers.InsertUser(ctx, dbase)
+	})
+
+	router.DELETE("/users/:user_id", middleware.CommonMiddleware(dbase), func(ctx *gin.Context) {
+		handlers.DeleteUserByID(ctx, dbase)
+	})
+
 	// categories
 	router.GET("/categories", middleware.CommonMiddleware(dbase), func(ctx *gin.Context) {
 		handlers.GetAllCategoriesHandler(ctx, dbase)
@@ -36,7 +49,7 @@ func main() {
 		handlers.GetCategoryTitle(ctx, dbase)
 	})
 
-	router.POST("/categories", middleware.ItemMW[models.Category](dbase), func(ctx *gin.Context) {
+	router.POST("/categories", middleware.DataMW[models.Category](dbase), func(ctx *gin.Context) {
 		handlers.InsertCategory(ctx, dbase)
 	})
 
@@ -44,7 +57,7 @@ func main() {
 		handlers.DeleteCategory(ctx, dbase)
 	})
 
-	router.PUT("/categories/:category_id", middleware.ItemMW[models.Category](dbase), func(ctx *gin.Context) {
+	router.PUT("/categories/:category_id", middleware.DataMW[models.Category](dbase), func(ctx *gin.Context) {
 		handlers.UpdateCategory(ctx, dbase)
 	})
 
@@ -53,11 +66,11 @@ func main() {
 		handlers.DeleteItem(ctx, dbase)
 	})
 
-	router.POST("/items", middleware.ItemMW[models.Item](dbase), func(ctx *gin.Context) {
+	router.POST("/items", middleware.DataMW[models.Item](dbase), func(ctx *gin.Context) {
 		handlers.InsertItem(ctx, dbase)
 	})
 
-	router.PUT("/items/:item_id", middleware.ItemMW[models.Item](dbase), func(ctx *gin.Context) {
+	router.PUT("/items/:item_id", middleware.DataMW[models.Item](dbase), func(ctx *gin.Context) {
 		handlers.UpdateItem(ctx, dbase)
 	})
 

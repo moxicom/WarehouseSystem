@@ -10,11 +10,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ItemMW[T any](dbase *sql.DB) gin.HandlerFunc {
+func DataMW[T any](dbase *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var data struct {
 			UserID int             `json:"userID"`
-			Item   json.RawMessage `json:"itemData"`
+			Data   json.RawMessage `json:"data"`
 		}
 
 		if err := c.ShouldBindJSON(&data); err != nil {
@@ -35,7 +35,7 @@ func ItemMW[T any](dbase *sql.DB) gin.HandlerFunc {
 		}
 
 		var itemData T
-		if err := json.Unmarshal(data.Item, &itemData); err != nil {
+		if err := json.Unmarshal(data.Data, &itemData); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Невозможно разобрать данные"})
 			log.Println("JSON Unmarshal error")
 			c.Abort()
@@ -43,7 +43,7 @@ func ItemMW[T any](dbase *sql.DB) gin.HandlerFunc {
 		}
 
 		c.Set("user", user)
-		c.Set("item", itemData)
+		c.Set("data", itemData)
 		c.Next()
 	}
 }

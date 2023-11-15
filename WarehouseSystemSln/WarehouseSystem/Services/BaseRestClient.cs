@@ -37,6 +37,8 @@ namespace WarehouseSystem.Services
                     return "Отказано в доступе";
                 case HttpStatusCode.InternalServerError:
                     return "Внутрисерверная ошибка";
+                case HttpStatusCode.Conflict:
+                    return "Такая запись уже существует";
                 case 0:
                     return "Ответ от сервера не получен. Проверьте подключение";
                 default:
