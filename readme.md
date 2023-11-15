@@ -5,6 +5,7 @@ REST API requests:
 * GET `/users`
 * DELETE `/users/:user_id`
 * POST `/users`
+* PUT `/users/:user_id`
 * GET `/categories`
 * GET `/categories/:category_id`
 * GET `/categories/:category_id/title`
