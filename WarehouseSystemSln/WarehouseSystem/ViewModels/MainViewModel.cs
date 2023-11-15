@@ -9,14 +9,17 @@ public class MainViewModel : BaseViewModel
 {
     // fields
     private readonly string _baseUrl;
+    private bool _isAdminPanelVisible;
     private readonly CategoriesVM _categoriesVM;
     private readonly AdminPanelVM _adminPanelVM;
     private BaseViewModel _currentViewModel;
+
 
     // constructor
     public MainViewModel(string baseUrl, User user)
     {
         User = user;
+        IsAdminPanelVisible = User.Role == Enums.UserRoles.Admin ? true : false;
         CurrentViewModel = new HomeVM();
         _baseUrl = baseUrl;
         _categoriesVM = new CategoriesVM(baseUrl, this);
@@ -24,6 +27,7 @@ public class MainViewModel : BaseViewModel
         OpenHomeCommand = new RelayCommand(OpenHomeView);
         OpenCategoriesCommand = new RelayCommand(OpenCategoriesView);
         OpenAdminPanelCommand = new RelayCommand(OpenAdminPanel);
+        
     }
 
     // properties
@@ -42,6 +46,16 @@ public class MainViewModel : BaseViewModel
                 _currentViewModel = value;
                 OnPropertyChanged();
             }
+        }
+    }
+
+    public bool IsAdminPanelVisible
+    {
+        get => _isAdminPanelVisible;
+        set 
+        {
+            _isAdminPanelVisible = value;
+            OnPropertyChanged(nameof(IsAdminPanelVisible));
         }
     }
 

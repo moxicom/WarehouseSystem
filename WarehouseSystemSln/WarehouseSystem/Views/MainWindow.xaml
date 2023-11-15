@@ -19,12 +19,19 @@
             <ColumnDefinition Width="800" />
         </Grid.ColumnDefinitions>
 
+        <Grid.Resources>
+            <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        </Grid.Resources>
+
         <Border Grid.Column="0" Background="#343A40" />
 
         <StackPanel VerticalAlignment="Center">
             <Button Command="{Binding OpenHomeCommand}" Content="Главная" />
             <Button Command="{Binding OpenCategoriesCommand}" Content="Категории" />
-            <Button Command="{Binding OpenAdminPanelCommand}" Content="Панель управления" />
+            <Button
+                Command="{Binding OpenAdminPanelCommand}"
+                Content="Панель админа"
+                Visibility="{Binding IsAdminPanelVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
         </StackPanel>
 
         <ContentControl Grid.Column="1" Content="{Binding CurrentViewModel}">
