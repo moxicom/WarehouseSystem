@@ -62,3 +62,21 @@ func DeleteUserByID(ctx *gin.Context, dbase *sql.DB) {
 	}
 	ctx.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
 }
+
+// endpoint: /users/user_id
+func UpdateUser(ctx *gin.Context, dbase *sql.DB) {
+	userCtx, _ := ctx.Get("data")
+	user, ok := userCtx.(models.User)
+	if !ok {
+		log.Println("Не удалось распарсить")
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
+		return
+	}
+	log.Println(user)
+	if err := db.UpdateUser(dbase, user); err != nil {
+		log.Println("Ошибка обновления записи в базе данных")
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{"status": "ok"})
+}

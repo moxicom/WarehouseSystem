@@ -210,8 +210,9 @@ namespace WarehouseSystem.ViewModels
             {
                 password = string.Empty;
             } else
-            {
+            {                
                 password = Auth.Sha256Hash(dialogData.Password);
+                MessageBox.Show(dialogData.Password + "\n" + password);
             }
             var user = new User()
             {

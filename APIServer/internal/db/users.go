@@ -4,7 +4,6 @@ import (
 	"APIServer/internal/models"
 	"database/sql"
 	"errors"
-	"fmt"
 )
 
 func GetAllUsers(db *sql.DB) ([]models.User, error) {
@@ -23,7 +22,6 @@ func GetAllUsers(db *sql.DB) ([]models.User, error) {
 		}
 		users = append(users, user)
 	}
-	fmt.Println(users)
 	return users, nil
 }
 
@@ -110,4 +108,17 @@ func InsertUser(db *sql.DB, user models.User) error {
 		return err
 	}
 	return nil
+}
+
+func UpdateUser(db *sql.DB, user models.User) error {
+	var query string
+	var err error
+	if user.Password == "" {
+		query = "UPDATE public.\"Users\" SET name = $1, surname = $2, username = $3, role = $4 WHERE id = $5"
+		_, err = db.Exec(query, user.Name, user.Surname, user.Username, user.Role, user.ID)
+	} else {
+		query = "UPDATE public.\"Users\" SET name = $1, surname = $2, username = $3, password = $4, role = $5 WHERE id = $6"
+		_, err = db.Exec(query, user.Name, user.Surname, user.Username, user.Password, user.Role, user.ID)
+	}
+	return err
 }
