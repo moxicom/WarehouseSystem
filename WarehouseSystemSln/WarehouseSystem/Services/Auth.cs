@@ -16,7 +16,7 @@ internal class Auth : BaseRestClient
     {
     }
 
-    private static string Sha256Hash(string value)
+    public static string Sha256Hash(string value)
     {
         var sb = new StringBuilder();
         using (var hash = SHA256.Create())

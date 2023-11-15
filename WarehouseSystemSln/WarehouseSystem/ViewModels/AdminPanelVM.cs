@@ -8,9 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using WarehouseSystem.Enums;
 using WarehouseSystem.Models;
 using WarehouseSystem.Services;
 using WarehouseSystem.Utilities;
+using WarehouseSystem.Views;
 
 namespace WarehouseSystem.ViewModels
 {
@@ -31,8 +33,8 @@ namespace WarehouseSystem.ViewModels
             MainVM = mainVM;
             BaseUrl = baseUrl;
             Users = new ObservableCollection<User>();
-            AddCommand = new RelayCommand(AddEmployee);
-            RemoveCommand = new RelayCommand(RemoveEmployee, CanRemoveEmployee);
+            AddCommand = new RelayCommand(AddUser);
+            RemoveCommand = new RelayCommand(RemoveUser, CanRemoveEmployee);
             EditCommand = new RelayCommand(EditEmployee, CanEditEmployee);
             ReloadItemsCommand = new RelayCommand(ReloadData, CanReloadItems);
             ShowTable();
@@ -152,21 +154,33 @@ namespace WarehouseSystem.ViewModels
             CanReloadItems = true;
         }
 
-        private void AddEmployee()
+        private async void AddUser()
         {
-            // Логика добавления нового работника
-            // Возможно, открывается диалоговое окно для ввода данных
-            // Затем добавляем нового работника в коллекцию
-            Users.Add(new User() 
+            var dialogData = ShowUserDialog(isUpdating: false);
+            if (dialogData == null)
+                return;
+            var user = new User()
             {
-                Id = 228,
-                Name = "name",
-                Surname = "surname",
-                Role = Enums.UserRoles.BasicEmployee,
-            });
+                Name = dialogData.Name,
+                Surname = dialogData.Surname,
+                Username = dialogData.Username,
+                Password = Auth.Sha256Hash(dialogData.Password),
+                Role = dialogData.Role,
+            };
+            var response = await AddUserRequest(MainVM.User.Id, user);
+            if (response.StatusCode != HttpStatusCode.OK)
+                MessageBox.Show(response.ErrorMessage);
+            ReloadData();
         }
 
-        private async void RemoveEmployee()
+        private async Task<ApiResponse<object>> AddUserRequest(int senderID, User user)
+        {
+            var userService = new UsersService(BaseUrl);
+            var response = await userService.InsertUser(senderID, user);
+            return response;
+        }
+
+        private async void RemoveUser()
         {
             var confirmationDialog = new ConfirmationDialog();
             var message = "Вы уверены, что хотите удалить этого пользователя?";
@@ -174,9 +188,7 @@ namespace WarehouseSystem.ViewModels
                 return;
             var response = await RemoveUserRequest();
             if (response.StatusCode != HttpStatusCode.OK)
-            {
                 MessageBox.Show(response.ErrorMessage);
-            }
             ReloadData();
         }
 
@@ -194,6 +206,42 @@ namespace WarehouseSystem.ViewModels
             // Затем обновляем свойства выбранного работника
             // Например: SelectedEmployee.Name = "Новое имя";
             //          SelectedEmployee.Position = "Новая должность";
+        }
+
+        // shows dialog with user data
+        private UserDialogData? ShowUserDialog(bool isUpdating, UserDialogData? userData = null)
+        {
+            var userDialogView = new UserDialogView();
+            var userDialogVM = new UserDialogVM(isUpdating);
+            userDialogView.DataContext = userDialogVM;
+
+            if (userData != null)
+            {
+                userDialogVM.Name = userData.Name;
+                userDialogVM.Surname = userData.Surname;
+                userDialogVM.Username = userData.Username;
+                userDialogVM.SelectedRole = userData.Role;
+            }
+
+            var dialogData = new UserDialogData();
+            string errorText = string.Empty;
+            bool hasData = false;
+
+            userDialogVM.DialogClosing += (sender, data) =>
+            {
+                if (data != null)
+                {
+                    hasData = true;
+                    dialogData = data;
+                }
+                userDialogView.Close();
+            };
+
+            userDialogView.ShowDialog();
+
+            if (!hasData)
+                return null;
+            return dialogData;
         }
 
         private void ShowStatus(string statusText)

@@ -72,7 +72,7 @@ internal class CategoryVM : BaseItemListVM<Item>
         return response;
     }
 
-    protected override async Task<ApiResponse<object>> AdditionRequest(DialogData dialogData)
+    protected override async Task<ApiResponse<object>> AdditionRequest(ItemDialogData dialogData)
     {
         var categoryService = new CategoryService(BaseUrl);
         var item = ProcessDialogData(itemID: 0, dialogData);
@@ -80,7 +80,7 @@ internal class CategoryVM : BaseItemListVM<Item>
         return response;
     }
 
-    protected override async Task<ApiResponse<object>> UpdatingRequest(int itemID, DialogData dialogData)
+    protected override async Task<ApiResponse<object>> UpdatingRequest(int itemID, ItemDialogData dialogData)
     {
         var categoryService = new CategoryService(BaseUrl);
         var item = ProcessDialogData(itemID, dialogData);
@@ -88,7 +88,7 @@ internal class CategoryVM : BaseItemListVM<Item>
         return response;
     }
 
-    protected override DialogData GetItemData(int itemID)
+    protected override ItemDialogData GetItemData(int itemID)
     {
         if (ItemList == null)
             return null;
@@ -97,7 +97,7 @@ internal class CategoryVM : BaseItemListVM<Item>
         if (item == null)
             return null;
 
-        return new DialogData()
+        return new ItemDialogData()
         {
             Title = item.Title,
             Description = item.Description,
@@ -105,7 +105,7 @@ internal class CategoryVM : BaseItemListVM<Item>
         };
     }
 
-    private Item ProcessDialogData(int itemID, DialogData dialogData)
+    private Item ProcessDialogData(int itemID, ItemDialogData dialogData)
     {
         return new Item()
         {

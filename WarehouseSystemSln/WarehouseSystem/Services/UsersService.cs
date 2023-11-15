@@ -48,5 +48,22 @@ namespace WarehouseSystem.Services
                 ErrorMessage = ProcessRequestStatus(response.StatusCode)
             };
         }
+
+        public async Task<ApiResponse<object>> InsertUser(int senderID, User user)
+        {
+            var request = new RestRequest($"/users", Method.Post)
+            {
+                RequestFormat = RestSharp.DataFormat.Json
+            };
+            request.AddJsonBody(new { userID = senderID, data = user});
+
+            var response = await Client.ExecuteAsync(request);
+            return new ApiResponse<object>
+            {
+                Data = null,
+                StatusCode = response.StatusCode,
+                ErrorMessage = ProcessRequestStatus(response.StatusCode)
+            };
+        }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WarehouseSystem.Models
 {
-    internal class DialogData
+    internal class ItemDialogData
     {
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;

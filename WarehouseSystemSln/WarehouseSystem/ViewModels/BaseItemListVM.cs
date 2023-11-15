@@ -130,11 +130,11 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
     // makes a request to server to remove item (item / category)
     protected abstract Task<ApiResponse<object>> RemoveRequest(int itemID);
     // makes a request to server to add new item (item / category)
-    protected abstract Task<ApiResponse<object>> AdditionRequest(DialogData dialogData);
+    protected abstract Task<ApiResponse<object>> AdditionRequest(ItemDialogData dialogData);
     // makes a request to server to update chosen item (item / category)
-    protected abstract Task<ApiResponse<object>> UpdatingRequest(int itemID, DialogData dialogData);
+    protected abstract Task<ApiResponse<object>> UpdatingRequest(int itemID, ItemDialogData dialogData);
     //
-    protected abstract DialogData GetItemData(int itemID);
+    protected abstract ItemDialogData GetItemData(int itemID);
 
     // loads items of chosen list
     private async Task LoadItems()
@@ -221,7 +221,7 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
     }
 
     // shows dialog with type and mode, that containts input form, processes its data
-    private DialogData ShowItemDialog(ItemDialogMode mode, DialogData? itemData = null)
+    private ItemDialogData ShowItemDialog(ItemDialogMode mode, ItemDialogData? itemData = null)
     { 
         var additionDialog = new ItemDialogView();
         var itemDialogVM = new ItemDialogVM(ItemDialogType, mode);
@@ -234,7 +234,7 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
             itemDialogVM.Amount = itemData.Amount;
         }
 
-        var dialogData = new DialogData();
+        var dialogData = new ItemDialogData();
         string errorText = "";
         bool hasData = false;
 

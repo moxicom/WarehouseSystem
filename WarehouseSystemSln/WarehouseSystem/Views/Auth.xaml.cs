@@ -18,10 +18,10 @@ namespace WarehouseSystem
 {
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        public MainWindow(string baseUrl)
         {
             InitializeComponent();
-            LoginVM loginViewModel = new LoginVM("http://localhost:8080");
+            LoginVM loginViewModel = new LoginVM(baseUrl);
             loginViewModel.RequestClose += CloseWindow;
             DataContext = loginViewModel;
                 

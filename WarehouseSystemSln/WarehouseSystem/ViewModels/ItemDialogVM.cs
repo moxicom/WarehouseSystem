@@ -17,7 +17,7 @@ namespace WarehouseSystem.ViewModels
         private int _amount;
         private bool _isAmountVisible;
 
-        public event EventHandler<DialogData> DialogClosing; // item or category
+        public event EventHandler<ItemDialogData> DialogClosing; // item or category
 
         public ItemDialogVM(ItemDialogType type, ItemDialogMode mode)
         {
@@ -81,7 +81,7 @@ namespace WarehouseSystem.ViewModels
         // Methods
         private void OkButtonClickHandler()
         {
-            var data = new DialogData
+            var data = new ItemDialogData
             {
                 Title = _title,
                 Description = _description,
