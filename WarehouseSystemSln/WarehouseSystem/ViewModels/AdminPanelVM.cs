@@ -308,10 +308,6 @@ namespace WarehouseSystem.ViewModels
             {
                 return false;
             }
-            else if (SelectedUser.Id == MainVM.User.Id)
-            {
-                return false;
-            }
             else
             {
                 return true;
