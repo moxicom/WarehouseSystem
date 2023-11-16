@@ -1,5 +1,13 @@
 # WIREHOUSE system
 Course project by @moxicom
+
+# General info
+* Client - C# WPF MVVM using RestSharp
+* Server - Golang gin
+* Database - postgres
+
+![image](https://github.com/moxicom/WarehouseSystem/blob/main/PresentationFiles/Pres_1.gif)
+  
 # How to run
 ### Client
 * Replace `baseUrl` with the one you need in `App.xaml.cs` file
