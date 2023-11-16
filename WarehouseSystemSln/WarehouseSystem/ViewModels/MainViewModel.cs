@@ -74,8 +74,13 @@ public class MainViewModel : BaseViewModel
     public void LogOut()
     {
         var currentWindow = Application.Current.MainWindow;
+        if (currentWindow == null)
+            return;
         var authWindow = new MainWindow(_baseUrl);
         authWindow.Show();
-        currentWindow?.Close();
+        currentWindow.Dispatcher.Invoke(() =>
+        {
+            currentWindow.Close();
+        });
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Windows;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using WarehouseSystem.Services;
@@ -10,6 +11,7 @@ namespace WarehouseSystem.ViewModels;
 internal class LoginVM : BaseViewModel
 {
     public delegate void CloseWindowDelegate();
+    public event CloseWindowDelegate? RequestClose;
 
     private readonly string _baseUrl;
     private string _errorTextBlockValue = string.Empty;
@@ -24,7 +26,7 @@ internal class LoginVM : BaseViewModel
         Password = "";
     }
 
-    public string? Username { get; set; }
+    public string Username { get; set; }
     public ICommand? LoggingButtonPressed { get; set; }
     public Auth AuthService { get; }
 
@@ -51,9 +53,7 @@ internal class LoginVM : BaseViewModel
         }
     }
 
-    public event CloseWindowDelegate RequestClose;
-
-    public async void ExecuteLoginRequest()
+    private async void ExecuteLoginRequest()
     {
         if (Password == "" || Username == "")
             return;
@@ -68,12 +68,13 @@ internal class LoginVM : BaseViewModel
             var newWindow = new AppMainWindow();
             newWindow.DataContext = newViewModel;
             newWindow.Show();
+            Application.Current.MainWindow = newWindow;
             CloseWindow();
         }
     }
 
-    public void CloseWindow()
+    private void CloseWindow()
     {
-        RequestClose.Invoke();
+        RequestClose?.Invoke();
     }
 }
