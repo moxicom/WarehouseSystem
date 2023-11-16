@@ -16,15 +16,16 @@ namespace WarehouseSystem.ViewModels;
 internal class CategoryVM : BaseItemListVM<Item>
 {
     // Fields
-    private readonly int _categoryID;
-    private string _pageTitle = string.Empty;
     private const string _titleLoadingText = "Загрузка категории...";
+    private readonly int _categoryID;
+    private string _pageTitle;
 
     // constructor
     public CategoryVM(int categoryID, string baseUrl, MainViewModel mainVM) : base(baseUrl, mainVM,
         "Товары отсутствуют",
         "Загрузка...")
     {
+        _pageTitle = string.Empty;
         _categoryID = categoryID;
 
         StatusTextValue = categoryID.ToString();
