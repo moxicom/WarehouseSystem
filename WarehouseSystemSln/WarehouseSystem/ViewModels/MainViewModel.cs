@@ -1,7 +1,9 @@
-﻿using System.Windows.Input;
+﻿using System.Windows;
+using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using WarehouseSystem.Models;
 using WarehouseSystem.Utilities;
+using static WarehouseSystem.ViewModels.LoginVM;
 
 namespace WarehouseSystem.ViewModels;
 
@@ -13,6 +15,9 @@ public class MainViewModel : BaseViewModel
     private readonly CategoriesVM _categoriesVM;
     private readonly AdminPanelVM _adminPanelVM;
     private BaseViewModel _currentViewModel;
+
+    public delegate void CloseWindowDelegate();
+    public event CloseWindowDelegate RequestClose;
 
 
     // constructor
@@ -27,13 +32,16 @@ public class MainViewModel : BaseViewModel
         OpenHomeCommand = new RelayCommand(OpenHomeView);
         OpenCategoriesCommand = new RelayCommand(OpenCategoriesView);
         OpenAdminPanelCommand = new RelayCommand(OpenAdminPanel);
-        
+        LogOutCommand = new RelayCommand(LogOut);
+
+
     }
 
     // properties
     public ICommand OpenHomeCommand { get; }
     public ICommand OpenCategoriesCommand { get; }
     public ICommand OpenAdminPanelCommand { get; }
+    public ICommand LogOutCommand { get; }
     public User User { get; }
 
     public BaseViewModel CurrentViewModel
@@ -64,4 +72,12 @@ public class MainViewModel : BaseViewModel
     public void OpenHomeView() => CurrentViewModel = new HomeVM();
     public void OpenCategoryView(int ID) => CurrentViewModel = new CategoryVM(ID, _baseUrl, this);
     public void OpenAdminPanel() => CurrentViewModel = _adminPanelVM;
+
+    public void LogOut()
+    {
+        var currentWindow = Application.Current.MainWindow;
+        var authWindow = new MainWindow(_baseUrl);
+        authWindow.Show();
+        currentWindow?.Close();
+    }
 }

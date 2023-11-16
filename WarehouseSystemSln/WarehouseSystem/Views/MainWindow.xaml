@@ -32,6 +32,7 @@
                 Command="{Binding OpenAdminPanelCommand}"
                 Content="Панель админа"
                 Visibility="{Binding IsAdminPanelVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
+            <Button Command="{Binding LogOutCommand}" Content="Выйти из аккаунта" />
         </StackPanel>
 
         <ContentControl Grid.Column="1" Content="{Binding CurrentViewModel}">
