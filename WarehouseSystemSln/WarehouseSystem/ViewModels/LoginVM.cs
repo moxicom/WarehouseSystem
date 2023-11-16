@@ -26,9 +26,9 @@ internal class LoginVM : BaseViewModel
         Password = "";
     }
 
+    private Auth AuthService { get; }
     public string Username { get; set; }
-    public ICommand? LoggingButtonPressed { get; set; }
-    public Auth AuthService { get; }
+    public ICommand LoggingButtonPressed { get; set; }
 
     public string ErrorTextBlockValue
     {
