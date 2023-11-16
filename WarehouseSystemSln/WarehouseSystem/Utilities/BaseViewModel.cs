@@ -4,7 +4,7 @@ using GalaSoft.MvvmLight;
 
 namespace WarehouseSystem.Utilities;
 
-public abstract class BaseViewModel : ViewModelBase, INotifyPropertyChanged
+internal abstract class BaseViewModel : ViewModelBase, INotifyPropertyChanged
 {
     public new event PropertyChangedEventHandler? PropertyChanged;
 

@@ -23,11 +23,11 @@ internal class MainViewModel : BaseViewModel
     // constructor
     public MainViewModel(string baseUrl, User user)
     {
-        User = user;
-        IsAdminPanelVisible = User.Role == Enums.UserRoles.Admin ? true : false;
         _baseUrl = baseUrl;
         _categoriesVM = new CategoriesVM(baseUrl, this);
         _adminPanelVM = new AdminPanelVM(baseUrl, this);
+        User = user;
+        IsAdminPanelVisible = User.Role == Enums.UserRoles.Admin ? true : false;
         OpenHomeCommand = new RelayCommand(OpenHomeView);
         OpenCategoriesCommand = new RelayCommand(OpenCategoriesView);
         OpenAdminPanelCommand = new RelayCommand(OpenAdminPanel);
