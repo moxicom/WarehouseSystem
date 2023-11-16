@@ -14,6 +14,6 @@
             FontSize="40"
             FontWeight="Bold"
             Foreground="#E9ECEF"
-            Text="Здравстуйте, Владимир Егоров" />
+            Text="{Binding StringFormat=Здравствуйте\, {0}, Path=FullName}" />
     </Grid>
 </UserControl>
