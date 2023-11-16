@@ -28,7 +28,6 @@ func InsertUser(ctx *gin.Context, dbase *sql.DB) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
 		return
 	}
-	log.Println(user)
 	exist, err := db.IsUserExist(dbase, user.Username)
 	if err != nil {
 		log.Println("Ошибка поиска проверки существования пользователя в базе данных")
@@ -72,7 +71,6 @@ func UpdateUser(ctx *gin.Context, dbase *sql.DB) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
 		return
 	}
-	log.Println(user)
 	if err := db.UpdateUser(dbase, user); err != nil {
 		log.Println("Ошибка обновления записи в базе данных")
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

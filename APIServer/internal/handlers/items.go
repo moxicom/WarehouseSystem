@@ -49,7 +49,6 @@ func UpdateItem(ctx *gin.Context, dbase *sql.DB) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
 		return
 	}
-	log.Println(item)
 	if err := db.UpdateItem(dbase, item); err != nil {
 		log.Println("Ошибка обновления записи в базе данных")
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
