@@ -20,7 +20,7 @@ namespace WarehouseSystem.ViewModels
     {
         // Fields
         private const string _loadingStatus = "Загрузка...";
-        private User _selectedUser;
+        private User? _selectedUser;
         private bool _canReloadItems;
         private string _statusTextValue;
         private bool _isStatusTextVisible;
@@ -30,9 +30,10 @@ namespace WarehouseSystem.ViewModels
     // Constructor
     public AdminPanelVM(string baseUrl, MainViewModel mainVM)
         {
+            _users = new ObservableCollection<User>();
+            _statusTextValue = string.Empty;
             MainVM = mainVM;
             BaseUrl = baseUrl;
-            Users = new ObservableCollection<User>();
             AddCommand = new RelayCommand(AddUser);
             RemoveCommand = new RelayCommand(RemoveUser, CanRemoveEmployee);
             UpdateCommand = new RelayCommand(UpdateUser, CanUpdateUser);
@@ -42,8 +43,8 @@ namespace WarehouseSystem.ViewModels
         }
 
         // Properties
-        public string BaseUrl { get; }
-        public MainViewModel MainVM { get; }
+        private string BaseUrl { get; }
+        private MainViewModel MainVM { get; }
         public ICommand AddCommand { get; }
         public ICommand RemoveCommand { get; }
         public ICommand UpdateCommand { get; }
@@ -59,7 +60,7 @@ namespace WarehouseSystem.ViewModels
             }
         }
 
-        public User SelectedUser
+        public User? SelectedUser
         {
             get { return _selectedUser; }
             set

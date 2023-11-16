@@ -7,7 +7,7 @@ using static WarehouseSystem.ViewModels.LoginVM;
 
 namespace WarehouseSystem.ViewModels;
 
-public class MainViewModel : BaseViewModel
+internal class MainViewModel : BaseViewModel
 {
     // fields
     private readonly string _baseUrl;
@@ -17,17 +17,17 @@ public class MainViewModel : BaseViewModel
     private BaseViewModel _currentViewModel;
 
     public delegate void CloseWindowDelegate();
-    public event CloseWindowDelegate RequestClose;
+    public event CloseWindowDelegate? RequestClose;
 
 
     // constructor
     public MainViewModel(string baseUrl, User user)
     {
         User = user;
-        IsAdminPanelVisible = User.Role == Enums.UserRoles.Admin ? true : false;
         _baseUrl = baseUrl;
         _categoriesVM = new CategoriesVM(baseUrl, this);
         _adminPanelVM = new AdminPanelVM(baseUrl, this);
+        IsAdminPanelVisible = User.Role == Enums.UserRoles.Admin ? true : false;
         OpenHomeCommand = new RelayCommand(OpenHomeView);
         OpenCategoriesCommand = new RelayCommand(OpenCategoriesView);
         OpenAdminPanelCommand = new RelayCommand(OpenAdminPanel);
@@ -66,16 +66,21 @@ public class MainViewModel : BaseViewModel
     }
 
     // methods
-    public void OpenCategoriesView() => CurrentViewModel = _categoriesVM;
-    public void OpenHomeView() => CurrentViewModel = new HomeVM(User.Name, User.Surname);
-    public void OpenCategoryView(int ID) => CurrentViewModel = new CategoryVM(ID, _baseUrl, this);
-    public void OpenAdminPanel() => CurrentViewModel = _adminPanelVM;
+    private void OpenCategoriesView() => CurrentViewModel = _categoriesVM;
+    private void OpenHomeView() => CurrentViewModel = new HomeVM(User.Name, User.Surname);
+    private void OpenAdminPanel() => CurrentViewModel = _adminPanelVM;
+    internal void OpenCategoryView(int ID) => CurrentViewModel = new CategoryVM(ID, _baseUrl, this);
 
-    public void LogOut()
+    private void LogOut()
     {
         var currentWindow = Application.Current.MainWindow;
+        if (currentWindow == null)
+            return;
         var authWindow = new MainWindow(_baseUrl);
         authWindow.Show();
-        currentWindow?.Close();
+        currentWindow.Dispatcher.Invoke(() =>
+        {
+            currentWindow.Close();
+        });
     }
 }

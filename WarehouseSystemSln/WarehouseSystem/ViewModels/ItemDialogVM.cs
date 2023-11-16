@@ -11,22 +11,27 @@ namespace WarehouseSystem.ViewModels
     {
 
         // Fields
-        private string _pageTitle = string.Empty;
-        private string _title = string.Empty;
-        private string _description = string.Empty;
+        private string _pageTitle;
+        private string _title;
+        private string _description;
         private int _amount;
         private bool _isAmountVisible;
 
-        public event EventHandler<ItemDialogData> DialogClosing; // item or category
+        public event EventHandler<ItemDialogData>? DialogClosing; // item or category
 
         public ItemDialogVM(ItemDialogType type, ItemDialogMode mode)
         {
+            _pageTitle = string.Empty;
+            _title = string.Empty;
+            _description = string.Empty;
+            OkButtonCommand = new RelayCommand(OkButtonClickHandler);
+            CancelButtonCommand = new RelayCommand(CancelButtonClickHandler);
             ShowCorrectProperties(type, mode);
         }
 
         // Parameters
-        public ICommand? OkButtonCommand => new RelayCommand(OkButtonClickHandler);
-        public ICommand? CancelButtonCommand => new RelayCommand(CancelButtonClickHandler);
+        public ICommand OkButtonCommand { get; }
+        public ICommand CancelButtonCommand { get; }
 
         public string PageTitle
         {

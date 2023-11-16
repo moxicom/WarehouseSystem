@@ -16,10 +16,10 @@ namespace WarehouseSystem.ViewModels
     internal class UserDialogVM : BaseViewModel
     {
         // Fields
-        private string _name = string.Empty;
-        private string _surname = string.Empty;
-        private string _username = string.Empty;
-        private string _password = string.Empty;
+        private string _name;
+        private string _surname;
+        private string _username;
+        private string _password;
         private bool _isUpdating;
         private UserRoles _selectedRole;
 
@@ -27,6 +27,11 @@ namespace WarehouseSystem.ViewModels
         public UserDialogVM(bool isUpdating)
         {
             _isUpdating = isUpdating;
+            _name = string.Empty;
+            _surname = string.Empty;
+            _username = string.Empty;
+            _password = string.Empty;
+
         }
 
         // Properties

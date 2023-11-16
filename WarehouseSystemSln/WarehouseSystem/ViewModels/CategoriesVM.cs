@@ -20,14 +20,14 @@ internal class CategoriesVM : BaseItemListVM<Category>
         "Категории отсутствуют", "Загрузка...")
     {
         OpenCategoryCommand = new RelayCommand<int>(OpenCategory);
-        //CategoriesService = new CategoriesService(baseUrl);
         ItemDialogType = ItemDialogType.Category;
         BaseUrl = baseUrl;
+        //CategoriesService = new CategoriesService(baseUrl);
         ReloadItems();
     }
 
     // properties
-    public ICommand OpenCategoryCommand { get; set; }
+    public ICommand OpenCategoryCommand { get; }
     //public CategoriesService CategoriesService { get; set; }
 
     // Methods
