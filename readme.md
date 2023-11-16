@@ -1,6 +1,14 @@
 # WIREHOUSE system
+Course project by @moxicom
+# How to run
+### Client
+* Replace `baseUrl` with the one you need in `App.xaml.cs` file
+* Build and run application
 
-REST API requests:
+### Server
+* Run `cmd/main.go`
+
+# REST API requests:
 * GET `/auth`
 * GET `/users`
 * DELETE `/users/:user_id`
