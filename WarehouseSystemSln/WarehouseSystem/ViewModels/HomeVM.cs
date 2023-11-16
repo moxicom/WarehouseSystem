@@ -10,6 +10,24 @@ namespace WarehouseSystem.ViewModels
 {
     internal class HomeVM : BaseViewModel
     {
-    
+        // fields
+        private string _fullname;
+
+        // constructor
+        public HomeVM(string name, string surname)
+        {
+            FullName = name + ' ' + surname;
+        }
+
+        // Properties
+        public string FullName
+        {
+            get => _fullname;
+            set
+            {
+                _fullname = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }

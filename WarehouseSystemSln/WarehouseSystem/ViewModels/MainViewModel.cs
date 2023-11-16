@@ -25,7 +25,6 @@ public class MainViewModel : BaseViewModel
     {
         User = user;
         IsAdminPanelVisible = User.Role == Enums.UserRoles.Admin ? true : false;
-        CurrentViewModel = new HomeVM();
         _baseUrl = baseUrl;
         _categoriesVM = new CategoriesVM(baseUrl, this);
         _adminPanelVM = new AdminPanelVM(baseUrl, this);
@@ -33,8 +32,7 @@ public class MainViewModel : BaseViewModel
         OpenCategoriesCommand = new RelayCommand(OpenCategoriesView);
         OpenAdminPanelCommand = new RelayCommand(OpenAdminPanel);
         LogOutCommand = new RelayCommand(LogOut);
-
-
+        OpenHomeView();
     }
 
     // properties
@@ -69,7 +67,7 @@ public class MainViewModel : BaseViewModel
 
     // methods
     public void OpenCategoriesView() => CurrentViewModel = _categoriesVM;
-    public void OpenHomeView() => CurrentViewModel = new HomeVM();
+    public void OpenHomeView() => CurrentViewModel = new HomeVM(User.Name, User.Surname);
     public void OpenCategoryView(int ID) => CurrentViewModel = new CategoryVM(ID, _baseUrl, this);
     public void OpenAdminPanel() => CurrentViewModel = _adminPanelVM;
 
