@@ -6,6 +6,7 @@ Course project by @moxicom
 * Build and run application
 
 ### Server
+* Set correct db conection in `APIServer/internal/db/db_functions.go` file
 * Run `cmd/main.go`
 
 # REST API requests:
