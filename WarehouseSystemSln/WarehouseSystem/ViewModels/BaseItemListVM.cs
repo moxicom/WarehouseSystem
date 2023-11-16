@@ -20,20 +20,22 @@ internal abstract class BaseItemListVM<T> : BaseViewModel
     private bool _isRemoveButtonVisible;
     private bool _isUpdateButtonVisible;
     private ObservableCollection<T>? _itemList;
-    private string _statusTextValue = string.Empty;
+    private string _statusTextValue;
 
     // constructor
-    protected BaseItemListVM(string baseUrl, MainViewModel mainViewModel,
+    public BaseItemListVM(string baseUrl, MainViewModel mainViewModel,
         string noRowsStatus, string loadingStatus)
     {
+        _statusTextValue = string.Empty;
+
         ReloadItemsCommand = new RelayCommand(ReloadItems);
         RemoveItemCommand = new RelayCommand<int>(RemoveItem);
         AddNewItemCommand = new RelayCommand(AddItem);
         UpdateItemCommand = new RelayCommand<int>(UpdateItem);
         
-        User = new User { Id = 1, Name = "Test Name", Surname = "Test Surname" };
+        //User = new User { Id = 1, Name = "Test Name", Surname = "Test Surname" 
         MainVM = mainViewModel;
-
+        User = mainViewModel.User;
         BaseUrl = baseUrl;
         NoRowsStatus = noRowsStatus;
         LoadingStatus = loadingStatus;
