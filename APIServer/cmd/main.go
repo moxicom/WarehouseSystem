@@ -8,13 +8,19 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	dbase, err := db.OpenDB()
+	if err := godotenv.Load(); err != nil {
+		log.Fatalf("%s", err.Error())
+	}
+
+	dbase, err := db.OpenDB(db.LoadConfig())
 	if err != nil {
 		log.Fatal(err)
 	}
+	log.Println("Database has loaded")
 
 	// db.AddItemsByConsole(dbase)
 
