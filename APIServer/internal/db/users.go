@@ -48,7 +48,7 @@ func GetUserByNamePass(db *sql.DB, username string, password string) (models.Use
 	}
 
 	if !found {
-		return models.User{}, errors.New("No rows")
+		return models.User{}, errors.New("no rows")
 	}
 
 	return user, nil
@@ -76,7 +76,7 @@ func GetUserByID(db *sql.DB, userID int) (models.User, error) {
 	}
 
 	if !found {
-		return models.User{}, errors.New("No rows")
+		return models.User{}, errors.New("no rows")
 	}
 
 	return user, nil

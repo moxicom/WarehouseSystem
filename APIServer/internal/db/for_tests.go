@@ -49,6 +49,6 @@ func AddItemsByConsole(db *sql.DB) {
 		if err != nil {
 			return
 		}
-		fmt.Printf("Добавлен %dй %d\n", i+1, item)
+		fmt.Printf("Добавлен %dй %v\n", i+1, item)
 	}
 }
