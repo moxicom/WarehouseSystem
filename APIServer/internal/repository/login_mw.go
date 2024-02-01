@@ -1,15 +1,13 @@
-package middleware
+package repository
 
 import (
-	"APIServer/internal/db"
-	"database/sql"
 	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func LoginMiddleware(dbase *sql.DB) gin.HandlerFunc {
+func (r *Repository) LoginMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var authData struct {
 			Username string `json:"username"`
@@ -28,7 +26,7 @@ func LoginMiddleware(dbase *sql.DB) gin.HandlerFunc {
 		username, password := authData.Username, authData.Password
 		log.Println(username, password)
 
-		user, err := db.GetUserByNamePass(dbase, username, password)
+		user, err := r.GetUserByNamePass(username, password)
 		if err != nil {
 			if err.Error() == "No rows" {
 				c.JSON(http.StatusUnauthorized, gin.H{"error": err})

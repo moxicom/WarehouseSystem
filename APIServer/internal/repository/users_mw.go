@@ -1,15 +1,13 @@
-package middleware
+package repository
 
 import (
-	"APIServer/internal/db"
-	"database/sql"
 	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func UsersMW(dbase *sql.DB) gin.HandlerFunc {
+func (r *Repository) UsersMW() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var data struct {
 			SenderID int `json:"senderID"`
@@ -22,7 +20,7 @@ func UsersMW(dbase *sql.DB) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		user, err := db.GetUserByID(dbase, data.SenderID)
+		user, err := r.GetUserByID(data.SenderID)
 		if err != nil {
 			if err.Error() == "No rows" {
 				c.JSON(http.StatusUnauthorized, gin.H{"error": err})
@@ -30,7 +28,7 @@ func UsersMW(dbase *sql.DB) gin.HandlerFunc {
 				c.JSON(http.StatusNotFound, nil)
 			}
 		}
-		userToProcess, err := db.GetUserByID(dbase, data.UserID)
+		userToProcess, err := r.GetUserByID(data.UserID)
 		if err != nil {
 			if err.Error() == "No rows" {
 				c.JSON(http.StatusUnauthorized, gin.H{"process user error": err})

@@ -1,15 +1,13 @@
-package middleware
+package repository
 
 import (
-	"APIServer/internal/db"
-	"database/sql"
 	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func CommonMiddleware(dbase *sql.DB) gin.HandlerFunc {
+func (r *Repository) CommonMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var userData struct {
 			UserID int `json:"userID"`
@@ -24,7 +22,7 @@ func CommonMiddleware(dbase *sql.DB) gin.HandlerFunc {
 		}
 
 		i := userData.UserID
-		user, err := db.GetUserByID(dbase, i)
+		user, err := r.GetUserByID(i)
 
 		if err != nil {
 			if err.Error() == "No rows" {

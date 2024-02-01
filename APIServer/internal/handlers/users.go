@@ -1,9 +1,7 @@
 package handlers
 
 import (
-	"APIServer/internal/db"
 	"APIServer/internal/models"
-	"database/sql"
 	"log"
 	"net/http"
 	"strconv"
@@ -11,8 +9,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetAllUsers(ctx *gin.Context, dbase *sql.DB) {
-	users, err := db.GetAllUsers(dbase)
+func (h *handler) getAllUsers(ctx *gin.Context) {
+	users, err := h.r.GetAllUsers()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -21,14 +19,14 @@ func GetAllUsers(ctx *gin.Context, dbase *sql.DB) {
 }
 
 // endpoint: /users
-func InsertUser(ctx *gin.Context, dbase *sql.DB) {
+func (h *handler) insertUser(ctx *gin.Context) {
 	userCtx, _ := ctx.Get("data")
 	user, ok := userCtx.(models.User)
 	if !ok {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
 		return
 	}
-	exist, err := db.IsUserExist(dbase, user.Username)
+	exist, err := h.r.IsUserExist(user.Username)
 	if err != nil {
 		log.Println("Ошибка поиска проверки существования пользователя в базе данных")
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -38,7 +36,7 @@ func InsertUser(ctx *gin.Context, dbase *sql.DB) {
 		ctx.JSON(http.StatusConflict, gin.H{"error": "User already exists"})
 		return
 	}
-	if err := db.InsertUser(dbase, user); err != nil {
+	if err := h.r.InsertUser(user); err != nil {
 		log.Println("Ошибка обновления записи в базе данных")
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -47,14 +45,14 @@ func InsertUser(ctx *gin.Context, dbase *sql.DB) {
 }
 
 // endpoint: /users/:user_id
-func DeleteUserByID(ctx *gin.Context, dbase *sql.DB) {
+func (h *handler) deleteUserByID(ctx *gin.Context) {
 	userIDstr := ctx.Param("user_id")
 	userIDInt, err := strconv.Atoi(userIDstr)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	err = db.DeleteUserByID(dbase, userIDInt)
+	err = h.r.DeleteUserByID(userIDInt)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -63,7 +61,7 @@ func DeleteUserByID(ctx *gin.Context, dbase *sql.DB) {
 }
 
 // endpoint: /users/user_id
-func UpdateUser(ctx *gin.Context, dbase *sql.DB) {
+func (h *handler) updateUser(ctx *gin.Context) {
 	userCtx, _ := ctx.Get("data")
 	user, ok := userCtx.(models.User)
 	if !ok {
@@ -71,7 +69,7 @@ func UpdateUser(ctx *gin.Context, dbase *sql.DB) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
 		return
 	}
-	if err := db.UpdateUser(dbase, user); err != nil {
+	if err := h.r.UpdateUser(user); err != nil {
 		log.Println("Ошибка обновления записи в базе данных")
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

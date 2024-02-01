@@ -1,15 +1,13 @@
-package db
+package repository
 
 import (
 	"APIServer/internal/models"
 	"database/sql"
 	"log"
-	"time"
 )
 
-func GetAllItems(db *sql.DB, categoryID int) ([]models.Item, error) {
-	time.Sleep(50 * time.Millisecond)
-	rows, err := db.Query(`SELECT id, title, description, category_id, amount FROM public."Items" WHERE category_id = $1`, categoryID)
+func (r Repository) GetAllItems(categoryID int) ([]models.Item, error) {
+	rows, err := r.db.Query(`SELECT id, title, description, category_id, amount FROM public."Items" WHERE category_id = $1`, categoryID)
 
 	if err == sql.ErrNoRows {
 		log.Println("sql.NoRows")
@@ -36,27 +34,24 @@ func GetAllItems(db *sql.DB, categoryID int) ([]models.Item, error) {
 	return items, nil
 }
 
-func DeleteItem(db *sql.DB, itemID int) error {
-	time.Sleep(50 * time.Millisecond)
-	_, err := db.Exec(`DELETE FROM public."Items" WHERE id = $1`, itemID)
+func (r Repository) DeleteItem(itemID int) error {
+	_, err := r.db.Exec(`DELETE FROM public."Items" WHERE id = $1`, itemID)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func DeleteItemsByCategory(db *sql.DB, categoryID int) error {
-	time.Sleep(50 * time.Millisecond)
-	_, err := db.Exec(`DELETE FROM public."Items" WHERE category_id = $1`, categoryID)
+func (r Repository) DeleteItemsByCategory(categoryID int) error {
+	_, err := r.db.Exec(`DELETE FROM public."Items" WHERE category_id = $1`, categoryID)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func InsertItem(db *sql.DB, item models.Item) error {
-	time.Sleep(50 * time.Millisecond)
-	_, err := db.Exec(`
+func (r Repository) InsertItem(item models.Item) error {
+	_, err := r.db.Exec(`
 		INSERT INTO public."Items"(title, description, category_id, amount) 
 		VALUES ($1, $2, $3, $4)`,
 		item.Title, item.Description, item.CategoryID, item.Amount)
@@ -66,9 +61,8 @@ func InsertItem(db *sql.DB, item models.Item) error {
 	return nil
 }
 
-func UpdateItem(db *sql.DB, item models.Item) error {
-	time.Sleep(50 * time.Millisecond)
-	_, err := db.Exec(`
+func (r Repository) UpdateItem(item models.Item) error {
+	_, err := r.db.Exec(`
 		UPDATE public."Items"
 		SET title=$1,
 		description=$2,

@@ -1,9 +1,7 @@
 package handlers
 
 import (
-	"APIServer/internal/db"
 	"APIServer/internal/models"
-	"database/sql"
 	"log"
 	"net/http"
 	"strconv"
@@ -11,14 +9,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func DeleteItem(ctx *gin.Context, dbase *sql.DB) {
+func (h *handler) deleteItem(ctx *gin.Context) {
 	itemIDstr := ctx.Param("item_id")
 	itemIDInt, err := strconv.Atoi(itemIDstr)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	err = db.DeleteItem(dbase, itemIDInt)
+	err = h.r.DeleteItem(itemIDInt)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -26,14 +24,14 @@ func DeleteItem(ctx *gin.Context, dbase *sql.DB) {
 	ctx.JSON(http.StatusOK, gin.H{"status": "ok"})
 }
 
-func InsertItem(ctx *gin.Context, dbase *sql.DB) {
+func (h *handler) insertItem(ctx *gin.Context) {
 	itemCtx, _ := ctx.Get("data")
 	item, ok := itemCtx.(models.Item)
 	if !ok {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
 		return
 	}
-	if err := db.InsertItem(dbase, item); err != nil {
+	if err := h.r.InsertItem(item); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -41,7 +39,7 @@ func InsertItem(ctx *gin.Context, dbase *sql.DB) {
 }
 
 // endpoint: /items/:item_id
-func UpdateItem(ctx *gin.Context, dbase *sql.DB) {
+func (h *handler) updateItem(ctx *gin.Context) {
 	itemCtx, _ := ctx.Get("data")
 	item, ok := itemCtx.(models.Item)
 	if !ok {
@@ -49,7 +47,7 @@ func UpdateItem(ctx *gin.Context, dbase *sql.DB) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
 		return
 	}
-	if err := db.UpdateItem(dbase, item); err != nil {
+	if err := h.r.UpdateItem(item); err != nil {
 		log.Println("Ошибка обновления записи в базе данных")
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

@@ -1,12 +1,12 @@
-package db
+package repository
 
 import (
 	"APIServer/internal/models"
 	"database/sql"
 )
 
-func GetAllCategories(db *sql.DB) ([]models.Category, error) {
-	rows, err := db.Query(`SELECT id, title, creator_id, created_at FROM public."Categories"`)
+func (r *Repository) GetAllCategories() ([]models.Category, error) {
+	rows, err := r.db.Query(`SELECT id, title, creator_id, created_at FROM public."Categories"`)
 	if err == sql.ErrNoRows {
 		return nil, err
 	} else if err != nil {
@@ -28,8 +28,8 @@ func GetAllCategories(db *sql.DB) ([]models.Category, error) {
 	return categories, nil
 }
 
-func InsertCategory(db *sql.DB, category models.Category, creatorID int) error {
-	_, err := db.Exec(`INSERT INTO public."Categories"(title, creator_id) VALUES ($1, $2)`,
+func (r *Repository) InsertCategory(category models.Category, creatorID int) error {
+	_, err := r.db.Exec(`INSERT INTO public."Categories"(title, creator_id) VALUES ($1, $2)`,
 		category.Title, creatorID)
 	if err != nil {
 		return err
@@ -37,8 +37,8 @@ func InsertCategory(db *sql.DB, category models.Category, creatorID int) error {
 	return nil
 }
 
-func UpdateCategory(db *sql.DB, category models.Category) error {
-	_, err := db.Exec(`
+func (r *Repository) UpdateCategory(category models.Category) error {
+	_, err := r.db.Exec(`
 		UPDATE public."Categories"
 		SET title=$1
 		WHERE id=$2;
@@ -49,8 +49,8 @@ func UpdateCategory(db *sql.DB, category models.Category) error {
 	return nil
 }
 
-func GetCategoryTitle(db *sql.DB, categoryID int) (string, error) {
-	rows, err := db.Query(`SELECT title FROM public."Categories" WHERE id = $1`, categoryID)
+func (r *Repository) GetCategoryTitle(categoryID int) (string, error) {
+	rows, err := r.db.Query(`SELECT title FROM public."Categories" WHERE id = $1`, categoryID)
 	if err == sql.ErrNoRows {
 		return "", err
 	} else if err != nil {
@@ -68,8 +68,8 @@ func GetCategoryTitle(db *sql.DB, categoryID int) (string, error) {
 	return title, nil
 }
 
-func DeleteCategory(db *sql.DB, categoryID int) error {
-	_, err := db.Query(`DELETE FROM public."Categories" WHERE id = $1`, categoryID)
+func (r *Repository) DeleteCategory(categoryID int) error {
+	_, err := r.db.Query(`DELETE FROM public."Categories" WHERE id = $1`, categoryID)
 	if err != nil {
 		return err
 	}

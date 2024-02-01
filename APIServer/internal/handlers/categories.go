@@ -1,9 +1,7 @@
 package handlers
 
 import (
-	"APIServer/internal/db"
 	"APIServer/internal/models"
-	"database/sql"
 	"log"
 	"net/http"
 	"strconv"
@@ -12,8 +10,8 @@ import (
 )
 
 // endpoint: /categories
-func GetAllCategoriesHandler(ctx *gin.Context, dbase *sql.DB) {
-	categories, err := db.GetAllCategories(dbase)
+func (h *handler) getAllCategoriesHandler(ctx *gin.Context) {
+	categories, err := h.r.GetAllCategories()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -22,14 +20,13 @@ func GetAllCategoriesHandler(ctx *gin.Context, dbase *sql.DB) {
 }
 
 // endpoint: /categories/:category_id
-func GetCategoryHandler(ctx *gin.Context, dbase *sql.DB) {
-	categoryIDstr := ctx.Param("category_id")
-	categoryIDInt, err := strconv.Atoi(categoryIDstr)
+func (h *handler) getCategoryHandler(ctx *gin.Context) {
+	categoryIDInt, err := strconv.Atoi(ctx.Param("category_id"))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	items, err := db.GetAllItems(dbase, categoryIDInt)
+	items, err := h.r.GetAllItems(categoryIDInt)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -39,19 +36,19 @@ func GetCategoryHandler(ctx *gin.Context, dbase *sql.DB) {
 }
 
 // endpoint: /categories/:category_id
-func DeleteCategory(ctx *gin.Context, dbase *sql.DB) {
+func (h *handler) deleteCategory(ctx *gin.Context) {
 	categoryIDstr := ctx.Param("category_id")
 	categoryIDInt, err := strconv.Atoi(categoryIDstr)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	err = db.DeleteItemsByCategory(dbase, categoryIDInt)
+	err = h.r.DeleteItemsByCategory(categoryIDInt)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	err = db.DeleteCategory(dbase, categoryIDInt)
+	err = h.r.DeleteCategory(categoryIDInt)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -60,14 +57,14 @@ func DeleteCategory(ctx *gin.Context, dbase *sql.DB) {
 }
 
 // endpoint: /categories/:category_id/title
-func GetCategoryTitle(ctx *gin.Context, dbase *sql.DB) {
+func (h *handler) getCategoryTitle(ctx *gin.Context) {
 	categoryIDstr := ctx.Param("category_id")
 	categoryIDInt, err := strconv.Atoi(categoryIDstr)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	title, err := db.GetCategoryTitle(dbase, categoryIDInt)
+	title, err := h.r.GetCategoryTitle(categoryIDInt)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -76,7 +73,7 @@ func GetCategoryTitle(ctx *gin.Context, dbase *sql.DB) {
 }
 
 // endpoint: /categories
-func InsertCategory(ctx *gin.Context, dbase *sql.DB) {
+func (h *handler) insertCategory(ctx *gin.Context) {
 	itemCtx, _ := ctx.Get("data")
 	item, ok := itemCtx.(models.Category)
 	if !ok {
@@ -89,7 +86,7 @@ func InsertCategory(ctx *gin.Context, dbase *sql.DB) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
 		return
 	}
-	if err := db.InsertCategory(dbase, item, user.ID); err != nil {
+	if err := h.r.InsertCategory(item, user.ID); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -97,7 +94,7 @@ func InsertCategory(ctx *gin.Context, dbase *sql.DB) {
 }
 
 // endpoint: /categories/:category_id
-func UpdateCategory(ctx *gin.Context, dbase *sql.DB) {
+func (h *handler) updateCategory(ctx *gin.Context) {
 	itemCtx, _ := ctx.Get("data")
 	item, ok := itemCtx.(models.Category)
 	if !ok {
@@ -105,7 +102,7 @@ func UpdateCategory(ctx *gin.Context, dbase *sql.DB) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
 		return
 	}
-	if err := db.UpdateCategory(dbase, item); err != nil {
+	if err := h.r.UpdateCategory(item); err != nil {
 		log.Println("Ошибка обновления записи в базе данных")
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

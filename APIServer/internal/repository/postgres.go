@@ -1,4 +1,4 @@
-package db
+package repository
 
 import (
 	"database/sql"
@@ -29,7 +29,7 @@ func LoadConfig() Config {
 }
 
 func OpenDB(cfg Config) (*sql.DB, error) {
-	psqlconn := fmt.Sprintf(
+	dsn := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		cfg.Host,
 		cfg.Port,
@@ -38,7 +38,7 @@ func OpenDB(cfg Config) (*sql.DB, error) {
 		cfg.Dbname,
 		cfg.SSLMode)
 
-	db, err := sql.Open("postgres", psqlconn)
+	db, err := sql.Open("postgres", dsn)
 	if err != nil {
 		return nil, err
 	}
