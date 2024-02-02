@@ -8,7 +8,7 @@ import (
 
 func (r Repository) GetAllUsers() ([]models.User, error) {
 	rows, err := r.db.Query(`SELECT id, name, surname, username, password, role
-	FROM public."Users"`)
+	FROM public."users"`)
 	if err != nil {
 		return nil, err
 	}
@@ -28,7 +28,7 @@ func (r Repository) GetAllUsers() ([]models.User, error) {
 func (r Repository) GetUserByNamePass(username string, password string) (models.User, error) {
 
 	rows, err := r.db.Query(`SELECT id, name, surname, username, password, role
-	FROM public."Users" WHERE username = $1 AND password = $2`, username, password)
+	FROM public."users" WHERE username = $1 AND password = $2`, username, password)
 
 	if err == sql.ErrNoRows {
 		return models.User{}, err
@@ -56,7 +56,7 @@ func (r Repository) GetUserByNamePass(username string, password string) (models.
 
 func (r Repository) GetUserByID(userID int) (models.User, error) {
 	rows, err := r.db.Query(`SELECT id, name, surname, username, password, role
-	FROM public."Users" WHERE id = $1`, userID)
+	FROM public."users" WHERE id = $1`, userID)
 
 	if err == sql.ErrNoRows {
 		return models.User{}, err
@@ -83,7 +83,7 @@ func (r Repository) GetUserByID(userID int) (models.User, error) {
 }
 
 func (r Repository) IsUserExist(username string) (bool, error) {
-	query := `SELECT EXISTS(SELECT 1 FROM public."Users" WHERE username = $1)`
+	query := `SELECT EXISTS(SELECT 1 FROM public."users" WHERE username = $1)`
 	var exists bool
 	err := r.db.QueryRow(query, username).Scan(&exists)
 	if err != nil {
@@ -93,7 +93,7 @@ func (r Repository) IsUserExist(username string) (bool, error) {
 }
 
 func (r Repository) DeleteUserByID(userID int) error {
-	_, err := r.db.Exec(`DELETE FROM public."Users" WHERE id = $1`, userID)
+	_, err := r.db.Exec(`DELETE FROM public."users" WHERE id = $1`, userID)
 	if err != nil {
 		return err
 	}
@@ -102,7 +102,7 @@ func (r Repository) DeleteUserByID(userID int) error {
 
 func (r Repository) InsertUser(user models.User) error {
 	_, err := r.db.Exec(`
-		INSERT INTO public."Users"(name, surname, username, password, role) VALUES ($1, $2, $3, $4, $5)
+		INSERT INTO public."users"(name, surname, username, password, role) VALUES ($1, $2, $3, $4, $5)
 	`, user.Name, user.Surname, user.Username, user.Password, user.Role)
 	if err != nil {
 		return err
@@ -114,10 +114,10 @@ func (r Repository) UpdateUser(user models.User) error {
 	var query string
 	var err error
 	if user.Password == "" {
-		query = "UPDATE public.\"Users\" SET name = $1, surname = $2, username = $3, role = $4 WHERE id = $5"
+		query = "UPDATE public.\"users\" SET name = $1, surname = $2, username = $3, role = $4 WHERE id = $5"
 		_, err = r.db.Exec(query, user.Name, user.Surname, user.Username, user.Role, user.ID)
 	} else {
-		query = "UPDATE public.\"Users\" SET name = $1, surname = $2, username = $3, password = $4, role = $5 WHERE id = $6"
+		query = "UPDATE public.\"users\" SET name = $1, surname = $2, username = $3, password = $4, role = $5 WHERE id = $6"
 		_, err = r.db.Exec(query, user.Name, user.Surname, user.Username, user.Password, user.Role, user.ID)
 	}
 	return err

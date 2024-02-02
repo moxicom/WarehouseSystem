@@ -9,6 +9,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type categoryData struct {
+	UserID int             `json:"userID"`
+	Data   models.Category `json:"data"`
+}
+
 // endpoint: /categories
 func (h *handler) getAllCategoriesHandler(ctx *gin.Context) {
 	categories, err := h.r.GetAllCategories()
@@ -72,21 +77,16 @@ func (h *handler) getCategoryTitle(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, title)
 }
 
-// endpoint: /categories
+// endpoint: /categories/
 func (h *handler) insertCategory(ctx *gin.Context) {
-	itemCtx, _ := ctx.Get("data")
-	item, ok := itemCtx.(models.Category)
-	if !ok {
+	var input categoryData
+	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
 		return
 	}
-	userCtx, _ := ctx.Get("user")
-	user, ok := userCtx.(models.User)
-	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
-		return
-	}
-	if err := h.r.InsertCategory(item, user.ID); err != nil {
+
+	log.Println(input)
+	if err := h.r.InsertCategory(input.Data, input.UserID); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -95,14 +95,20 @@ func (h *handler) insertCategory(ctx *gin.Context) {
 
 // endpoint: /categories/:category_id
 func (h *handler) updateCategory(ctx *gin.Context) {
-	itemCtx, _ := ctx.Get("data")
-	item, ok := itemCtx.(models.Category)
-	if !ok {
-		log.Println("Не удалось распарсить")
+	categoryID, err := strconv.Atoi(ctx.Param("category_id"))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	var input categoryData
+	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
 		return
 	}
-	if err := h.r.UpdateCategory(item); err != nil {
+
+	input.Data.ID = categoryID
+	if err := h.r.UpdateCategory(input.Data); err != nil {
 		log.Println("Ошибка обновления записи в базе данных")
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

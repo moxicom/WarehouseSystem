@@ -3,10 +3,11 @@ package repository
 import (
 	"APIServer/internal/models"
 	"database/sql"
+	"time"
 )
 
 func (r *Repository) GetAllCategories() ([]models.Category, error) {
-	rows, err := r.db.Query(`SELECT id, title, creator_id, created_at FROM public."Categories"`)
+	rows, err := r.db.Query(`SELECT id, title, creator_id, created_at FROM public."categories"`)
 	if err == sql.ErrNoRows {
 		return nil, err
 	} else if err != nil {
@@ -29,8 +30,8 @@ func (r *Repository) GetAllCategories() ([]models.Category, error) {
 }
 
 func (r *Repository) InsertCategory(category models.Category, creatorID int) error {
-	_, err := r.db.Exec(`INSERT INTO public."Categories"(title, creator_id) VALUES ($1, $2)`,
-		category.Title, creatorID)
+	_, err := r.db.Exec(`INSERT INTO public."categories"(title, creator_id, created_at) VALUES ($1, $2, $3)`,
+		category.Title, creatorID, time.Now())
 	if err != nil {
 		return err
 	}
@@ -39,7 +40,7 @@ func (r *Repository) InsertCategory(category models.Category, creatorID int) err
 
 func (r *Repository) UpdateCategory(category models.Category) error {
 	_, err := r.db.Exec(`
-		UPDATE public."Categories"
+		UPDATE public."categories"
 		SET title=$1
 		WHERE id=$2;
 	`, category.Title, category.ID)
@@ -50,7 +51,7 @@ func (r *Repository) UpdateCategory(category models.Category) error {
 }
 
 func (r *Repository) GetCategoryTitle(categoryID int) (string, error) {
-	rows, err := r.db.Query(`SELECT title FROM public."Categories" WHERE id = $1`, categoryID)
+	rows, err := r.db.Query(`SELECT title FROM public."categories" WHERE id = $1`, categoryID)
 	if err == sql.ErrNoRows {
 		return "", err
 	} else if err != nil {
@@ -69,7 +70,7 @@ func (r *Repository) GetCategoryTitle(categoryID int) (string, error) {
 }
 
 func (r *Repository) DeleteCategory(categoryID int) error {
-	_, err := r.db.Query(`DELETE FROM public."Categories" WHERE id = $1`, categoryID)
+	_, err := r.db.Query(`DELETE FROM public."categories" WHERE id = $1`, categoryID)
 	if err != nil {
 		return err
 	}

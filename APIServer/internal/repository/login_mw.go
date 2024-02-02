@@ -19,7 +19,6 @@ func (r *Repository) LoginMiddleware() gin.HandlerFunc {
 		if err := c.ShouldBindJSON(&authData); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Неверный формат данных"})
 			log.Println("ShouldBindJSON err")
-			c.Abort()
 			return
 		}
 

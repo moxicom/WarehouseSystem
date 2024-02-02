@@ -18,7 +18,7 @@ namespace WarehouseSystem.Services
         // Methods
         public async Task<ApiResponse<List<Category>>> GetCategories (int userID)
         {
-            var request = new RestRequest("/categories", Method.Get) 
+            var request = new RestRequest("/categories/", Method.Get) 
             { 
                 RequestFormat = RestSharp.DataFormat.Json
             };
@@ -54,7 +54,7 @@ namespace WarehouseSystem.Services
         // Makes a request to insert received category
         public async Task<ApiResponse<object>> InsertCategory(int userID, Category category)
         {
-            return await SubmitCategoryData("/categories", Method.Post, userID, category);
+            return await SubmitCategoryData("/categories/", Method.Post, userID, category);
         }
 
         // Makes a request to server to update received category
@@ -80,6 +80,5 @@ namespace WarehouseSystem.Services
                 ErrorMessage = ProcessRequestStatus(response.StatusCode)
             };
         }
-
     }
 }

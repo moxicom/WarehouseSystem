@@ -23,12 +23,15 @@ func (r *Repository) CommonMiddleware() gin.HandlerFunc {
 
 		i := userData.UserID
 		user, err := r.GetUserByID(i)
-
 		if err != nil {
-			if err.Error() == "No rows" {
-				c.JSON(http.StatusUnauthorized, gin.H{"error": err})
+			if err.Error() == "no rows" {
+				c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+				c.Abort()
+				return
 			} else {
 				c.JSON(http.StatusNotFound, nil)
+				c.Abort()
+				return
 			}
 		}
 		c.Set("user", user)

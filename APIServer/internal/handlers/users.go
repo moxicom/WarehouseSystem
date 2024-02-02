@@ -18,15 +18,20 @@ func (h *handler) getAllUsers(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, users)
 }
 
+type userData struct {
+	UserID int         `json:"userID"`
+	Data   models.User `json:"data"`
+}
+
 // endpoint: /users
 func (h *handler) insertUser(ctx *gin.Context) {
-	userCtx, _ := ctx.Get("data")
-	user, ok := userCtx.(models.User)
-	if !ok {
+	var input userData
+	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
 		return
 	}
-	exist, err := h.r.IsUserExist(user.Username)
+	log.Println(input)
+	exist, err := h.r.IsUserExist(input.Data.Username)
 	if err != nil {
 		log.Println("Ошибка поиска проверки существования пользователя в базе данных")
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -36,7 +41,7 @@ func (h *handler) insertUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusConflict, gin.H{"error": "User already exists"})
 		return
 	}
-	if err := h.r.InsertUser(user); err != nil {
+	if err := h.r.InsertUser(input.Data); err != nil {
 		log.Println("Ошибка обновления записи в базе данных")
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -62,14 +67,19 @@ func (h *handler) deleteUserByID(ctx *gin.Context) {
 
 // endpoint: /users/user_id
 func (h *handler) updateUser(ctx *gin.Context) {
-	userCtx, _ := ctx.Get("data")
-	user, ok := userCtx.(models.User)
-	if !ok {
-		log.Println("Не удалось распарсить")
+	var input userData
+	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
 		return
 	}
-	if err := h.r.UpdateUser(user); err != nil {
+	userID, err := strconv.Atoi(ctx.Param("user_id"))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	input.Data.ID = userID
+	log.Println(input)
+	if err := h.r.UpdateUser(input.Data); err != nil {
 		log.Println("Ошибка обновления записи в базе данных")
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

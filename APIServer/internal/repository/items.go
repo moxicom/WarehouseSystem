@@ -7,7 +7,7 @@ import (
 )
 
 func (r Repository) GetAllItems(categoryID int) ([]models.Item, error) {
-	rows, err := r.db.Query(`SELECT id, title, description, category_id, amount FROM public."Items" WHERE category_id = $1`, categoryID)
+	rows, err := r.db.Query(`SELECT id, title, description, category_id, amount FROM public."items" WHERE category_id = $1`, categoryID)
 
 	if err == sql.ErrNoRows {
 		log.Println("sql.NoRows")
@@ -35,7 +35,7 @@ func (r Repository) GetAllItems(categoryID int) ([]models.Item, error) {
 }
 
 func (r Repository) DeleteItem(itemID int) error {
-	_, err := r.db.Exec(`DELETE FROM public."Items" WHERE id = $1`, itemID)
+	_, err := r.db.Exec(`DELETE FROM public."items" WHERE id = $1`, itemID)
 	if err != nil {
 		return err
 	}
@@ -43,7 +43,7 @@ func (r Repository) DeleteItem(itemID int) error {
 }
 
 func (r Repository) DeleteItemsByCategory(categoryID int) error {
-	_, err := r.db.Exec(`DELETE FROM public."Items" WHERE category_id = $1`, categoryID)
+	_, err := r.db.Exec(`DELETE FROM public."items" WHERE category_id = $1`, categoryID)
 	if err != nil {
 		return err
 	}
@@ -52,7 +52,7 @@ func (r Repository) DeleteItemsByCategory(categoryID int) error {
 
 func (r Repository) InsertItem(item models.Item) error {
 	_, err := r.db.Exec(`
-		INSERT INTO public."Items"(title, description, category_id, amount) 
+		INSERT INTO public."items"(title, description, category_id, amount) 
 		VALUES ($1, $2, $3, $4)`,
 		item.Title, item.Description, item.CategoryID, item.Amount)
 	if err != nil {
@@ -63,7 +63,7 @@ func (r Repository) InsertItem(item models.Item) error {
 
 func (r Repository) UpdateItem(item models.Item) error {
 	_, err := r.db.Exec(`
-		UPDATE public."Items"
+		UPDATE public."items"
 		SET title=$1,
 		description=$2,
 		amount=$3

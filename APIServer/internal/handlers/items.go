@@ -9,14 +9,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type itemData struct {
+	UserID int         `json:"userID"`
+	Data   models.Item `json:"data"`
+}
+
 func (h *handler) deleteItem(ctx *gin.Context) {
-	itemIDstr := ctx.Param("item_id")
-	itemIDInt, err := strconv.Atoi(itemIDstr)
+	itemID, err := strconv.Atoi(ctx.Param("item_id"))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	err = h.r.DeleteItem(itemIDInt)
+	err = h.r.DeleteItem(itemID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -25,13 +29,13 @@ func (h *handler) deleteItem(ctx *gin.Context) {
 }
 
 func (h *handler) insertItem(ctx *gin.Context) {
-	itemCtx, _ := ctx.Get("data")
-	item, ok := itemCtx.(models.Item)
-	if !ok {
+	var input itemData
+	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
 		return
 	}
-	if err := h.r.InsertItem(item); err != nil {
+	log.Println(input)
+	if err := h.r.InsertItem(input.Data); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -40,14 +44,19 @@ func (h *handler) insertItem(ctx *gin.Context) {
 
 // endpoint: /items/:item_id
 func (h *handler) updateItem(ctx *gin.Context) {
-	itemCtx, _ := ctx.Get("data")
-	item, ok := itemCtx.(models.Item)
-	if !ok {
-		log.Println("Не удалось распарсить")
+	var input itemData
+	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный формат данных"})
 		return
 	}
-	if err := h.r.UpdateItem(item); err != nil {
+	itemID, err := strconv.Atoi(ctx.Param("item_id"))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	input.Data.ID = itemID
+	log.Println(input)
+	if err := h.r.UpdateItem(input.Data); err != nil {
 		log.Println("Ошибка обновления записи в базе данных")
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

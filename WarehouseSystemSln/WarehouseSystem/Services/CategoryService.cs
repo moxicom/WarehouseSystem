@@ -81,7 +81,7 @@ namespace WarehouseSystem.Services
         // Makes a request to insert the received item
         public async Task<ApiResponse<object>> InsertItem(int userID, Item item)
         {
-            return await SubmitItemData("/items", Method.Post, userID, item);
+            return await SubmitItemData("/items/", Method.Post, userID, item);
         }
 
         // Makes a request to server to update the received item

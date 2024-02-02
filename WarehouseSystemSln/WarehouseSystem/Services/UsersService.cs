@@ -17,7 +17,7 @@ namespace WarehouseSystem.Services
         // Methods
         public async Task<ApiResponse<List<User>>> GetUsers(int userID)
         {
-            var request = new RestRequest($"/users", Method.Get)
+            var request = new RestRequest($"/users/", Method.Get)
             {
                 RequestFormat = RestSharp.DataFormat.Json,
             };
@@ -51,7 +51,7 @@ namespace WarehouseSystem.Services
 
         public async Task<ApiResponse<object>> InsertUser(int senderID, User user)
         {
-            var request = new RestRequest($"/users", Method.Post)
+            var request = new RestRequest($"/users/", Method.Post)
             {
                 RequestFormat = RestSharp.DataFormat.Json
             };
