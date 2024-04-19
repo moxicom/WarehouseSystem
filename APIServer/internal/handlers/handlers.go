@@ -18,7 +18,10 @@ func (h *handler) InitRoutes() *gin.Engine {
 	router := gin.Default()
 
 	// auth
-	router.GET("/auth", h.r.LoginMiddleware(), h.authHandler)
+	auth := router.Group("/auth")
+	{
+		auth.GET("/", h.r.LoginMiddleware(), h.authHandler)
+	}
 
 	users := router.Group("/users")
 	{
